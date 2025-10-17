@@ -601,7 +601,7 @@ function generatePflegeboxEmailHTML(data) {
 async function sendPflegeboxEmail(env, formData, emailHTML) {
   // Indirizzo email aziendale
   const toEmail = 'pflegeteufelagentur@gmail.com';
-  const fromEmail = 'noreply@pflegeteufel.de';
+  const fromEmail = 'pflegeteufel2@gmail.com';
 
   const subject = `📦 Neue Pflegebox Bestellung - ${formData.versicherte.vorname} ${formData.versicherte.name}`;
 

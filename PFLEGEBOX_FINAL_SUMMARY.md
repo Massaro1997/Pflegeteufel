@@ -34,7 +34,7 @@ Implementata logica intelligente per la sezione "Angehörige/Pflegeperson":
 - **Metodo:** POST
 - **Auth:** X-Worker-Key header
 - **CORS:** Configurato correttamente
-- **Email:** Inviata automaticamente a `pflegeteufelagentur@gmail.com`
+- **Email:** Inviata automaticamente a `pflegeteufelagentur@gmail.com` (mittente: `pflegeteufel2@gmail.com`)
 
 ### 4. ✅ **Email HTML Condizionale**
 L'email generata mostra:
@@ -273,7 +273,7 @@ https://pflegeteufel.de/pages/pflegebox-formular
 
 ### 7. Verifica
 - Success page deve apparire
-- Email deve arrivare a `info@pflegeteufel.de`
+- Email deve arrivare a `pflegeteufelagentur@gmail.com` da `pflegeteufel2@gmail.com`
 - Check console browser per log
 
 ---
@@ -305,7 +305,7 @@ https://pflegeteufel.de/pages/pflegebox-formular
 ## 📞 Supporto
 
 Per problemi o domande:
-- **Email:** info@pflegeteufel.de
+- **Email:** pflegeteufelagentur@gmail.com
 - **GitHub Issues:** https://github.com/Massaro1997/Pflegeteufel/issues
 - **Worker Logs:** Cloudflare Dashboard
 
