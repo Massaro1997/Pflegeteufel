@@ -7,7 +7,7 @@
 // ==================== STATO GLOBALE ====================
 const PflegeboxForm = {
   currentStep: 1,
-  maxSteps: 6,
+  maxSteps: 7,
   canvas: null,
   ctx: null,
   isDrawing: false,
@@ -57,14 +57,25 @@ document.addEventListener('DOMContentLoaded', function() {
 // ==================== SETUP EVENT LISTENERS ====================
 function setupEventListeners() {
   // Radio buttons Sozialamt
-  document.querySelectorAll('input[name="insuranceType"]').forEach(function(radio) {
+  document.querySelectorAll('input[name="versicherte_typ"]').forEach(function(radio) {
     radio.addEventListener('change', function() {
-      const sozialamtField = document.getElementById('sozialamtField');
-      if (sozialamtField) {
-        sozialamtField.style.display = (this.value === 'sozialamt') ? 'block' : 'none';
+      const sozialamtGroup = document.getElementById('sozialamt_group');
+      if (sozialamtGroup) {
+        sozialamtGroup.style.display = (this.value === 'sozialamt') ? 'block' : 'none';
       }
     });
   });
+
+  // Checkbox handschuhe mostra opzioni
+  const handschuheCheckbox = document.getElementById('handschuhe_checkbox');
+  if (handschuheCheckbox) {
+    handschuheCheckbox.addEventListener('change', function() {
+      const handschuheOptions = document.getElementById('handschuhe_options');
+      if (handschuheOptions) {
+        handschuheOptions.style.display = this.checked ? 'block' : 'none';
+      }
+    });
+  }
 
   // Checkbox bevollmaechtigter signature
   const consentVollmacht = document.getElementById('consent_vollmacht');
@@ -80,8 +91,24 @@ function setupEventListeners() {
     });
   }
 
+  // Bottoni navigazione
+  document.querySelectorAll('.btn-next').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (validateCurrentStep()) {
+        nextStep();
+      }
+    });
+  });
+
+  document.querySelectorAll('.btn-prev').forEach(btn => {
+    btn.addEventListener('click', prevStep);
+  });
+
   // Save form state on input changes
-  document.getElementById('pflegeboxForm').addEventListener('input', saveFormState);
+  const form = document.getElementById('pflegeboxForm');
+  if (form) {
+    form.addEventListener('input', saveFormState);
+  }
 }
 
 // ==================== TOGGLE ANGEHÖRIGE SECTION (LOGICA CONDIZIONALE) ====================
@@ -188,20 +215,23 @@ function collectStep1Data() {
   const form = document.getElementById('pflegeboxForm');
   if (!form) return {};
 
+  const plz = document.getElementById('versicherte_plz')?.value || '';
+  const ort = document.getElementById('versicherte_ort')?.value || '';
+
   return {
-    anrede: getRadioValue('gender'),
-    vorname: form.firstName?.value || '',
-    name: form.lastName?.value || '',
-    strasse: form.street?.value || '',
-    plzOrt: form.plzOrt?.value || '',
-    telefon: form.phone?.value || '',
-    email: form.email?.value || '',
-    geburtsdatum: form.geburtsdatum?.value || '',
-    versichertennummer: form.versichertennummer?.value || '',
-    pflegegrad: getRadioValue('pflegegrad'),
-    versicherteTyp: getRadioValue('insuranceType'),
-    sozialamt: form.socialOffice?.value || '',
-    pflegekasse: form.pflegekasse?.value || ''
+    anrede: getRadioValue('versicherte_anrede'),
+    vorname: document.getElementById('versicherte_vorname')?.value || '',
+    name: document.getElementById('versicherte_name')?.value || '',
+    strasse: document.getElementById('versicherte_strasse')?.value || '',
+    plzOrt: `${plz} ${ort}`.trim(),
+    telefon: document.getElementById('versicherte_telefon')?.value || '',
+    email: document.getElementById('versicherte_email')?.value || '',
+    geburtsdatum: document.getElementById('versicherte_geburtsdatum')?.value || '',
+    versichertennummer: document.getElementById('versicherte_nummer')?.value || '',
+    pflegegrad: getRadioValue('versicherte_pflegegrad'),
+    versicherteTyp: getRadioValue('versicherte_typ'),
+    sozialamt: document.getElementById('versicherte_sozialamt')?.value || '',
+    pflegekasse: document.getElementById('versicherte_pflegekasse')?.value || ''
   };
 }
 
@@ -210,18 +240,18 @@ function collectStep2Data() {
     return PflegeboxForm.formData.angehoerige.data;
   }
 
-  const form = document.getElementById('pflegeboxForm');
-  if (!form) return {};
+  const plz = document.getElementById('angehoerige_plz')?.value || '';
+  const ort = document.getElementById('angehoerige_ort')?.value || '';
 
   return {
-    anrede: getRadioValue('caregiverGender'),
-    vorname: form.caregiverFirstName?.value || '',
-    name: form.caregiverLastName?.value || '',
-    strasse: form.caregiverStreet?.value || '',
-    plzOrt: form.caregiverPlzOrt?.value || '',
-    telefon: form.caregiverPhone?.value || '',
-    email: form.caregiverEmail?.value || '',
-    typ: getRadioValue('caregiverType')
+    anrede: getRadioValue('angehoerige_anrede'),
+    vorname: document.getElementById('angehoerige_vorname')?.value || '',
+    name: document.getElementById('angehoerige_name')?.value || '',
+    strasse: document.getElementById('angehoerige_strasse')?.value || '',
+    plzOrt: `${plz} ${ort}`.trim(),
+    telefon: document.getElementById('angehoerige_telefon')?.value || '',
+    email: document.getElementById('angehoerige_email')?.value || '',
+    typ: getRadioValue('angehoerige_typ')
   };
 }
 
@@ -237,34 +267,36 @@ function collectAllFormData() {
     },
     pflegebox: {
       products: {
-        bettschutzeinlagen: isChecked('bettschutzeinlagen'),
-        fingerlinge: isChecked('fingerlinge'),
-        ffp2: isChecked('ffp2'),
-        einmalhandschuhe: isChecked('einmalhandschuhe'),
-        mundschutz: isChecked('mundschutz'),
-        essslaetzchen: isChecked('essslaetzchen'),
-        schutzschuerzenEinmal: isChecked('schutzschuerzenEinmal'),
-        schutzschuerzenWieder: isChecked('schutzschuerzenWieder'),
-        flaechendesinfektion: isChecked('flaechendesinfektion'),
-        flaechendesinfektionstuecher: isChecked('flaechendesinfektionstuecher'),
-        haendedesinfektion: isChecked('haendedesinfektion')
+        bettschutzeinlagen: isChecked('product_bettschutz'),
+        fingerlinge: isChecked('product_fingerlinge'),
+        ffp2: isChecked('product_ffp2'),
+        einmalhandschuhe: isChecked('product_handschuhe'),
+        mundschutz: isChecked('product_mundschutz'),
+        essslaetzchen: isChecked('product_esslatzchen'),
+        schutzschuerzenEinmal: isChecked('product_schutzschuerzen_einmal'),
+        schutzschuerzenWieder: isChecked('product_schutzschuerzen_wieder'),
+        flaechendesinfektion: isChecked('product_flaechendesinfektion'),
+        flaechendesinfektionstuecher: isChecked('product_flaechentuecher'),
+        haendedesinfektion: isChecked('product_haendedesinfektion'),
+        haendedesinfektionstuecher: isChecked('product_haendetuecher')
       },
-      handschuhGroesse: getRadioValue('gloveSize'),
-      handschuhMaterial: getRadioValue('gloveMaterial')
+      handschuhGroesse: getRadioValue('handschuhe_groesse'),
+      handschuhMaterial: getRadioValue('handschuhe_material')
     },
     lieferung: {
-      an: getRadioValue('deliveryTo')
+      an: getRadioValue('lieferung_an')
     },
     rechnung: {
-      an: getRadioValue('invoiceTo')
+      an: getRadioValue('rechnung_an')
     },
     signatures: {
       versicherte: PflegeboxForm.signatureData,
       bevollmaechtigter: PflegeboxForm.signatureDataBevollmaechtigter
     },
     consents: {
-      agb: isChecked('agb'),
-      privacy: isChecked('privacy')
+      agb: isChecked('consent_agb'),
+      privacy: isChecked('consent_daten'),
+      vollmacht: isChecked('consent_vollmacht')
     },
     timestamp: new Date().toISOString(),
     bestelldatum: new Date().toLocaleDateString('de-DE'),
@@ -283,10 +315,46 @@ function isChecked(name) {
   return checkbox ? checkbox.checked : false;
 }
 
+// ==================== VALIDATION ====================
+function validateCurrentStep() {
+  const currentStepEl = document.querySelector(`.form-step[data-step="${PflegeboxForm.currentStep}"]`);
+  if (!currentStepEl) return true;
+
+  const requiredFields = currentStepEl.querySelectorAll('[required]');
+  let isValid = true;
+
+  requiredFields.forEach(field => {
+    if (field.type === 'radio') {
+      const radioGroup = currentStepEl.querySelectorAll(`input[name="${field.name}"]`);
+      const isChecked = Array.from(radioGroup).some(radio => radio.checked);
+      if (!isChecked) {
+        isValid = false;
+      }
+    } else if (field.type === 'checkbox') {
+      if (!field.checked) {
+        isValid = false;
+      }
+    } else if (!field.value.trim()) {
+      isValid = false;
+    }
+  });
+
+  if (!isValid) {
+    alert('Bitte füllen Sie alle erforderlichen Felder aus.');
+  }
+
+  return isValid;
+}
+
 // ==================== SIGNATURE CANVAS ====================
 function initCanvas() {
-  PflegeboxForm.canvas = document.getElementById('signatureCanvas');
+  PflegeboxForm.canvas = document.getElementById('signaturePad');
   if (!PflegeboxForm.canvas) return;
+
+  // Imposta dimensioni canvas
+  const container = PflegeboxForm.canvas.parentElement;
+  PflegeboxForm.canvas.width = container.clientWidth - 20;
+  PflegeboxForm.canvas.height = 200;
 
   PflegeboxForm.ctx = PflegeboxForm.canvas.getContext('2d');
 
@@ -427,101 +495,124 @@ function clearSignatureBevollmaechtigter() {
 }
 
 // ==================== NAVIGATION ====================
-function toggleCheckbox(card) {
-  const checkbox = card.querySelector('input[type="checkbox"]');
-  if (checkbox) {
-    checkbox.checked = !checkbox.checked;
-    checkbox.checked ? card.classList.add('checked') : card.classList.remove('checked');
-  }
-}
-
 function updateProgress() {
-  for (let i = 1; i <= PflegeboxForm.maxSteps; i++) {
-    const circle = document.getElementById('circle-' + i);
-    const label = document.getElementById('label-' + i);
-
-    if (!circle || !label) continue;
-
-    if (i < PflegeboxForm.currentStep) {
-      // Completato
-      circle.classList.add('completed');
-      circle.classList.remove('active');
-      circle.textContent = '✓';
-      label.classList.remove('active');
-    } else if (i === PflegeboxForm.currentStep) {
-      // Attivo
-      circle.classList.add('active');
-      circle.classList.remove('completed');
-      circle.textContent = i;
-      label.classList.add('active');
-    } else {
-      // Non ancora
-      circle.classList.remove('active', 'completed');
-      circle.textContent = i;
-      label.classList.remove('active');
-    }
+  // Aggiorna progress bar
+  const progressFill = document.getElementById('progressFill');
+  if (progressFill) {
+    const percentage = ((PflegeboxForm.currentStep - 1) / (PflegeboxForm.maxSteps - 1)) * 100;
+    progressFill.style.width = percentage + '%';
   }
+
+  // Aggiorna progress steps
+  document.querySelectorAll('.progress-step').forEach((step, index) => {
+    const stepNum = index + 1;
+    const stepNumber = step.querySelector('.step-number');
+
+    if (stepNum < PflegeboxForm.currentStep) {
+      step.classList.add('completed');
+      step.classList.remove('active');
+      if (stepNumber) stepNumber.textContent = '✓';
+    } else if (stepNum === PflegeboxForm.currentStep) {
+      step.classList.add('active');
+      step.classList.remove('completed');
+      if (stepNumber) stepNumber.textContent = stepNum;
+    } else {
+      step.classList.remove('active', 'completed');
+      if (stepNumber) stepNumber.textContent = stepNum;
+    }
+  });
 }
 
 function nextStep() {
   if (PflegeboxForm.currentStep < PflegeboxForm.maxSteps) {
-    const currentStepEl = document.getElementById('step-' + PflegeboxForm.currentStep);
-    if (currentStepEl) currentStepEl.classList.add('hidden');
+    // Nascondi step corrente
+    document.querySelectorAll('.form-step').forEach(step => {
+      step.classList.remove('active');
+    });
 
     PflegeboxForm.currentStep++;
 
-    const nextStepEl = document.getElementById('step-' + PflegeboxForm.currentStep);
-    if (nextStepEl) nextStepEl.classList.remove('hidden');
+    // Mostra nuovo step
+    const nextStepEl = document.querySelector(`.form-step[data-step="${PflegeboxForm.currentStep}"]`);
+    if (nextStepEl) {
+      nextStepEl.classList.add('active');
+    }
 
     updateProgress();
-    updateButtons();
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
-    // Init canvas se arriviamo allo step 6
+    // Init canvas se arriviamo allo step 6 (Unterschrift)
     if (PflegeboxForm.currentStep === 6) {
       setTimeout(initCanvas, 100);
     }
+
+    // Popola review se step 7
+    if (PflegeboxForm.currentStep === 7) {
+      populateReviewSection();
+    }
+
+    saveFormState();
   }
 }
 
 function prevStep() {
   if (PflegeboxForm.currentStep > 1) {
-    const currentStepEl = document.getElementById('step-' + PflegeboxForm.currentStep);
-    if (currentStepEl) currentStepEl.classList.add('hidden');
+    // Nascondi step corrente
+    document.querySelectorAll('.form-step').forEach(step => {
+      step.classList.remove('active');
+    });
 
     PflegeboxForm.currentStep--;
 
-    const prevStepEl = document.getElementById('step-' + PflegeboxForm.currentStep);
-    if (prevStepEl) prevStepEl.classList.remove('hidden');
+    // Mostra step precedente
+    const prevStepEl = document.querySelector(`.form-step[data-step="${PflegeboxForm.currentStep}"]`);
+    if (prevStepEl) {
+      prevStepEl.classList.add('active');
+    }
 
     updateProgress();
-    updateButtons();
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    saveFormState();
   }
 }
 
-function updateButtons() {
-  const backBtn = document.getElementById('backBtn');
-  const nextBtn = document.getElementById('nextBtn');
-  const submitBtn = document.getElementById('submitBtn');
+function populateReviewSection() {
+  const reviewContent = document.getElementById('reviewContent');
+  if (!reviewContent) return;
 
-  if (backBtn) {
-    if (PflegeboxForm.currentStep === 1) {
-      backBtn.classList.add('hidden');
-    } else {
-      backBtn.classList.remove('hidden');
-    }
+  const formData = collectAllFormData();
+  if (!formData) return;
+
+  let html = '<div class="review-data">';
+
+  // Step 1
+  html += '<h4>1. Antragsteller</h4>';
+  html += `<p><strong>${formData.versicherte.anrede} ${formData.versicherte.vorname} ${formData.versicherte.name}</strong></p>`;
+  html += `<p>${formData.versicherte.strasse}, ${formData.versicherte.plzOrt}</p>`;
+  html += `<p>Pflegegrad: ${formData.versicherte.pflegegrad}</p>`;
+
+  // Step 2
+  html += '<h4>2. Pflegeperson</h4>';
+  if (formData.angehoerige.isSamePerson) {
+    html += '<p><em>Gleiche Person wie Antragsteller</em></p>';
+  } else {
+    html += `<p><strong>${formData.angehoerige.data.anrede} ${formData.angehoerige.data.vorname} ${formData.angehoerige.data.name}</strong></p>`;
+    html += `<p>${formData.angehoerige.data.strasse}, ${formData.angehoerige.data.plzOrt}</p>`;
   }
 
-  if (nextBtn && submitBtn) {
-    if (PflegeboxForm.currentStep === PflegeboxForm.maxSteps) {
-      nextBtn.classList.add('hidden');
-      submitBtn.classList.remove('hidden');
-    } else {
-      nextBtn.classList.remove('hidden');
-      submitBtn.classList.add('hidden');
+  // Step 3 - Prodotti selezionati
+  html += '<h4>3. Pflegebox Produkte</h4>';
+  html += '<ul>';
+  for (const [key, value] of Object.entries(formData.pflegebox.products)) {
+    if (value) {
+      html += `<li>${key}</li>`;
     }
   }
+  html += '</ul>';
+
+  html += '</div>';
+  reviewContent.innerHTML = html;
 }
 
 // ==================== LOCAL STORAGE ====================
@@ -601,9 +692,13 @@ document.getElementById('pflegeboxForm')?.addEventListener('submit', async funct
 
   // Mostra loading
   const submitBtn = document.getElementById('submitBtn');
+  const btnText = submitBtn?.querySelector('.btn-text');
+  const btnLoader = submitBtn?.querySelector('.btn-loader');
+
   if (submitBtn) {
     submitBtn.disabled = true;
-    submitBtn.textContent = '⏳ Wird verarbeitet...';
+    if (btnText) btnText.style.display = 'none';
+    if (btnLoader) btnLoader.style.display = 'inline';
   }
 
   try {
@@ -618,7 +713,8 @@ document.getElementById('pflegeboxForm')?.addEventListener('submit', async funct
     });
 
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+      const errorData = await response.json().catch(() => null);
+      throw new Error(errorData?.error || `HTTP error! status: ${response.status}`);
     }
 
     const result = await response.json();
@@ -632,41 +728,32 @@ document.getElementById('pflegeboxForm')?.addEventListener('submit', async funct
 
   } catch (error) {
     console.error('❌ Errore invio form:', error);
-    alert('⚠️ Fehler beim Senden des Formulars. Bitte versuchen Sie es erneut oder kontaktieren Sie uns direkt.');
+    alert('⚠️ Fehler beim Senden des Formulars. Bitte versuchen Sie es erneut oder kontaktieren Sie uns direkt.\n\nFehler: ' + error.message);
 
     // Ripristina bottone
     if (submitBtn) {
       submitBtn.disabled = false;
-      submitBtn.textContent = '✓ Absenden';
+      if (btnText) btnText.style.display = 'inline';
+      if (btnLoader) btnLoader.style.display = 'none';
     }
   }
 });
 
 function showSuccessPage(formData) {
-  // Nascondi form
-  document.getElementById('pflegeboxForm')?.classList.add('hidden');
-  document.querySelector('.progress-section')?.classList.add('hidden');
+  // Nascondi form e progress
+  const form = document.getElementById('pflegeboxForm');
+  const progressContainer = document.querySelector('.progress-container');
 
-  // Mostra success page
-  const successPage = document.getElementById('successPage');
-  if (successPage) {
-    successPage.classList.remove('hidden');
+  if (form) form.style.display = 'none';
+  if (progressContainer) progressContainer.style.display = 'none';
 
-    // Genera preview PDF testuale
-    const pdfPreview = generatePDFPreview(formData);
-    const pdfContent = document.getElementById('pdfContent');
-    if (pdfContent) {
-      pdfContent.textContent = pdfPreview;
-    }
-
-    // Mostra firma
-    const signatureImg = document.getElementById('signatureImg');
-    if (signatureImg && PflegeboxForm.signatureData) {
-      signatureImg.src = PflegeboxForm.signatureData;
-    }
+  // Mostra success message
+  const successMessage = document.getElementById('successMessage');
+  if (successMessage) {
+    successMessage.style.display = 'block';
   }
 
-  window.scrollTo(0, 0);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function generatePDFPreview(data) {
