@@ -34,7 +34,7 @@ Implementata logica intelligente per la sezione "Angehörige/Pflegeperson":
 - **Metodo:** POST
 - **Auth:** X-Worker-Key header
 - **CORS:** Configurato correttamente
-- **Email:** Inviata automaticamente a `info@pflegeteufel.de`
+- **Email:** Inviata automaticamente a `pflegeteufelagentur@gmail.com`
 
 ### 4. ✅ **Email HTML Condizionale**
 L'email generata mostra:
