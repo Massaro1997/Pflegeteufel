@@ -69,6 +69,7 @@ const testData = {
 async function testWorker() {
     console.log('🧪 Testing Worker endpoint...');
     console.log(`📍 URL: ${WORKER_URL}/api/pflegebox/submit`);
+    console.log(`📧 Email will be sent to: pflegeteufelagentur@gmail.com`);
     console.log('');
     console.log('📤 Sending test data:', JSON.stringify(testData, null, 2));
     console.log('');
