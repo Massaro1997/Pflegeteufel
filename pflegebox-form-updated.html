@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pflegebox Bestellung - Pflege Teufel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="pflegeteufel-page-wrapper">
+<style>
+    .pflegeteufel-page-wrapper {all: initial;display: block;font-family: 'Inter', sans-serif;isolation: isolate;}
+    .pflegeteufel-page-wrapper *, .pflegeteufel-page-wrapper *::before, .pflegeteufel-page-wrapper *::after {box-sizing: border-box;margin: 0;padding: 0;}
+    .pflegeteufel-page-wrapper .pflegebox-page {max-width: 1200px;margin: 0 auto;padding: 40px 20px;background: #fafafa;font-family: 'Inter', sans-serif;}
+    .pflegeteufel-page-wrapper .hero-section {background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%);color: white;padding: 50px 40px;border-radius: 16px;margin-bottom: 40px;text-align: center;box-shadow: 0 10px 30px rgba(193, 38, 36, 0.2);}
+    .pflegeteufel-page-wrapper .hero-icon {background: rgba(255, 255, 255, 0.15);width: 80px;height: 80px;border-radius: 50%;display: flex;align-items: center;justify-content: center;margin: 0 auto 20px;font-size: 40px;}
+    .pflegeteufel-page-wrapper .hero-title {font-size: 2.2rem;font-weight: 900;margin-bottom: 15px;font-family: 'Arial Black', sans-serif;text-transform: uppercase;}
+    .pflegeteufel-page-wrapper .hero-description {font-size: 1.1rem;line-height: 1.6;max-width: 800px;margin: 0 auto;opacity: 0.95;}
+    .pflegeteufel-page-wrapper .progress-section {background: white;padding: 30px;border-radius: 12px;margin-bottom: 30px;box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);}
+    .pflegeteufel-page-wrapper .progress-steps {display: flex;justify-content: space-between;position: relative;margin-bottom: 20px;}
+    .pflegeteufel-page-wrapper .progress-steps::before {content: '';position: absolute;top: 20px;left: 0;right: 0;height: 3px;background: #e9ecef;z-index: 0;}
+    .pflegeteufel-page-wrapper .progress-step {flex: 1;text-align: center;position: relative;z-index: 1;}
+    .pflegeteufel-page-wrapper .step-circle {width: 40px;height: 40px;border-radius: 50%;background: #e9ecef;color: #6c757d;display: flex;align-items: center;justify-content: center;margin: 0 auto 10px;font-weight: 700;transition: all 0.3s;}
+    .pflegeteufel-page-wrapper .step-circle.active {background: #C12624;color: white;transform: scale(1.1);}
+    .pflegeteufel-page-wrapper .step-circle.completed {background: #28a745;color: white;}
+    .pflegeteufel-page-wrapper .step-label {font-size: 0.85rem;color: #6c757d;font-weight: 500;}
+    .pflegeteufel-page-wrapper .step-label.active {color: #C12624;font-weight: 700;}
+    .pflegeteufel-page-wrapper .form-container {background: white;border-radius: 16px;padding: 40px;box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);margin-bottom: 30px;position: relative;}
+    .pflegeteufel-page-wrapper .form-container::before {content: '';position: absolute;top: 0;left: 0;right: 0;height: 4px;background: linear-gradient(90deg, #C12624, #A01F1D);border-radius: 16px 16px 0 0;}
+    .pflegeteufel-page-wrapper .section-title {font-size: 1.6rem;font-weight: 900;color: #2c3e50;margin-bottom: 25px;font-family: 'Arial Black', sans-serif;text-transform: uppercase;border-bottom: 3px solid #C12624;padding-bottom: 10px;overflow-wrap: break-word;word-wrap: break-word;}
+    .pflegeteufel-page-wrapper .form-group {margin-bottom: 25px;}
+    .pflegeteufel-page-wrapper .form-label {display: block;font-size: 0.95rem;font-weight: 600;color: #2c3e50;margin-bottom: 8px;}
+    .pflegeteufel-page-wrapper .form-input {width: 100%;padding: 12px 15px;font-size: 1rem;border: 2px solid #e9ecef;border-radius: 8px;font-family: 'Inter', sans-serif;transition: all 0.3s;}
+    .pflegeteufel-page-wrapper .form-input:focus {outline: none;border-color: #C12624;box-shadow: 0 0 0 3px rgba(193, 38, 36, 0.1);}
+    .pflegeteufel-page-wrapper .form-row {display: grid;grid-template-columns: 1fr 1fr;gap: 20px;}
+    .pflegeteufel-page-wrapper .radio-group {display: flex;gap: 15px;flex-wrap: wrap;}
+    .pflegeteufel-page-wrapper .radio-option {flex: 1;min-width: 100px;}
+    .pflegeteufel-page-wrapper .radio-label {display: flex;align-items: center;padding: 12px 15px;border: 2px solid #e9ecef;border-radius: 8px;cursor: pointer;transition: all 0.3s;font-weight: 500;word-break: break-word;}
+    .pflegeteufel-page-wrapper .radio-label:hover {border-color: #C12624;background: #fff5f5;}
+    .pflegeteufel-page-wrapper .radio-label input {margin-right: 10px;flex-shrink: 0;}
+    .pflegeteufel-page-wrapper .radio-label span {flex: 1;}
+    .pflegeteufel-page-wrapper .checkbox-group {display: grid;grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));gap: 15px;}
+    .pflegeteufel-page-wrapper .checkbox-card {padding: 15px;border: 2px solid #e9ecef;border-radius: 8px;transition: all 0.3s;cursor: pointer;}
+    .pflegeteufel-page-wrapper .checkbox-card:hover {border-color: #C12624;box-shadow: 0 4px 15px rgba(193, 38, 36, 0.1);}
+    .pflegeteufel-page-wrapper .checkbox-card.checked {border-color: #C12624;background: #fff5f5;}
+    .pflegeteufel-page-wrapper .checkbox-label {display: flex;align-items: flex-start;font-weight: 500;font-size: 0.95rem;}
+    .pflegeteufel-page-wrapper .checkbox-label input {margin-right: 10px;margin-top: 3px;width: 18px;height: 18px;flex-shrink: 0;}
+    .pflegeteufel-page-wrapper .signature-section {margin: 30px 0;padding: 25px;background: #f8f9fa;border-radius: 12px;}
+    .pflegeteufel-page-wrapper .signature-canvas {width: 100%;height: 200px;border: 2px dashed #C12624;border-radius: 8px;background: white;cursor: crosshair;touch-action: none;}
+    .pflegeteufel-page-wrapper .signature-actions {margin-top: 15px;display: flex;justify-content: space-between;align-items: center;}
+    .pflegeteufel-page-wrapper .clear-btn {padding: 10px 20px;background: #dc3545;color: white;border: none;border-radius: 6px;font-weight: 600;cursor: pointer;font-family: 'Inter', sans-serif;}
+    .pflegeteufel-page-wrapper .clear-btn:hover {background: #c82333;}
+    .pflegeteufel-page-wrapper .form-navigation {display: flex;justify-content: space-between;margin-top: 30px;padding-top: 30px;border-top: 2px solid #e9ecef;}
+    .pflegeteufel-page-wrapper .btn {padding: 15px 35px;font-size: 1.05rem;font-weight: 700;border: none;border-radius: 8px;cursor: pointer;font-family: 'Inter', sans-serif;transition: all 0.3s;}
+    .pflegeteufel-page-wrapper .btn-back {background: #6c757d;color: white;}
+    .pflegeteufel-page-wrapper .btn-back:hover {background: #5a6268;transform: translateY(-2px);}
+    .pflegeteufel-page-wrapper .btn-next {background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%);color: white;}
+    .pflegeteufel-page-wrapper .btn-next:hover {transform: translateY(-2px);box-shadow: 0 5px 15px rgba(193, 38, 36, 0.3);}
+    .pflegeteufel-page-wrapper .btn-submit {background: #28a745;color: white;}
+    .pflegeteufel-page-wrapper .btn-submit:hover {background: #218838;transform: translateY(-2px);}
+    .pflegeteufel-page-wrapper .btn:disabled {opacity: 0.6;cursor: not-allowed;}
+    .pflegeteufel-page-wrapper .info-box {background: #fff8e1;border-left: 4px solid #ffcc02;padding: 15px 20px;margin: 20px 0;border-radius: 8px;font-size: 0.9rem;color: #555;line-height: 1.5;}
+    .pflegeteufel-page-wrapper .info-box-blue {background: #e7f3ff;border-left-color: #0066cc;}
+    .pflegeteufel-page-wrapper .info-box-green {background: #e7f5e7;border-left-color: #28a745;}
+    .pflegeteufel-page-wrapper .hidden {display: none !important;}
+    .pflegeteufel-page-wrapper .success-page {text-align: center;padding: 60px 40px;}
+    .pflegeteufel-page-wrapper .success-icon {font-size: 80px;margin-bottom: 20px;}
+    .pflegeteufel-page-wrapper .success-title {font-size: 2rem;font-weight: 900;color: #28a745;margin-bottom: 15px;font-family: 'Arial Black', sans-serif;}
+
+    @media (max-width: 768px) {
+        .pflegeteufel-page-wrapper .pflegebox-page {padding: 20px 10px;overflow-x: hidden;}
+        .pflegeteufel-page-wrapper .hero-section {padding: 30px 20px;margin-bottom: 20px;}
+        .pflegeteufel-page-wrapper .hero-icon {width: 60px;height: 60px;font-size: 30px;}
+        .pflegeteufel-page-wrapper .hero-title {font-size: 1.6rem;}
+        .pflegeteufel-page-wrapper .hero-description {font-size: 0.95rem;}
+        .pflegeteufel-page-wrapper .progress-section {padding: 20px 15px;margin-bottom: 20px;}
+        .pflegeteufel-page-wrapper .progress-steps {flex-wrap: wrap;gap: 10px;}
+        .pflegeteufel-page-wrapper .progress-steps::before {display: none;}
+        .pflegeteufel-page-wrapper .progress-step {flex: 0 0 calc(33.333% - 10px);min-width: 80px;margin-bottom: 10px;}
+        .pflegeteufel-page-wrapper .step-circle {width: 35px;height: 35px;font-size: 0.9rem;}
+        .pflegeteufel-page-wrapper .step-label {font-size: 0.75rem;}
+        .pflegeteufel-page-wrapper .form-container {padding: 20px 12px;margin-bottom: 20px;overflow: hidden;}
+        .pflegeteufel-page-wrapper .section-title {font-size: 1.2rem;word-break: break-word;}
+        .pflegeteufel-page-wrapper .form-row {grid-template-columns: 1fr;gap: 15px;}
+        .pflegeteufel-page-wrapper .radio-group {flex-direction: column;gap: 10px;}
+        .pflegeteufel-page-wrapper .radio-option {min-width: 100%;flex: none;}
+        .pflegeteufel-page-wrapper .checkbox-group {grid-template-columns: 1fr;gap: 10px;}
+        .pflegeteufel-page-wrapper .form-navigation {flex-direction: column;gap: 10px;}
+        .pflegeteufel-page-wrapper .btn {width: 100%;padding: 12px 20px;font-size: 1rem;}
+        .pflegeteufel-page-wrapper .form-input {font-size: 16px;}
+    }
+</style>
+
+<div class="pflegebox-page">
+    <div class="hero-section">
+        <div class="hero-icon">📦</div>
+        <h1 class="hero-title">Bestellformular Pflegebox</h1>
+        <p class="hero-description">Stellen Sie Ihre individuelle Pflegebox zusammen.</p>
+    </div>
+
+    <div class="progress-section">
+        <div class="progress-steps">
+            <div class="progress-step"><div class="step-circle active" id="circle-1">1</div><div class="step-label active" id="label-1">Antragsteller</div></div>
+            <div class="progress-step"><div class="step-circle" id="circle-2">2</div><div class="step-label" id="label-2">Pflegeperson</div></div>
+            <div class="progress-step"><div class="step-circle" id="circle-3">3</div><div class="step-label" id="label-3">Pflegebox</div></div>
+            <div class="progress-step"><div class="step-circle" id="circle-4">4</div><div class="step-label" id="label-4">Lieferadresse</div></div>
+            <div class="progress-step"><div class="step-circle" id="circle-5">5</div><div class="step-label" id="label-5">Rechnung</div></div>
+            <div class="progress-step"><div class="step-circle" id="circle-6">6</div><div class="step-label" id="label-6">Unterschrift</div></div>
+        </div>
+    </div>
+
+    <form id="pflegeboxForm" class="form-container">
+        <!-- STEP 1: Antragsteller -->
+        <div id="step-1" class="form-step">
+            <h2 class="section-title">1. Name der/des Antragstellers</h2>
+            <p style="font-size: 0.9rem; color: #666; margin-bottom: 20px;">(Nur für Rückfragen. Ihre Daten werden nicht an Dritte weitergegeben.)</p>
+
+            <div class="form-group">
+                <label class="form-label">Anrede *</label>
+                <div class="radio-group">
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gender" value="Frau" required><span>Frau</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gender" value="Herr" required><span>Herr</span></label></div>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Vorname *</label><input type="text" id="firstName" name="firstName" class="form-input" required></div>
+                <div class="form-group"><label class="form-label">Name *</label><input type="text" id="lastName" name="lastName" class="form-input" required></div>
+            </div>
+
+            <div class="form-group"><label class="form-label">Straße/Nr. *</label><input type="text" id="street" name="street" class="form-input" required></div>
+
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">PLZ *</label><input type="text" id="plz" name="plz" class="form-input" pattern="[0-9]{5}" required></div>
+                <div class="form-group"><label class="form-label">Ort *</label><input type="text" id="ort" name="ort" class="form-input" required></div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group"><label class="form-label">Telefon *</label><input type="tel" id="phone" name="phone" class="form-input" required></div>
+                <div class="form-group"><label class="form-label">E-Mail *</label><input type="email" id="email" name="email" class="form-input" required></div>
+            </div>
+
+            <div class="form-group"><label class="form-label">Geburtsdatum *</label><input type="date" id="geburtsdatum" name="geburtsdatum" class="form-input" required></div>
+
+            <div class="form-group"><label class="form-label">Versichertennummer *</label><input type="text" id="versichertennummer" name="versichertennummer" class="form-input" required></div>
+
+            <div class="form-group">
+                <label class="form-label">Pflegegrad *</label>
+                <div class="radio-group">
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="1" required><span>1</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="2"><span>2</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="3"><span>3</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="4"><span>4</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="5"><span>5</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="beantragt"><span>Beantragt</span></label></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Versicherte(r) ist *</label>
+                <div class="radio-group">
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="insuranceType" value="gesetzlich" required><span>gesetzlich</ span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="insuranceType" value="privat"><span>privat</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="insuranceType" value="beihilfe"><span>beihilfe</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="insuranceType" value="sozialamt"><span>sozialamt</span></label></div>
+                </div>
+            </div>
+
+            <div class="form-group hidden" id="sozialamtField">
+                <label class="form-label">Wenn ja, welches Ortsamt/Sozialamt</label>
+                <input type="text" id="socialOffice" name="socialOffice" class="form-input">
+            </div>
+
+            <div class="form-group"><label class="form-label">Pflegekasse *</label><input type="text" id="pflegekasse" name="pflegekasse" class="form-input" required></div>
+        </div>
+
+        <!-- STEP 2: Angehörige/Pflegeperson CON TOGGLE -->
+        <div id="step-2" class="form-step hidden">
+            <h2 class="section-title">2. Angehörige(r)/Pflegeperson</h2>
+
+            <div class="info-box" style="margin-bottom: 25px;">
+                <strong>💡 Frage:</strong> Ist die Pflegeperson dieselbe wie der/die Antragsteller(in)?
+            </div>
+
+            <div class="form-group">
+                <div class="radio-group">
+                    <div class="radio-option" style="min-width: 200px;"><label class="radio-label"><input type="radio" name="angehoerigeSame" value="yes" onchange="toggleAngehoerige()"><span>✓ Ja, ich bin die Pflegeperson</span></label></div>
+                    <div class="radio-option" style="min-width: 200px;"><label class="radio-label"><input type="radio" name="angehoerigeSame" value="no" checked onchange="toggleAngehoerige()"><span>👥 Nein, andere Person</span></label></div>
+                </div>
+            </div>
+
+            <div id="angehoerigeConfirmation" class="info-box info-box-green hidden" style="margin: 20px 0;">
+                <strong>✓ Daten übernommen!</strong><br>
+                Die Daten der Pflegeperson entsprechen denen des Antragstellers.
+            </div>
+
+            <div id="angehoerigeSection">
+                <p style="font-size: 0.95rem; color: #666; margin-bottom: 20px;">Bitte die wichtigste <strong>private</strong> Pflegeperson oder die/den Betreuer(in) eintragen</p>
+
+                <div class="form-group">
+                    <label class="form-label">Anrede *</label>
+                    <div class="radio-group">
+                        <div class="radio-option"><label class="radio-label"><input type="radio" name="caregiverGender" value="Frau" required><span>Frau</span></label></div>
+                        <div class="radio-option"><label class="radio-label"><input type="radio" name="caregiverGender" value="Herr" required><span>Herr</span></label></div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Vorname *</label><input type="text" id="caregiverFirstName" name="caregiverFirstName" class="form-input" required></div>
+                    <div class="form-group"><label class="form-label">Name *</label><input type="text" id="caregiverLastName" name="caregiverLastName" class="form-input" required></div>
+                </div>
+
+                <div class="form-group"><label class="form-label">Straße/Nr. *</label><input type="text" id="caregiverStreet" name="caregiverStreet" class="form-input" required></div>
+
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">PLZ *</label><input type="text" id="caregiverPlz" name="caregiverPlz" class="form-input" pattern="[0-9]{5}" required></div>
+                    <div class="form-group"><label class="form-label">Ort *</label><input type="text" id="caregiverOrt" name="caregiverOrt" class="form-input" required></div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group"><label class="form-label">Telefon</label><input type="tel" id="caregiverPhone" name="caregiverPhone" class="form-input"></div>
+                    <div class="form-group"><label class="form-label">E-Mail</label><input type="email" id="caregiverEmail" name="caregiverEmail" class="form-input"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Pflegeperson ist *</label>
+                    <div class="radio-group">
+                        <div class="radio-option"><label class="radio-label"><input type="radio" name="caregiverType" value="Familie" required><span>Familienangehörige(r)</span></label></div>
+                        <div class="radio-option"><label class="radio-label"><input type="radio" name="caregiverType" value="Privat"><span>Private Pflegeperson</span></label></div>
+                        <div class="radio-option"><label class="radio-label"><input type="radio" name="caregiverType" value="Betreuer"><span>Betreuer(in)</span></label></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 3: Pflegebox -->
+        <div id="step-3" class="form-step hidden">
+            <h2 class="section-title">3. Pflegebox</h2>
+            <p style="font-size: 0.95rem; margin-bottom: 25px;">Stellen Sie sich Ihre individuelle Pflegebox nach Ihren Bedürfnissen zusammen.</p>
+            <div class="checkbox-group">
+                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="bettschutzeinlagen"><span>Bettschutzeinlagen</span></label></div>
+                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="fingerlinge"><span>Fingerlinge</span></label></div>
+                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="ffp2"><span>FFP2 Masken</span></label></div>
+                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="einmalhandschuhe" checked><span>Einmalhandschuhe</span></label></div>
+                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="mundschutz"><span>Mundschutz</span></label></div>
+                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="essslaetzchen"><span>Esslätzchen</span></label></div>
+                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="schutzschuerzenEinmal"><span>Schutzschürzen lang (einmal verwendbar)</span></label></div>
+                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="schutzschuerzenWieder"><span>Schutzschürzen lang (wieder verwendbar)</span></label></div>
+                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="flaechendesinfektion"><span>Flächendesinfektionsmittel</span></label></div>
+                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="flaechendesinfektionstuecher"><span>Flächendesinfektionstücher</span></label></div>
+                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="haendedesinfektion"><span>Händedesinfektionsmittel</span></label></div>
+            </div>
+            <div class="form-group" style="margin-top: 30px;">
+                <label class="form-label" style="color: #C12624;">Handschuhgröße *</label>
+                <div class="radio-group">
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gloveSize" value="S"><span>S</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gloveSize" value="M" checked><span>M</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gloveSize" value="L"><span>L</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gloveSize" value="XL"><span>XL</span></label></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label" style="color: #C12624;">Handschuhmaterial *</label>
+                <div class="radio-group">
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gloveMaterial" value="Nitril" checked><span>Nitril</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gloveMaterial" value="Vinyl"><span>Vinyl</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gloveMaterial" value="Latex"><span>Latex</span></label></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 4: Lieferadresse -->
+        <div id="step-4" class="form-step hidden">
+            <h2 class="section-title">4. Lieferadresse</h2>
+            <p style="font-size: 0.95rem; margin-bottom: 25px;">Die monatliche Lieferung an</p>
+            <div class="form-group">
+                <div class="radio-group">
+                    <div class="radio-option" style="min-width: 250px;"><label class="radio-label"><input type="radio" name="deliveryTo" value="versicherte" checked><span>die/den Versicherte(n)</span></label></div>
+                    <div class="radio-option" style="min-width: 250px;"><label class="radio-label"><input type="radio" name="deliveryTo" value="angehoerige"><span>die/den Angehörige(n)</span></label></div>
+                </div>
+            </div>
+            <div class="info-box"><strong>ACHTUNG:</strong> Bitte beiliegende Vollmacht ausfüllen und an uns rücksenden!</div>
+        </div>
+
+        <!-- STEP 5: Rechnungsempfänger -->
+        <div id="step-5" class="form-step hidden">
+            <h2 class="section-title">5. Rechnungsempfänger</h2>
+            <p style="font-size: 0.95rem; margin-bottom: 25px;">Nur bei privat Versicherten und/oder Beihilfeberechtigten</p>
+            <div class="form-group">
+                <div class="radio-group">
+                    <div class="radio-option" style="min-width: 200px;"><label class="radio-label"><input type="radio" name="invoiceTo" value="versicherte" checked><span>Versicherte(r)</span></label></div>
+                    <div class="radio-option" style="min-width: 200px;"><label class="radio-label"><input type="radio" name="invoiceTo" value="angehoerige"><span>Angehörige(r)</span></label></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STEP 6: Unterschrift -->
+        <div id="step-6" class="form-step hidden">
+            <h2 class="section-title">6. Unterschrift und Einwilligungen</h2>
+            <div class="checkbox-group">
+                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="agb" required><span>Ich habe die AGB zur Kenntnis genommen *</span></label></div>
+                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="privacy" required><span>Ich bin damit einverstanden, dass die Agentur Pflege Teufel meine Angaben verarbeitet *</span></label></div>
+            </div>
+            <div class="info-box info-box-blue" style="margin-top: 20px;"><strong>Informationen zur Verarbeitung</strong> Ihrer personenbezogenen Daten unter: https://pflegeteufel.de/policies/privacy-policy</div>
+            <div class="signature-section" style="margin-top: 30px;">
+                <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 10px;">Unterschrift Versicherte(r) und/oder Bevollmächtigte(r)</h3>
+                <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Bitte unterschreiben Sie mit der Maus oder dem Finger</p>
+                <canvas id="signatureCanvas" class="signature-canvas" width="800" height="200"></canvas>
+                <div class="signature-actions">
+                    <button type="button" class="clear-btn" onclick="clearSignature()">🗑️ Löschen</button>
+                    <span style="font-size: 0.85rem; color: #6c757d;">Im weißen Feld unterschreiben</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-navigation">
+            <button type="button" class="btn btn-back hidden" id="backBtn" onclick="prevStep()">← Zurück</button>
+            <button type="button" class="btn btn-next" id="nextBtn" onclick="nextStep()">Weiter →</button>
+            <button type="submit" class="btn btn-submit hidden" id="submitBtn">✓ Absenden</button>
+        </div>
+    </form>
+
+    <div id="successPage" class="form-container hidden">
+        <div class="success-page">
+            <div class="success-icon">✅</div>
+            <h2 class="success-title">Vielen Dank!</h2>
+            <p style="font-size: 1.1rem; color: #555; margin-bottom: 30px;">Ihr Antrag wurde erfolgreich übermittelt. Sie erhalten in Kürze eine Bestätigungs-E-Mail.</p>
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px; flex-wrap: wrap;">
+                <button type="button" class="btn btn-next" onclick="window.print()">🖨️ Drucken</button>
+                <button type="button" class="btn btn-back" onclick="location.reload()">🔄 Neu</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+<script>
+// Configuration
+const WORKER_URL = 'https://shopify-backend.massarocalogero1997.workers.dev';
+const WORKER_KEY = 'felix_backend_2025';
+
+// State
+let currentStep = 1;
+let canvas, ctx, isDrawing = false, signatureData = '';
+let angehoerigeSameAsPerson = false;
+
+// Init
+document.addEventListener('DOMContentLoaded', function() {
+    initCanvas();
+
+    // Sozialamt field toggle
+    document.querySelectorAll('input[name="insuranceType"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            document.getElementById('sozialamtField').style.display = (this.value === 'sozialamt') ? 'block' : 'none';
+        });
+    });
+});
+
+// Toggle Angehörige Section
+function toggleAngehoerige() {
+    const isSame = document.querySelector('input[name="angehoerigeSame"]:checked').value === 'yes';
+    const section = document.getElementById('angehoerigeSection');
+    const confirmation = document.getElementById('angehoerigeConfirmation');
+
+    angehoerigeSameAsPerson = isSame;
+
+    if (isSame) {
+        section.style.display = 'none';
+        confirmation.classList.remove('hidden');
+
+        // Remove required from caregiver fields
+        document.querySelectorAll('#angehoerigeSection input[required]').forEach(inp => {
+            inp.removeAttribute('required');
+        });
+    } else {
+        section.style.display = 'block';
+        confirmation.classList.add('hidden');
+
+        // Add required back
+        document.getElementById('caregiverFirstName').setAttribute('required', 'required');
+        document.getElementById('caregiverLastName').setAttribute('required', 'required');
+        document.getElementById('caregiverStreet').setAttribute('required', 'required');
+        document.getElementById('caregiverPlz').setAttribute('required', 'required');
+        document.getElementById('caregiverOrt').setAttribute('required', 'required');
+        document.querySelectorAll('input[name="caregiverGender"]').forEach(r => r.setAttribute('required', 'required'));
+        document.querySelectorAll('input[name="caregiverType"]').forEach(r => r.setAttribute('required', 'required'));
+    }
+}
+
+// Signature Canvas
+function initCanvas() {
+    canvas = document.getElementById('signatureCanvas');
+    if (!canvas) return;
+    ctx = canvas.getContext('2d');
+    canvas.addEventListener('mousedown', startDrawing);
+    canvas.addEventListener('mousemove', draw);
+    canvas.addEventListener('mouseup', stopDrawing);
+    canvas.addEventListener('mouseleave', stopDrawing);
+    canvas.addEventListener('touchstart', handleTouchStart);
+    canvas.addEventListener('touchmove', handleTouchMove);
+    canvas.addEventListener('touchend', stopDrawing);
+}
+
+function handleTouchStart(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const mouseEvent = new MouseEvent('mousedown', {clientX: touch.clientX, clientY: touch.clientY});
+    canvas.dispatchEvent(mouseEvent);
+}
+
+function handleTouchMove(e) {
+    e.preventDefault();
+    const touch = e.touches[0];
+    const mouseEvent = new MouseEvent('mousemove', {clientX: touch.clientX, clientY: touch.clientY});
+    canvas.dispatchEvent(mouseEvent);
+}
+
+function startDrawing(e) {
+    isDrawing = true;
+    const rect = canvas.getBoundingClientRect();
+    ctx.beginPath();
+    ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+}
+
+function draw(e) {
+    if (!isDrawing) return;
+    const rect = canvas.getBoundingClientRect();
+    ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+    ctx.strokeStyle = '#2c3e50';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+}
+
+function stopDrawing() {
+    if (isDrawing) {
+        isDrawing = false;
+        signatureData = canvas.toDataURL();
+    }
+}
+
+function clearSignature() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    signatureData = '';
+}
+
+// Checkbox toggle
+function toggleCheckbox(card) {
+    const checkbox = card.querySelector('input[type="checkbox"]');
+    checkbox.checked = !checkbox.checked;
+    checkbox.checked ? card.classList.add('checked') : card.classList.remove('checked');
+}
+
+// Progress update
+function updateProgress() {
+    for (let i = 1; i <= 6; i++) {
+        const circle = document.getElementById('circle-' + i);
+        const label = document.getElementById('label-' + i);
+        if (i < currentStep) {
+            circle.classList.add('completed');
+            circle.classList.remove('active');
+            circle.textContent = '✓';
+            label.classList.remove('active');
+        } else if (i === currentStep) {
+            circle.classList.add('active');
+            circle.classList.remove('completed');
+            circle.textContent = i;
+            label.classList.add('active');
+        } else {
+            circle.classList.remove('active', 'completed');
+            circle.textContent = i;
+            label.classList.remove('active');
+        }
+    }
+}
+
+// Navigation
+function nextStep() {
+    if (currentStep < 6) {
+        document.getElementById('step-' + currentStep).classList.add('hidden');
+        currentStep++;
+        document.getElementById('step-' + currentStep).classList.remove('hidden');
+        updateProgress();
+        updateButtons();
+        window.scrollTo(0, 0);
+        if (currentStep === 6) { setTimeout(initCanvas, 100); }
+    }
+}
+
+function prevStep() {
+    if (currentStep > 1) {
+        document.getElementById('step-' + currentStep).classList.add('hidden');
+        currentStep--;
+        document.getElementById('step-' + currentStep).classList.remove('hidden');
+        updateProgress();
+        updateButtons();
+        window.scrollTo(0, 0);
+    }
+}
+
+function updateButtons() {
+    const backBtn = document.getElementById('backBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    if (currentStep === 1) { backBtn.classList.add('hidden'); } else { backBtn.classList.remove('hidden'); }
+    if (currentStep === 6) { nextBtn.classList.add('hidden'); submitBtn.classList.remove('hidden'); } else { nextBtn.classList.remove('hidden'); submitBtn.classList.add('hidden'); }
+}
+
+// Collect form data
+function collectFormData() {
+    const form = document.getElementById('pflegeboxForm');
+    const formData = new FormData(form);
+
+    const getRadio = (name) => {
+        const r = form.querySelector(`input[name="${name}"]:checked`);
+        return r ? r.value : '';
+    };
+
+    const getCheck = (name) => {
+        const c = form.querySelector(`input[name="${name}"]`);
+        return c && c.checked;
+    };
+
+    // Versicherte data
+    const versicherte = {
+        anrede: getRadio('gender'),
+        vorname: formData.get('firstName'),
+        name: formData.get('lastName'),
+        strasse: formData.get('street'),
+        plzOrt: `${formData.get('plz')} ${formData.get('ort')}`,
+        telefon: formData.get('phone'),
+        email: formData.get('email'),
+        geburtsdatum: formData.get('geburtsdatum'),
+        versichertennummer: formData.get('versichertennummer'),
+        pflegegrad: getRadio('pflegegrad'),
+        versicherteTyp: getRadio('insuranceType'),
+        sozialamt: formData.get('socialOffice') || '',
+        pflegekasse: formData.get('pflegekasse')
+    };
+
+    // Angehörige data
+    let angehoerige;
+    if (angehoerigeSameAsPerson) {
+        angehoerige = {
+            isSamePerson: true,
+            data: { ...versicherte }
+        };
+    } else {
+        angehoerige = {
+            isSamePerson: false,
+            data: {
+                anrede: getRadio('caregiverGender'),
+                vorname: formData.get('caregiverFirstName'),
+                name: formData.get('caregiverLastName'),
+                strasse: formData.get('caregiverStreet'),
+                plzOrt: `${formData.get('caregiverPlz')} ${formData.get('caregiverOrt')}`,
+                telefon: formData.get('caregiverPhone') || '',
+                email: formData.get('caregiverEmail') || '',
+                typ: getRadio('caregiverType')
+            }
+        };
+    }
+
+    return {
+        versicherte,
+        angehoerige,
+        pflegebox: {
+            products: {
+                bettschutzeinlagen: getCheck('bettschutzeinlagen'),
+                fingerlinge: getCheck('fingerlinge'),
+                ffp2: getCheck('ffp2'),
+                einmalhandschuhe: getCheck('einmalhandschuhe'),
+                mundschutz: getCheck('mundschutz'),
+                essslaetzchen: getCheck('essslaetzchen'),
+                schutzschuerzenEinmal: getCheck('schutzschuerzenEinmal'),
+                schutzschuerzenWieder: getCheck('schutzschuerzenWieder'),
+                flaechendesinfektion: getCheck('flaechendesinfektion'),
+                flaechendesinfektionstuecher: getCheck('flaechendesinfektionstuecher'),
+                haendedesinfektion: getCheck('haendedesinfektion')
+            },
+            handschuhGroesse: getRadio('gloveSize'),
+            handschuhMaterial: getRadio('gloveMaterial')
+        },
+        lieferung: {
+            an: getRadio('deliveryTo')
+        },
+        rechnung: {
+            an: getRadio('invoiceTo')
+        },
+        signatures: {
+            versicherte: signatureData
+        },
+        consents: {
+            agb: getCheck('agb'),
+            privacy: getCheck('privacy')
+        },
+        timestamp: new Date().toISOString(),
+        bestelldatum: new Date().toLocaleDateString('de-DE'),
+        bestellzeit: new Date().toLocaleTimeString('de-DE')
+    };
+}
+
+// Form submit
+document.getElementById('pflegeboxForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    if (!signatureData) {
+        alert('⚠️ Bitte unterschreiben Sie das Formular');
+        return;
+    }
+
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = '⏳ Wird verarbeitet...';
+
+    try {
+        const data = collectFormData();
+        console.log('📤 Sending data to backend:', data);
+
+        const response = await fetch(`${WORKER_URL}/api/pflegebox/submit`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Worker-Key': WORKER_KEY
+            },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json().catch(() => null);
+            throw new Error(errorData?.error || `HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('✅ Response from backend:', result);
+
+        // Show success
+        document.getElementById('pflegeboxForm').classList.add('hidden');
+        document.querySelector('.progress-section').classList.add('hidden');
+        document.getElementById('successPage').classList.remove('hidden');
+        window.scrollTo(0, 0);
+
+    } catch (error) {
+        console.error('❌ Error submitting form:', error);
+        alert(`⚠️ Fehler beim Senden des Formulars:\n\n${error.message}\n\nBitte versuchen Sie es erneut oder kontaktieren Sie uns direkt.`);
+        submitBtn.disabled = false;
+        submitBtn.textContent = '✓ Absenden';
+    }
+});
+</script>
+
+</body>
+</html>
