@@ -60,7 +60,16 @@
     .pflegeteufel-page-wrapper .btn-submit {background: #28a745;color: white;}
     .pflegeteufel-page-wrapper .btn-submit:hover {background: #218838;transform: translateY(-2px);}
     .pflegeteufel-page-wrapper .btn:disabled {opacity: 0.6;cursor: not-allowed;}
+    .pflegeteufel-page-wrapper .btn-loading {position: relative;pointer-events: none;}
+    .pflegeteufel-page-wrapper .btn-loading::after {content: "";position: absolute;width: 16px;height: 16px;top: 50%;right: 20px;margin-top: -8px;border: 3px solid #fff;border-radius: 50%;border-top-color: transparent;animation: spinner 0.6s linear infinite;}
+    @keyframes spinner {to {transform: rotate(360deg);}}
     .pflegeteufel-page-wrapper .info-box {background: #fff8e1;border-left: 4px solid #ffcc02;padding: 15px 20px;margin: 20px 0;border-radius: 8px;font-size: 0.9rem;color: #555;line-height: 1.5;}
+    .pflegeteufel-page-wrapper .loading-overlay {position: fixed;top: 0;left: 0;width: 100%;height: 100%;background: rgba(0,0,0,0.7);display: none;align-items: center;justify-content: center;z-index: 9999;}
+    .pflegeteufel-page-wrapper .loading-overlay.active {display: flex;}
+    .pflegeteufel-page-wrapper .loading-box {background: white;padding: 40px;border-radius: 16px;text-align: center;max-width: 400px;box-shadow: 0 10px 40px rgba(0,0,0,0.3);}
+    .pflegeteufel-page-wrapper .loading-spinner {width: 60px;height: 60px;border: 6px solid #e9ecef;border-top-color: #C12624;border-radius: 50%;animation: spinner 0.8s linear infinite;margin: 0 auto 20px;}
+    .pflegeteufel-page-wrapper .loading-text {font-size: 1.2rem;font-weight: 600;color: #2c3e50;margin-bottom: 10px;}
+    .pflegeteufel-page-wrapper .loading-subtext {font-size: 0.9rem;color: #666;}
     .pflegeteufel-page-wrapper .info-box-blue {background: #e7f3ff;border-left-color: #0066cc;}
     .pflegeteufel-page-wrapper .info-box-green {background: #e7f5e7;border-left-color: #28a745;}
     .pflegeteufel-page-wrapper .hidden {display: none !important;}
@@ -330,6 +339,15 @@
                 <button type="button" class="btn btn-next" onclick="window.print()">🖨️ Drucken</button>
                 <button type="button" class="btn btn-back" onclick="location.reload()">🔄 Neu</button>
             </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="loading-box">
+            <div class="loading-spinner"></div>
+            <div class="loading-text" id="loadingText">Formular wird gesendet...</div>
+            <div class="loading-subtext" id="loadingSubtext">Bitte warten Sie einen Moment</div>
         </div>
     </div>
 </div>
@@ -611,12 +629,23 @@ document.getElementById('pflegeboxForm').addEventListener('submit', async functi
     }
 
     const submitBtn = document.getElementById('submitBtn');
+    const loadingOverlay = document.getElementById('loadingOverlay');
+    const loadingText = document.getElementById('loadingText');
+    const loadingSubtext = document.getElementById('loadingSubtext');
+
+    // Show loading overlay
     submitBtn.disabled = true;
-    submitBtn.textContent = '⏳ Wird verarbeitet...';
+    submitBtn.classList.add('btn-loading');
+    submitBtn.textContent = 'Wird gesendet...';
+    loadingOverlay.classList.add('active');
 
     try {
         const data = collectFormData();
         console.log('📤 Sending data to backend:', data);
+
+        // Update loading message
+        loadingText.textContent = 'Daten werden übermittelt...';
+        loadingSubtext.textContent = 'Ihre Bestellung wird verarbeitet';
 
         const response = await fetch(`${WORKER_URL}/api/pflegebox/submit`, {
             method: 'POST',
@@ -635,16 +664,34 @@ document.getElementById('pflegeboxForm').addEventListener('submit', async functi
         const result = await response.json();
         console.log('✅ Response from backend:', result);
 
-        // Show success
+        // Success message
+        loadingText.textContent = '✅ Erfolgreich gesendet!';
+        loadingSubtext.textContent = 'Sie werden weitergeleitet...';
+
+        // Wait a moment to show success message
+        await new Promise(resolve => setTimeout(resolve, 1500));
+
+        // Hide loading overlay
+        loadingOverlay.classList.remove('active');
+
+        // Show success page
         document.getElementById('pflegeboxForm').classList.add('hidden');
         document.querySelector('.progress-section').classList.add('hidden');
         document.getElementById('successPage').classList.remove('hidden');
-        window.scrollTo(0, 0);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch (error) {
         console.error('❌ Error submitting form:', error);
-        alert(`⚠️ Fehler beim Senden des Formulars:\n\n${error.message}\n\nBitte versuchen Sie es erneut oder kontaktieren Sie uns direkt.`);
+
+        // Hide loading overlay
+        loadingOverlay.classList.remove('active');
+
+        // Show error
+        alert(`⚠️ Fehler beim Senden des Formulars:\n\n${error.message}\n\nBitte versuchen Sie es erneut oder kontaktieren Sie uns direkt unter pflegeteufelagentur@gmail.com`);
+
+        // Reset button
         submitBtn.disabled = false;
+        submitBtn.classList.remove('btn-loading');
         submitBtn.textContent = '✓ Absenden';
     }
 });
