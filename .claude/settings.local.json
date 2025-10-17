@@ -6,7 +6,11 @@
       "Bash(git add:*)",
       "Bash(rm:*)",
       "Bash(git commit:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(node -e:*)",
+      "Bash(node update-json.js:*)",
+      "Bash(node:*)",
+      "Bash(git pull:*)"
     ],
     "deny": [],
     "ask": []
