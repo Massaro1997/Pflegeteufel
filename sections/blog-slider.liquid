@@ -1,0 +1,303 @@
+<!-- sections/blog-slider.liquid -->
+{%- liquid
+  assign blog_handle = section.settings.blog
+  assign posts_count = section.settings.posts_count | default: 5
+-%}
+
+{% if blog_handle != blank %}
+  {%- assign blog = blogs[blog_handle] -%}
+  
+  <section class="blog-slider-section section-{{ section.id }}">
+    <div class="page-width">
+      
+      <!-- Heading -->
+      <div class="blog-header">
+        <h2 class="blog-title">{{ section.settings.title | default: 'Scopri le nostre ultime novità' }}</h2>
+      </div>
+
+      <!-- Cards Container -->
+      <div class="blog-cards-container">
+        <div class="blog-cards-track">
+          
+          {%- for article in blog.articles limit: posts_count -%}
+            <div class="blog-card">
+              <a href="{{ article.url }}" class="blog-card-link">
+                
+                <!-- Immagine -->
+                <div class="blog-card-image">
+                  {% if article.image %}
+                    <img 
+                      src="{{ article.image | image_url: width: 350 }}"
+                      alt="{{ article.image.alt | default: article.title }}"
+                      loading="lazy"
+                    >
+                  {% else %}
+                    <div class="blog-card-placeholder">📰</div>
+                  {% endif %}
+                </div>
+
+                <!-- Contenuto -->
+                <div class="blog-card-content">
+                  {% for tag in article.tags limit: 1 %}
+                    <span class="blog-card-category">{{ tag }}</span>
+                  {% endfor %}
+                  
+                  <h3 class="blog-card-title">{{ article.title }}</h3>
+                  
+                  <p class="blog-card-excerpt">
+                    {{ article.excerpt | default: article.content | strip_html | truncate: 120 }}
+                  </p>
+                  
+                  <div class="blog-card-meta">
+                    <span>📅 {{ article.published_at | date: '%B %Y' }}</span>
+                    <span>⏱️ {{ article.content | strip_html | number_of_words | divided_by: 200 | plus: 1 }} Min.</span>
+                  </div>
+                  
+                  <span class="blog-card-cta">Weiterlesen →</span>
+                </div>
+              </a>
+            </div>
+          {%- endfor -%}
+          
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <style>
+    .blog-slider-section {
+      padding: 60px 0;
+      background: {{ section.settings.background_color | default: '#f8f9fa' }};
+    }
+
+    .page-width {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .blog-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+
+    .blog-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: {{ section.settings.title_color | default: '#1a1a1a' }};
+      margin: 0;
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+
+    .blog-cards-container {
+      overflow-x: auto;
+      overflow-y: hidden;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+
+    .blog-cards-container::-webkit-scrollbar {
+      display: none;
+    }
+
+    .blog-cards-track {
+      display: flex;
+      gap: 30px;
+      padding: 0 0 20px 0;
+    }
+
+    .blog-card {
+      flex: 0 0 350px;
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid #e9ecef;
+    }
+
+    .blog-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    }
+
+    .blog-card-link {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .blog-card-image {
+      height: 200px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .blog-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .blog-card:hover .blog-card-image img {
+      transform: scale(1.05);
+    }
+
+    .blog-card-placeholder {
+      height: 100%;
+      background: linear-gradient(135deg, #C12624, #A01F1D);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 3rem;
+    }
+
+    .blog-card-content {
+      padding: 25px;
+    }
+
+    .blog-card-category {
+      background: #f8f9fa;
+      color: #C12624;
+      padding: 4px 12px;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-block;
+      margin-bottom: 15px;
+      border: 1px solid #e9ecef;
+    }
+
+    .blog-card-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 12px;
+      line-height: 1.3;
+      font-family: Georgia, 'Times New Roman', serif;
+    }
+
+    .blog-card-excerpt {
+      color: #666;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .blog-card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      color: #888;
+      margin-bottom: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #f1f3f4;
+    }
+
+    .blog-card-cta {
+      color: #C12624;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .blog-slider-section {
+        padding: 40px 0;
+      }
+
+      .page-width {
+        padding: 0 15px;
+      }
+
+      .blog-title {
+        font-size: 2rem;
+      }
+
+      .blog-card {
+        flex: 0 0 280px;
+      }
+
+      .blog-card-content {
+        padding: 20px;
+      }
+
+      .blog-cards-track {
+        gap: 20px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .blog-card {
+        flex: 0 0 250px;
+      }
+
+      .blog-title {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+
+{% endif %}
+
+{% schema %}
+{
+  "name": "Blog Cards",
+  "class": "section",
+  "settings": [
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "Blog",
+      "info": "Scegli il blog da mostrare"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titolo della sezione",
+      "default": "Scopri le nostre ultime novità"
+    },
+    {
+      "type": "range",
+      "id": "posts_count",
+      "label": "Numero di articoli",
+      "min": 3,
+      "max": 8,
+      "step": 1,
+      "default": 5
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Colore di sfondo",
+      "default": "#f8f9fa"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Colore titolo",
+      "default": "#1a1a1a"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Blog Cards",
+      "settings": {
+        "title": "Scopri le nostre ultime novità",
+        "posts_count": 5
+      }
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,650 @@
+{% comment %}
+Template: page.bestellformular-pflegebox.liquid
+Bestellformular Pflegebox - Form multi-step con auto-compilazione intelligente
+Autore: Calogero Massaro
+{% endcomment %}
+
+<div class="pflegebox-wrapper" style="all: initial; display: block; isolation: isolate; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;">
+
+  <!-- Link CSS -->
+  <link rel="stylesheet" href="{{ 'pflegebox-form.css' | asset_url }}">
+
+  <div class="pflegebox-container">
+
+    <!-- Header -->
+    <div class="pflegebox-header">
+      <div class="header-logo">
+        <img src="{{ settings.logo | img_url: '200x' }}" alt="Pflege Teufel Logo">
+      </div>
+      <h1 class="header-title">Bestellformular Pflegebox</h1>
+      <p class="header-subtitle">Stellen Sie Ihre individuelle Box zusammen</p>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+      <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-steps">
+        <div class="progress-step active" data-step="1">
+          <div class="step-number">1</div>
+          <div class="step-label">Antragsteller</div>
+        </div>
+        <div class="progress-step" data-step="2">
+          <div class="step-number">2</div>
+          <div class="step-label">Pflegeperson</div>
+        </div>
+        <div class="progress-step" data-step="3">
+          <div class="step-number">3</div>
+          <div class="step-label">Pflegebox</div>
+        </div>
+        <div class="progress-step" data-step="4">
+          <div class="step-number">4</div>
+          <div class="step-label">Lieferung</div>
+        </div>
+        <div class="progress-step" data-step="5">
+          <div class="step-number">5</div>
+          <div class="step-label">Rechnung</div>
+        </div>
+        <div class="progress-step" data-step="6">
+          <div class="step-number">6</div>
+          <div class="step-label">Unterschrift</div>
+        </div>
+        <div class="progress-step" data-step="7">
+          <div class="step-number">7</div>
+          <div class="step-label">Bestätigung</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Form Container -->
+    <form id="pflegeboxForm" class="pflegebox-form">
+
+      <!-- STEP 1: Dati Richiedente -->
+      <div class="form-step active" data-step="1">
+        <div class="step-content">
+          <h2 class="step-title">1. Name der/des Antragstellers</h2>
+          <p class="step-description">Bitte in Druckbuchstaben ausfüllen</p>
+
+          <div class="form-group">
+            <label class="form-label">Anrede *</label>
+            <div class="radio-group">
+              <label class="radio-card">
+                <input type="radio" name="versicherte_anrede" value="Frau" required>
+                <span class="radio-label">Frau</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="versicherte_anrede" value="Herr" required>
+                <span class="radio-label">Herr</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="versicherte_vorname">Vorname *</label>
+              <input type="text" id="versicherte_vorname" name="versicherte_vorname" class="form-input" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="versicherte_name">Name *</label>
+              <input type="text" id="versicherte_name" name="versicherte_name" class="form-input" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="versicherte_strasse">Straße/Nr. *</label>
+            <input type="text" id="versicherte_strasse" name="versicherte_strasse" class="form-input" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group" style="flex: 0 0 30%;">
+              <label class="form-label" for="versicherte_plz">PLZ *</label>
+              <input type="text" id="versicherte_plz" name="versicherte_plz" class="form-input" pattern="[0-9]{5}" required>
+            </div>
+            <div class="form-group" style="flex: 1;">
+              <label class="form-label" for="versicherte_ort">Ort *</label>
+              <input type="text" id="versicherte_ort" name="versicherte_ort" class="form-input" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label" for="versicherte_telefon">Telefon *</label>
+              <input type="tel" id="versicherte_telefon" name="versicherte_telefon" class="form-input" required>
+              <small class="form-hint">Nur für Rückfragen. Ihre Daten werden nicht an Dritte weitergegeben.</small>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="versicherte_email">E-Mail *</label>
+              <input type="email" id="versicherte_email" name="versicherte_email" class="form-input" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="versicherte_geburtsdatum">Geburtsdatum *</label>
+            <input type="date" id="versicherte_geburtsdatum" name="versicherte_geburtsdatum" class="form-input" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="versicherte_nummer">Versichertennummer *</label>
+            <input type="text" id="versicherte_nummer" name="versicherte_nummer" class="form-input" required>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Pflegegrad *</label>
+            <div class="radio-group horizontal">
+              <label class="radio-card">
+                <input type="radio" name="versicherte_pflegegrad" value="1" required>
+                <span class="radio-label">1</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="versicherte_pflegegrad" value="2" required>
+                <span class="radio-label">2</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="versicherte_pflegegrad" value="3" required>
+                <span class="radio-label">3</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="versicherte_pflegegrad" value="4" required>
+                <span class="radio-label">4</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="versicherte_pflegegrad" value="5" required>
+                <span class="radio-label">5</span>
+              </label>
+              <label class="radio-card">
+                <input type="radio" name="versicherte_pflegegrad" value="beantragt" required>
+                <span class="radio-label">Beantragt</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Versicherte(r) ist: *</label>
+            <div class="checkbox-group">
+              <label class="checkbox-label">
+                <input type="radio" name="versicherte_typ" value="gesetzlich" required>
+                <span>gesetzlich pflegeversichert</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="radio" name="versicherte_typ" value="privat" required>
+                <span>privat pflegeversichert</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="radio" name="versicherte_typ" value="beihilfe" required>
+                <span>beihilfeberechtigt</span>
+              </label>
+              <label class="checkbox-label">
+                <input type="radio" name="versicherte_typ" value="sozialamt" required>
+                <span>über Ortsamt/Sozialamt versichert</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group" id="sozialamt_group" style="display: none;">
+            <label class="form-label" for="versicherte_sozialamt">Welches Ortsamt/Sozialamt?</label>
+            <input type="text" id="versicherte_sozialamt" name="versicherte_sozialamt" class="form-input">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="versicherte_pflegekasse">Pflegekasse *</label>
+            <input type="text" id="versicherte_pflegekasse" name="versicherte_pflegekasse" class="form-input" required>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-primary btn-next">Weiter</button>
+        </div>
+      </div>
+
+      <!-- STEP 2: Dati Angehörige/Pflegeperson CON LOGICA CONDIZIONALE -->
+      <div class="form-step" data-step="2">
+        <div class="step-content">
+          <h2 class="step-title">2. Angehörige(r)/Pflegeperson</h2>
+          <p class="step-description">Bitte die wichtigste private Pflegeperson oder die/den Betreuer(in) eintragen</p>
+
+          <!-- TOGGLE CONDIZIONALE -->
+          <div class="form-group toggle-question">
+            <label class="form-label">Ist die Pflegeperson dieselbe wie der/die Antragsteller(in)?</label>
+            <div class="radio-group">
+              <label class="radio-card featured">
+                <input type="radio" name="angehoerige_same" value="yes" onchange="window.pflegeboxForm.toggleAngehoerigeSection()">
+                <div class="card-content">
+                  <span class="icon">✓</span>
+                  <span class="text">Ja, ich bin die Pflegeperson</span>
+                </div>
+              </label>
+              <label class="radio-card featured">
+                <input type="radio" name="angehoerige_same" value="no" onchange="window.pflegeboxForm.toggleAngehoerigeSection()">
+                <div class="card-content">
+                  <span class="icon">👥</span>
+                  <span class="text">Nein, es ist eine andere Person</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <!-- Messaggio di conferma quando stessa persona -->
+          <div id="angehoerige_confirmation" class="confirmation-box" style="display: none;">
+            <div class="confirmation-icon">✓</div>
+            <div class="confirmation-text">
+              <strong>Daten übernommen</strong>
+              <p>Die Daten der Pflegeperson entsprechen denen des Antragstellers</p>
+            </div>
+            <button type="button" class="btn-link" onclick="window.pflegeboxForm.editAngehoerigeData()">Ändern</button>
+          </div>
+
+          <!-- Sezione CONDIZIONALE - Mostra solo se persona diversa -->
+          <div id="angehoerige_section" style="display: none;">
+
+            <div class="form-group">
+              <label class="form-label">Anrede *</label>
+              <div class="radio-group">
+                <label class="radio-card">
+                  <input type="radio" name="angehoerige_anrede" value="Frau">
+                  <span class="radio-label">Frau</span>
+                </label>
+                <label class="radio-card">
+                  <input type="radio" name="angehoerige_anrede" value="Herr">
+                  <span class="radio-label">Herr</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="angehoerige_vorname">Vorname *</label>
+                <input type="text" id="angehoerige_vorname" name="angehoerige_vorname" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="angehoerige_name">Name *</label>
+                <input type="text" id="angehoerige_name" name="angehoerige_name" class="form-input">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="angehoerige_strasse">Straße/Nr. *</label>
+              <input type="text" id="angehoerige_strasse" name="angehoerige_strasse" class="form-input">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group" style="flex: 0 0 30%;">
+                <label class="form-label" for="angehoerige_plz">PLZ *</label>
+                <input type="text" id="angehoerige_plz" name="angehoerige_plz" class="form-input" pattern="[0-9]{5}">
+              </div>
+              <div class="form-group" style="flex: 1;">
+                <label class="form-label" for="angehoerige_ort">Ort *</label>
+                <input type="text" id="angehoerige_ort" name="angehoerige_ort" class="form-input">
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label" for="angehoerige_telefon">Telefon</label>
+                <input type="tel" id="angehoerige_telefon" name="angehoerige_telefon" class="form-input">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="angehoerige_email">E-Mail</label>
+                <input type="email" id="angehoerige_email" name="angehoerige_email" class="form-input">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Pflegeperson ist: *</label>
+              <div class="checkbox-group">
+                <label class="checkbox-label">
+                  <input type="radio" name="angehoerige_typ" value="familienangehoerige">
+                  <span>Familienangehörige(r)</span>
+                </label>
+                <label class="checkbox-label">
+                  <input type="radio" name="angehoerige_typ" value="private">
+                  <span>Private Pflegeperson</span>
+                </label>
+                <label class="checkbox-label">
+                  <input type="radio" name="angehoerige_typ" value="betreuer">
+                  <span>Gesetzlich bestellte(r) Betreuer(in)</span>
+                </label>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary btn-prev">Zurück</button>
+          <button type="button" class="btn btn-primary btn-next">Weiter</button>
+        </div>
+      </div>
+
+      <!-- STEP 3: Selezione Pflegebox -->
+      <div class="form-step" data-step="3">
+        <div class="step-content">
+          <h2 class="step-title">3. Pflegebox</h2>
+          <p class="step-description">Stellen Sie sich Ihre individuelle Pflegebox nach Ihren Bedürfnissen zusammen</p>
+
+          <div class="products-grid">
+
+            <label class="product-card">
+              <input type="checkbox" name="product_bettschutz" value="1">
+              <div class="product-icon">🛏️</div>
+              <div class="product-name">Bettschutzeinlagen</div>
+              <div class="product-code">54.45.01.0001</div>
+            </label>
+
+            <label class="product-card">
+              <input type="checkbox" name="product_fingerlinge" value="1">
+              <div class="product-icon">🧤</div>
+              <div class="product-name">Fingerlinge</div>
+              <div class="product-code">54.99.01.0001</div>
+            </label>
+
+            <label class="product-card">
+              <input type="checkbox" name="product_ffp2" value="1">
+              <div class="product-icon">😷</div>
+              <div class="product-name">FFP2 Masken</div>
+              <div class="product-code">54.99.01.5001</div>
+            </label>
+
+            <label class="product-card">
+              <input type="checkbox" name="product_mundschutz" value="1">
+              <div class="product-icon">😷</div>
+              <div class="product-name">Medizinische Gesichtsmasken</div>
+              <div class="product-code">54.99.01.2001</div>
+            </label>
+
+            <label class="product-card">
+              <input type="checkbox" name="product_esslatzchen" value="1">
+              <div class="product-icon">👶</div>
+              <div class="product-name">Esslätzchen</div>
+              <div class="product-code">54.99.01.4001</div>
+            </label>
+
+            <label class="product-card">
+              <input type="checkbox" name="product_schutzschuerzen_einmal" value="1">
+              <div class="product-icon">👔</div>
+              <div class="product-name">Schutzschürzen (Einmalgebrauch)</div>
+              <div class="product-code">54.99.01.3001</div>
+            </label>
+
+            <label class="product-card">
+              <input type="checkbox" name="product_schutzschuerzen_wieder" value="1">
+              <div class="product-icon">👔</div>
+              <div class="product-name">Schutzschürzen (wiederverwendbar)</div>
+              <div class="product-code">54.99.01.3002</div>
+            </label>
+
+            <label class="product-card">
+              <input type="checkbox" name="product_haendedesinfektion" value="1">
+              <div class="product-icon">🧴</div>
+              <div class="product-name">Händedesinfektionsmittel</div>
+              <div class="product-code">54.99.02.0001</div>
+            </label>
+
+            <label class="product-card">
+              <input type="checkbox" name="product_flaechendesinfektion" value="1">
+              <div class="product-icon">🧴</div>
+              <div class="product-name">Flächendesinfektionsmittel</div>
+              <div class="product-code">54.99.02.0002</div>
+            </label>
+
+            <label class="product-card">
+              <input type="checkbox" name="product_haendetuecher" value="1">
+              <div class="product-icon">🧻</div>
+              <div class="product-name">Händedesinfektionstücher</div>
+              <div class="product-code">54.99.02.0014</div>
+            </label>
+
+            <label class="product-card">
+              <input type="checkbox" name="product_flaechentuecher" value="1">
+              <div class="product-icon">🧻</div>
+              <div class="product-name">Flächendesinfektionstücher</div>
+              <div class="product-code">54.99.02.0015</div>
+            </label>
+
+          </div>
+
+          <!-- Einmalhandschuhe con opzioni -->
+          <div class="form-group product-with-options">
+            <label class="checkbox-label main-product">
+              <input type="checkbox" name="product_handschuhe" value="1" id="handschuhe_checkbox">
+              <span>🧤 Einmalhandschuhe (54.99.01.1001)</span>
+            </label>
+
+            <div id="handschuhe_options" class="product-options" style="display: none;">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Handschuhgröße *</label>
+                  <div class="radio-group horizontal">
+                    <label class="radio-card">
+                      <input type="radio" name="handschuhe_groesse" value="S">
+                      <span class="radio-label">S</span>
+                    </label>
+                    <label class="radio-card">
+                      <input type="radio" name="handschuhe_groesse" value="M">
+                      <span class="radio-label">M</span>
+                    </label>
+                    <label class="radio-card">
+                      <input type="radio" name="handschuhe_groesse" value="L">
+                      <span class="radio-label">L</span>
+                    </label>
+                    <label class="radio-card">
+                      <input type="radio" name="handschuhe_groesse" value="XL">
+                      <span class="radio-label">XL</span>
+                    </label>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Handschuhmaterial *</label>
+                  <div class="radio-group horizontal">
+                    <label class="radio-card">
+                      <input type="radio" name="handschuhe_material" value="Nitril">
+                      <span class="radio-label">Nitril</span>
+                    </label>
+                    <label class="radio-card">
+                      <input type="radio" name="handschuhe_material" value="Vinyl">
+                      <span class="radio-label">Vinyl</span>
+                    </label>
+                    <label class="radio-card">
+                      <input type="radio" name="handschuhe_material" value="Latex">
+                      <span class="radio-label">Latex</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary btn-prev">Zurück</button>
+          <button type="button" class="btn btn-primary btn-next">Weiter</button>
+        </div>
+      </div>
+
+      <!-- STEP 4: Indirizzo Lieferung -->
+      <div class="form-step" data-step="4">
+        <div class="step-content">
+          <h2 class="step-title">4. Lieferadresse</h2>
+          <p class="step-description">Die monatliche Lieferung an</p>
+
+          <div class="form-group">
+            <div class="radio-group">
+              <label class="radio-card featured">
+                <input type="radio" name="lieferung_an" value="versicherte" checked>
+                <div class="card-content">
+                  <span class="icon">📍</span>
+                  <span class="text">die/den Versicherte(n)/Pflegebedürftige(n)</span>
+                  <div id="lieferung_versicherte_preview" class="address-preview"></div>
+                </div>
+              </label>
+              <label class="radio-card featured">
+                <input type="radio" name="lieferung_an" value="angehoerige">
+                <div class="card-content">
+                  <span class="icon">📍</span>
+                  <span class="text">die/den Angehörige(n)/Pflegeperson</span>
+                  <div id="lieferung_angehoerige_preview" class="address-preview"></div>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <div class="info-box">
+            <strong>ACHTUNG:</strong> Wenn die Lieferung an die Angehörige(n)/Pflegeperson erfolgt,
+            bitte beiliegende Vollmacht ausfüllen und an uns rücksenden!
+          </div>
+
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary btn-prev">Zurück</button>
+          <button type="button" class="btn btn-primary btn-next">Weiter</button>
+        </div>
+      </div>
+
+      <!-- STEP 5: Rechnungsempfänger (solo per privat/beihilfe) -->
+      <div class="form-step" data-step="5">
+        <div class="step-content">
+          <h2 class="step-title">5. Rechnungsempfänger</h2>
+          <p class="step-description">Nur bei privat Versicherten und/oder Beihilfeberechtigten</p>
+
+          <div id="rechnung_section">
+            <div class="form-group">
+              <div class="radio-group">
+                <label class="radio-card featured">
+                  <input type="radio" name="rechnung_an" value="versicherte" checked>
+                  <div class="card-content">
+                    <span class="icon">📄</span>
+                    <span class="text">Versicherte(r)/Pflegebedürftige(r)</span>
+                    <div id="rechnung_versicherte_preview" class="address-preview"></div>
+                  </div>
+                </label>
+                <label class="radio-card featured">
+                  <input type="radio" name="rechnung_an" value="angehoerige">
+                  <div class="card-content">
+                    <span class="icon">📄</span>
+                    <span class="text">Angehörige(r)/Pflegeperson</span>
+                    <div id="rechnung_angehoerige_preview" class="address-preview"></div>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div id="rechnung_skip" style="display: none;">
+            <div class="info-box">
+              <strong>Info:</strong> Dieser Schritt gilt nur für privat Versicherte oder Beihilfeberechtigte.
+              Sie können direkt zum nächsten Schritt gehen.
+            </div>
+          </div>
+
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary btn-prev">Zurück</button>
+          <button type="button" class="btn btn-primary btn-next">Weiter</button>
+        </div>
+      </div>
+
+      <!-- STEP 6: Unterschrift -->
+      <div class="form-step" data-step="6">
+        <div class="step-content">
+          <h2 class="step-title">6. Unterschrift</h2>
+          <p class="step-description">Bitte unterschreiben Sie im Feld unten</p>
+
+          <div class="signature-container">
+            <label class="form-label">Unterschrift Versicherte(r) *</label>
+            <div class="signature-pad-wrapper">
+              <canvas id="signaturePad" class="signature-pad"></canvas>
+              <button type="button" class="btn-clear-signature" onclick="window.pflegeboxForm.clearSignature()">Löschen</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="checkbox-label consent-checkbox">
+              <input type="checkbox" name="consent_vollmacht" id="consent_vollmacht">
+              <span>Ich benötige eine Unterschrift des/der Bevollmächtigte(r)</span>
+            </label>
+          </div>
+
+          <div id="bevollmaechtigter_signature" class="signature-container" style="display: none;">
+            <label class="form-label">Unterschrift Bevollmächtigte(r)</label>
+            <div class="signature-pad-wrapper">
+              <canvas id="signaturePadBevollmaechtigter" class="signature-pad"></canvas>
+              <button type="button" class="btn-clear-signature" onclick="window.pflegeboxForm.clearSignatureBevollmaechtigter()">Löschen</button>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary btn-prev">Zurück</button>
+          <button type="button" class="btn btn-primary btn-next">Weiter</button>
+        </div>
+      </div>
+
+      <!-- STEP 7: Bestätigung e Consensi -->
+      <div class="form-step" data-step="7">
+        <div class="step-content">
+          <h2 class="step-title">7. Bestätigung</h2>
+          <p class="step-description">Bitte überprüfen Sie Ihre Angaben und bestätigen Sie</p>
+
+          <div class="review-section">
+            <h3>Ihre Angaben im Überblick</h3>
+            <div id="reviewContent"></div>
+          </div>
+
+          <div class="form-group consent-group">
+            <label class="checkbox-label consent-checkbox">
+              <input type="checkbox" name="consent_agb" id="consent_agb" required>
+              <span>
+                Ich habe die <a href="https://pflegeteufel.de/policies/privacy-policy" target="_blank">AGB</a>
+                zur Kenntnis genommen. *
+              </span>
+            </label>
+          </div>
+
+          <div class="form-group consent-group">
+            <label class="checkbox-label consent-checkbox">
+              <input type="checkbox" name="consent_daten" id="consent_daten" required>
+              <span>
+                Ich bin damit einverstanden, dass die Agentur Pflege Teufel, Regentenstr. 88, 51063 Köln,
+                die von mir zuvor gemachten Angaben verarbeitet, um mich über Pflege- & Gesundheitsthemen zu informieren.
+                Meine Einwilligung bezieht sich ausdrücklich auch auf die Verarbeitung von Gesundheitsdaten
+                als besondere Kategorie personenbezogener Daten. Ich kann meine Einwilligung jederzeit mit
+                Wirkung für die Zukunft per E-Mail an info@pflegeteufel.de oder per Post an
+                Agentur Pflege Teufel, Regentenstr. 88, 51063 Köln widerrufen. *
+              </span>
+            </label>
+          </div>
+
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary btn-prev">Zurück</button>
+          <button type="submit" class="btn btn-success btn-submit" id="submitBtn">
+            <span class="btn-text">Antrag absenden</span>
+            <span class="btn-loader" style="display: none;">Wird verarbeitet...</span>
+          </button>
+        </div>
+      </div>
+
+    </form>
+
+    <!-- Success Message -->
+    <div id="successMessage" class="success-message" style="display: none;">
+      <div class="success-icon">✓</div>
+      <h2>Vielen Dank für Ihre Bestellung!</h2>
+      <p>Ihr Antrag wurde erfolgreich übermittelt. Sie erhalten in Kürze eine Bestätigungs-E-Mail.</p>
+      <p>Das ausgefüllte PDF wurde an uns gesendet und wird umgehend bearbeitet.</p>
+      <button type="button" class="btn btn-primary" onclick="location.reload()">Neue Bestellung</button>
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.1.7/dist/signature_pad.umd.min.js"></script>
+  <script src="{{ 'pflegebox-form.js' | asset_url }}"></script>
+
+</div>

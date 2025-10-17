@@ -1,0 +1,577 @@
+{% comment %}
+=== SEZIONE PRODOTTI CONSIGLIATI - V60 MODIFICATA ===
+File: sections/related-products.liquid
+
+INSTALLAZIONE:
+1. Admin Shopify > Temi > Modifica codice
+2. Sections > Aggiungi nuova sezione
+3. Nome: related-products
+4. Incolla questo codice
+5. Salva
+6. Theme editor > Aggiungi sezione "Empfohlene Produkte"
+{% endcomment %}
+
+<section class="related-products-{{ section.id }}" data-section="{{ section.id }}">
+  <div class="related-container-{{ section.id }}">
+    
+    <!-- Titolo sezione -->
+    <div class="section-header-{{ section.id }}">
+      <h2 class="section-title-{{ section.id }}">{{ section.settings.title | default: 'Empfohlene Produkte' }}</h2>
+      <p class="section-subtitle-{{ section.id }}">{{ section.settings.subtitle | default: 'Kunden kauften auch diese Produkte' }}</p>
+    </div>
+
+    <!-- Grid prodotti -->
+    <div class="products-grid-wrapper-{{ section.id }}">
+      <div class="products-grid-{{ section.id }}">
+        
+        {% comment %} Mostra tutti i prodotti della collection corrente {% endcomment %}
+        {% if product.collections.size > 0 %}
+          {% assign source_collection = product.collections.first %}
+        {% elsif section.settings.collection != blank %}
+          {% assign source_collection = collections[section.settings.collection] %}
+        {% else %}
+          {% assign source_collection = collections.all %}
+        {% endif %}
+
+        {% assign products_count = 0 %}
+        {% assign products_limit = section.settings.products_limit | default: 20 %}
+
+        {% comment %} Mostra tutti i prodotti della collection {% endcomment %}
+        {% for related_product in source_collection.products %}
+          {% if products_count >= products_limit %}
+            {% break %}
+          {% endif %}
+          
+          {% if related_product.available %}
+            {% assign products_count = products_count | plus: 1 %}
+            
+            <div class="product-card-{{ section.id }}">
+              
+              <!-- Immagine prodotto -->
+              <div class="product-image-wrapper-{{ section.id }}">
+                {% if related_product.featured_media %}
+                  <a href="{{ related_product.url }}">
+                    <img 
+                      src="{{ related_product.featured_media | image_url: width: 400 }}" 
+                      alt="{{ related_product.title }}"
+                      class="product-image-{{ section.id }}"
+                      width="400"
+                      height="400"
+                      loading="lazy"
+                    >
+                  </a>
+                {% else %}
+                  <a href="{{ related_product.url }}">
+                    {{ 'product-1' | placeholder_svg_tag: 'product-image' }}
+                  </a>
+                {% endif %}
+
+                <!-- Badge sconto -->
+                {% if related_product.compare_at_price > related_product.price %}
+                  {% assign discount = related_product.compare_at_price | minus: related_product.price %}
+                  {% assign percentage = discount | times: 100 | divided_by: related_product.compare_at_price %}
+                  <div class="product-badge-{{ section.id }}">-{{ percentage }}%</div>
+                {% endif %}
+
+                <!-- Quick view overlay -->
+                <div class="product-overlay-{{ section.id }}">
+                  <a href="{{ related_product.url }}" class="quick-view-btn-{{ section.id }}">
+                    Schnellansicht
+                  </a>
+                </div>
+              </div>
+
+              <!-- Info prodotto -->
+              <div class="product-info-{{ section.id }}">
+                
+                <!-- Vendor -->
+                {% if related_product.vendor != blank and section.settings.show_vendor %}
+                  <div class="product-vendor-{{ section.id }}">{{ related_product.vendor }}</div>
+                {% endif %}
+
+                <!-- Titolo -->
+                <h3 class="product-title-{{ section.id }}">
+                  <a href="{{ related_product.url }}">{{ related_product.title }}</a>
+                </h3>
+
+                <!-- Rating -->
+                {% if section.settings.show_rating %}
+                  <div class="product-rating-{{ section.id }}">
+                    <div class="stars-{{ section.id }}">
+                      <span class="star-{{ section.id }}">★</span>
+                      <span class="star-{{ section.id }}">★</span>
+                      <span class="star-{{ section.id }}">★</span>
+                      <span class="star-{{ section.id }}">★</span>
+                      <span class="star-{{ section.id }}">★</span>
+                    </div>
+                  </div>
+                {% endif %}
+
+                <!-- Prezzo -->
+                <div class="product-price-{{ section.id }}">
+                  <span class="current-price-{{ section.id }}">{{ related_product.price | money }}</span>
+                  {% if related_product.compare_at_price > related_product.price %}
+                    <span class="original-price-{{ section.id }}">{{ related_product.compare_at_price | money }}</span>
+                  {% endif %}
+                </div>
+
+                <!-- Bottone aggiungi -->
+                {% if section.settings.show_add_button %}
+                  {% assign first_variant = related_product.selected_or_first_available_variant %}
+                  <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" class="cart-form-{{ section.id }}">
+                    <input type="hidden" name="id" value="{{ first_variant.id }}">
+                    <input type="hidden" name="quantity" value="1">
+                    <button 
+                      type="submit"
+                      class="add-to-cart-quick-{{ section.id }}" 
+                      {% unless related_product.available %}disabled{% endunless %}>
+                      {% if related_product.available %}
+                        In den Warenkorb
+                      {% else %}
+                        Ausverkauft
+                      {% endif %}
+                    </button>
+                  </form>
+                {% endif %}
+
+              </div>
+            </div>
+          {% endif %}
+        {% endfor %}
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+.related-products-{{ section.id }} {
+  background: #F8F8F8;
+  padding: 60px 0;
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.related-container-{{ section.id }} {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+/* Header sezione */
+.section-header-{{ section.id }} {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.section-title-{{ section.id }} {
+  font-size: 36px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 10px;
+  line-height: 1.2;
+}
+
+.section-subtitle-{{ section.id }} {
+  font-size: 18px;
+  color: #6c757d;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* Grid wrapper */
+.products-grid-wrapper-{{ section.id }} {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  padding: 40px 20px;
+  overflow: hidden;
+}
+
+/* Grid prodotti */
+.products-grid-{{ section.id }} {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 20px;
+}
+
+/* Card prodotto */
+.product-card-{{ section.id }} {
+  background: #f8f9fa;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  position: relative;
+}
+
+.product-card-{{ section.id }}:hover {
+  transform: translateY(-8px);
+  border-color: #C12624;
+  box-shadow: 0 12px 30px rgba(193, 38, 36, 0.15);
+}
+
+/* Immagine prodotto */
+.product-image-wrapper-{{ section.id }} {
+  position: relative;
+  aspect-ratio: 1;
+  overflow: hidden;
+  background: white;
+}
+
+.product-image-{{ section.id }} {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.product-card-{{ section.id }}:hover .product-image-{{ section.id }} {
+  transform: scale(1.05);
+}
+
+/* Badge sconto */
+.product-badge-{{ section.id }} {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: linear-gradient(45deg, #C12624, #A01F1D);
+  color: white;
+  padding: 3px 8px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: bold;
+  z-index: 5;
+}
+
+/* Overlay quick view */
+.product-overlay-{{ section.id }} {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(193, 38, 36, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.product-card-{{ section.id }}:hover .product-overlay-{{ section.id }} {
+  opacity: 1;
+}
+
+.quick-view-btn-{{ section.id }} {
+  background: white;
+  color: #C12624;
+  padding: 12px 20px;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+}
+
+.quick-view-btn-{{ section.id }}:hover {
+  background: #C12624;
+  color: white;
+  transform: scale(1.05);
+}
+
+/* Info prodotto */
+.product-info-{{ section.id }} {
+  padding: 12px;
+  background: white;
+  border-radius: 0 0 8px 8px;
+}
+
+.product-vendor-{{ section.id }} {
+  color: #C12624;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  letter-spacing: 0.5px;
+}
+
+.product-title-{{ section.id }} {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+  height: 42px;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.product-title-{{ section.id }} a {
+  color: #2c3e50;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.product-title-{{ section.id }} a:hover {
+  color: #C12624;
+}
+
+/* Rating */
+.product-rating-{{ section.id }} {
+  margin-bottom: 6px;
+}
+
+.stars-{{ section.id }} {
+  display: flex;
+  gap: 1px;
+}
+
+.star-{{ section.id }} {
+  color: #ffc107;
+  font-size: 12px;
+}
+
+/* Prezzo */
+.product-price-{{ section.id }} {
+  margin-bottom: 10px;
+}
+
+.current-price-{{ section.id }} {
+  font-size: 14px;
+  font-weight: 700;
+  color: #C12624;
+  margin-right: 4px;
+  display: block;
+}
+
+.original-price-{{ section.id }} {
+  font-size: 10px;
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* Form e bottone */
+.add-to-cart-quick-{{ section.id }} {
+  width: 100%;
+  background: linear-gradient(45deg, #C12624, #A01F1D);
+  color: white;
+  border: none;
+  padding: 8px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.2px;
+}
+
+.add-to-cart-quick-{{ section.id }}:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(193, 38, 36, 0.3);
+}
+
+.add-to-cart-quick-{{ section.id }}:disabled {
+  background: #999;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.add-to-cart-quick-{{ section.id }}.loading {
+  background: #6c757d;
+  cursor: wait;
+}
+
+.add-to-cart-quick-{{ section.id }}.success {
+  background: #28a745;
+}
+
+.add-to-cart-quick-{{ section.id }}.error {
+  background: #dc3545;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .related-products-{{ section.id }} {
+    padding: 40px 0;
+  }
+  
+  .related-container-{{ section.id }} {
+    padding: 0 15px;
+  }
+  
+  .section-title-{{ section.id }} {
+    font-size: 28px;
+  }
+  
+  .section-subtitle-{{ section.id }} {
+    font-size: 16px;
+  }
+  
+  .products-grid-wrapper-{{ section.id }} {
+    padding: 30px 15px;
+  }
+  
+  .products-grid-{{ section.id }} {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .section-title-{{ section.id }} {
+    font-size: 24px;
+  }
+  
+  .products-grid-wrapper-{{ section.id }} {
+    padding: 20px 10px;
+  }
+  
+  .products-grid-{{ section.id }} {
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Intercetta tutti i form di add to cart in questa sezione
+  const forms = document.querySelectorAll('.cart-form-{{ section.id }}');
+  
+  forms.forEach(function(form) {
+    form.addEventListener('submit', function(event) {
+      event.preventDefault(); // Blocca il submit normale
+      
+      const button = form.querySelector('.add-to-cart-quick-{{ section.id }}');
+      const originalText = button.textContent;
+      
+      // Stato loading
+      button.textContent = 'Wird hinzugefügt...';
+      button.disabled = true;
+      button.style.background = '#6c757d';
+      
+      // Usa il FormData del form originale
+      const formData = new FormData(form);
+      
+      // Submit tramite fetch mantenendo la compatibilità Shopify
+      fetch(form.action, {
+        method: 'POST',
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
+      })
+      .then(function(response) {
+        if (response.ok) {
+          // Se la risposta è ok, il prodotto è stato aggiunto
+          return response.text();
+        } else {
+          throw new Error('Errore nell\'aggiunta al carrello');
+        }
+      })
+      .then(function(result) {
+        // Successo - mostra "Hinzugefügt" in tedesco
+        button.textContent = 'Hinzugefügt';
+        button.style.background = '#28a745';
+        
+        // Trigger di eventi per aggiornare eventuali contatori carrello
+        document.dispatchEvent(new CustomEvent('cart:item-added'));
+        
+        // Ripristina il bottone dopo 2.5 secondi
+        setTimeout(function() {
+          button.textContent = originalText;
+          button.style.background = '';
+          button.disabled = false;
+        }, 2500);
+      })
+      .catch(function(error) {
+        console.error('Errore add to cart:', error);
+        
+        // Mostra errore
+        button.textContent = 'Fehler';
+        button.style.background = '#dc3545';
+        
+        // Ripristina dopo 3 secondi
+        setTimeout(function() {
+          button.textContent = originalText;
+          button.style.background = '';
+          button.disabled = false;
+        }, 3000);
+      });
+    });
+  });
+});
+
+console.log('Related products {{ section.id }} - Native Shopify cart system con intercettazione');
+</script>
+
+{% schema %}
+{
+  "name": "Empfohlene Produkte",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel der Sektion",
+      "default": "Empfohlene Produkte"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Untertitel",
+      "default": "Kunden kauften auch diese Produkte"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection für Produkte",
+      "info": "Wählen Sie eine Collection aus der die Produkte angezeigt werden sollen"
+    },
+    {
+      "type": "range",
+      "id": "products_limit",
+      "label": "Anzahl Produkte",
+      "min": 4,
+      "max": 20,
+      "step": 1,
+      "default": 12
+    },
+    {
+      "type": "checkbox",
+      "id": "show_vendor",
+      "label": "Marke anzeigen",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_rating",
+      "label": "Bewertungen anzeigen",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_add_button",
+      "label": "Warenkorb-Button anzeigen",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Empfohlene Produkte"
+    }
+  ]
+}
+{% endschema %}

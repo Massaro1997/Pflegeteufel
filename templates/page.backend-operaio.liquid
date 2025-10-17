@@ -1,0 +1,1537 @@
+{% comment %}
+Template: page.backend-operaio.liquid
+Dashboard completa operatore con tutte le funzionalità Admin API
+Autore: Calogero Massaro
+{% endcomment %}
+
+<div class="pflegeteufel-backend-wrapper" style="all: initial; display: block; isolation: isolate; font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;">
+  <style>
+    .pf-wrap{max-width:1400px;margin:40px auto;padding:24px;background:#fff;border-radius:16px;box-shadow:0 8px 24px rgba(0,0,0,.08)}
+    .pf-title{font-size:28px;font-weight:800;margin-bottom:6px}
+    .pf-sub{color:#444;margin-bottom:20px}
+    .pf-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+    .pf-card{border:1px solid #eee;border-radius:12px;padding:16px;margin-top:16px}
+    .pf-input,.pf-select,.pf-btn,.pf-textarea{padding:10px 12px;border-radius:10px;border:1px solid #ddd;font:inherit}
+    .pf-textarea{width:100%;min-height:80px;resize:vertical}
+    .pf-btn{border:0;background:#111;color:#fff;cursor:pointer;transition:all .2s}
+    .pf-btn:hover{background:#333}
+    .pf-btn:disabled{opacity:.5;cursor:not-allowed}
+    .pf-btn.ghost{background:#f6f6f6;color:#111;border:1px solid #e5e5e5}
+    .pf-btn.ghost:hover{background:#eee}
+    .pf-btn.danger{background:#dc2626}
+    .pf-btn.danger:hover{background:#b91c1c}
+    .pf-btn.success{background:#16a34a}
+    .pf-btn.success:hover{background:#15803d}
+    .pf-table{width:100%;border-collapse:collapse;font-size:14px}
+    .pf-table th,.pf-table td{padding:10px 8px;border-bottom:1px solid #eee;text-align:left;vertical-align:top}
+    .pf-table th{font-weight:700;background:#f9f9f9}
+    .pf-table tbody tr:hover{background:#f9fafb}
+    .pf-tools{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+    .pf-pagination{display:flex;gap:10px;align-items:center}
+    .pf-tabs{display:flex;gap:8px;border-bottom:2px solid #eee;margin-bottom:16px}
+    .pf-tab{padding:10px 20px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;font-weight:600;color:#666;transition:all .2s}
+    .pf-tab.active{color:#111;border-bottom-color:#111}
+    .pf-tab:hover{color:#111}
+    .pf-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;align-items:center;justify-content:center}
+    .pf-modal.active{display:flex}
+    .pf-modal-content{background:#fff;border-radius:16px;padding:24px;max-width:600px;width:90%;max-height:90vh;overflow-y:auto}
+    .pf-modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+    .pf-modal-title{font-size:20px;font-weight:700}
+    .pf-modal-close{background:none;border:none;font-size:24px;cursor:pointer;padding:0;color:#666}
+    .pf-form-group{margin-bottom:16px}
+    .pf-form-group label{display:block;margin-bottom:6px;font-weight:600;color:#333}
+    .pf-badge{display:inline-block;padding:4px 8px;border-radius:6px;font-size:12px;font-weight:600}
+    .pf-badge.success{background:#dcfce7;color:#166534}
+    .pf-badge.warning{background:#fef3c7;color:#92400e}
+    .pf-badge.danger{background:#fee2e2;color:#991b1b}
+    .pf-badge.info{background:#dbeafe;color:#1e40af}
+    .pf-grid{display:grid;gap:12px}
+    .pf-grid-2{grid-template-columns:1fr 1fr}
+    .pf-grid-3{grid-template-columns:1fr 1fr 1fr}
+    .pf-img{width:50px;height:50px;object-fit:cover;border-radius:8px}
+    .muted{color:#666}
+    .text-sm{font-size:13px}
+    .clickable{cursor:pointer;color:#2563eb;text-decoration:underline}
+    .clickable:hover{color:#1d4ed8}
+    .hidden{display:none!important}
+    .low-stock{background:#fef3c7!important}
+    @media (max-width:768px){
+      .pf-table{font-size:13px}
+      .pf-tools{flex-direction:column;align-items:stretch}
+      .pf-tabs{flex-wrap:wrap}
+      .pf-grid-2,.pf-grid-3{grid-template-columns:1fr}
+    }
+  </style>
+
+  <div class="pf-wrap">
+    <div class="pf-title">Area Operatore - Dashboard Completa</div>
+    <div class="pf-sub">Gestisci ordini, clienti, prodotti e inventario.</div>
+
+    <!-- Tabs Navigation -->
+    <div class="pf-tabs">
+      <div class="pf-tab active" data-tab="orders">📦 Ordini</div>
+      <div class="pf-tab" data-tab="customers">👥 Clienti</div>
+      <div class="pf-tab" data-tab="products">📱 Prodotti</div>
+      <div class="pf-tab" data-tab="inventory">📊 Inventario</div>
+    </div>
+
+    <!-- TAB: ORDINI -->
+    <div id="tab-orders" class="pf-tab-content">
+      <!-- Toolbar Filtri Ordini -->
+      <div class="pf-card pf-row" style="justify-content:space-between">
+        <div class="pf-row">
+          <label class="muted">Periodo:</label>
+          <input id="ordersFromDate" class="pf-input" type="date">
+          <span class="muted">→</span>
+          <input id="ordersToDate" class="pf-input" type="date">
+          <select id="ordersStatus" class="pf-select">
+            <option value="any">Tutti gli stati</option>
+            <option value="open">Aperti</option>
+            <option value="closed">Chiusi</option>
+            <option value="cancelled">Annullati</option>
+          </select>
+          <select id="ordersLimit" class="pf-select">
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+          <button id="applyOrdersFilters" class="pf-btn">Applica</button>
+        </div>
+        <div class="pf-row">
+          <button id="refreshOrders" class="pf-btn ghost">🔄 Aggiorna</button>
+          <button id="ordersCsv" class="pf-btn ghost">📥 CSV</button>
+        </div>
+      </div>
+
+      <!-- Tabella Ordini -->
+      <div class="pf-card">
+        <div style="overflow:auto">
+          <table class="pf-table" id="ordersTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Data</th>
+                <th>Cliente</th>
+                <th>Totale</th>
+                <th>Pagamento</th>
+                <th>Fulfillment</th>
+                <th>Azioni</th>
+              </tr>
+            </thead>
+            <tbody><tr><td colspan="7" class="muted">Caricamento…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: CLIENTI -->
+    <div id="tab-customers" class="pf-tab-content hidden">
+      <!-- Toolbar Clienti -->
+      <div class="pf-card pf-row" style="justify-content:space-between">
+        <div class="pf-row">
+          <input id="customerSearch" class="pf-input" type="text" placeholder="Cerca cliente per nome o email...">
+          <button id="searchCustomers" class="pf-btn">🔍 Cerca</button>
+        </div>
+        <div class="pf-row">
+          <button id="refreshCustomers" class="pf-btn ghost">🔄 Aggiorna</button>
+          <button id="createCustomer" class="pf-btn success">➕ Nuovo Cliente</button>
+        </div>
+      </div>
+
+      <!-- Tabella Clienti -->
+      <div class="pf-card">
+        <div style="overflow:auto">
+          <table class="pf-table" id="customersTable">
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Email</th>
+                <th>Telefono</th>
+                <th>Ordini</th>
+                <th>Totale Speso</th>
+                <th>Azioni</th>
+              </tr>
+            </thead>
+            <tbody><tr><td colspan="6" class="muted">Caricamento…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: PRODOTTI -->
+    <div id="tab-products" class="pf-tab-content hidden">
+      <!-- Toolbar Prodotti -->
+      <div class="pf-card pf-row" style="justify-content:space-between">
+        <div class="pf-row">
+          <input id="productSearch" class="pf-input" type="text" placeholder="Cerca prodotto per titolo...">
+          <button id="searchProducts" class="pf-btn">🔍 Cerca</button>
+        </div>
+        <div class="pf-row">
+          <button id="refreshProducts" class="pf-btn ghost">🔄 Aggiorna</button>
+          <button id="createProduct" class="pf-btn success">➕ Nuovo Prodotto</button>
+        </div>
+      </div>
+
+      <!-- Tabella Prodotti -->
+      <div class="pf-card">
+        <div style="overflow:auto">
+          <table class="pf-table" id="productsTable">
+            <thead>
+              <tr>
+                <th>Immagine</th>
+                <th>Titolo</th>
+                <th>SKU</th>
+                <th>Prezzo</th>
+                <th>Inventario</th>
+                <th>Stato</th>
+                <th>Azioni</th>
+              </tr>
+            </thead>
+            <tbody><tr><td colspan="7" class="muted">Caricamento…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: INVENTARIO -->
+    <div id="tab-inventory" class="pf-tab-content hidden">
+      <!-- Toolbar Inventario -->
+      <div class="pf-card pf-row" style="justify-content:space-between">
+        <div class="pf-row">
+          <label class="muted">Filtri:</label>
+          <select id="inventoryFilter" class="pf-select">
+            <option value="all">Tutti i prodotti</option>
+            <option value="low">Scorte basse (&lt; 10)</option>
+            <option value="zero">Esauriti (0)</option>
+          </select>
+          <button id="applyInventoryFilter" class="pf-btn">Applica</button>
+        </div>
+        <div class="pf-row">
+          <button id="refreshInventory" class="pf-btn ghost">🔄 Aggiorna</button>
+        </div>
+      </div>
+
+      <!-- Tabella Inventario -->
+      <div class="pf-card">
+        <div style="overflow:auto">
+          <table class="pf-table" id="inventoryTable">
+            <thead>
+              <tr>
+                <th>Prodotto</th>
+                <th>Variante</th>
+                <th>SKU</th>
+                <th>Quantità</th>
+                <th>Azioni</th>
+              </tr>
+            </thead>
+            <tbody><tr><td colspan="5" class="muted">Caricamento…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALS -->
+
+  <!-- Modal Dettaglio Ordine -->
+  <div id="orderModal" class="pf-modal">
+    <div class="pf-modal-content">
+      <div class="pf-modal-header">
+        <h3 class="pf-modal-title">Dettaglio Ordine</h3>
+        <button class="pf-modal-close" onclick="closeModal('orderModal')">&times;</button>
+      </div>
+      <div id="orderModalContent"></div>
+    </div>
+  </div>
+
+  <!-- Modal Cliente -->
+  <div id="customerModal" class="pf-modal">
+    <div class="pf-modal-content">
+      <div class="pf-modal-header">
+        <h3 class="pf-modal-title" id="customerModalTitle">Nuovo Cliente</h3>
+        <button class="pf-modal-close" onclick="closeModal('customerModal')">&times;</button>
+      </div>
+      <form id="customerForm">
+        <div class="pf-grid pf-grid-2">
+          <div class="pf-form-group">
+            <label>Nome *</label>
+            <input id="customerFirstName" class="pf-input" type="text" required>
+          </div>
+          <div class="pf-form-group">
+            <label>Cognome *</label>
+            <input id="customerLastName" class="pf-input" type="text" required>
+          </div>
+        </div>
+        <div class="pf-form-group">
+          <label>Email *</label>
+          <input id="customerEmail" class="pf-input" type="email" required>
+        </div>
+        <div class="pf-form-group">
+          <label>Telefono</label>
+          <input id="customerPhone" class="pf-input" type="tel">
+        </div>
+        <div class="pf-form-group">
+          <label>Note</label>
+          <textarea id="customerNote" class="pf-textarea" placeholder="Note aggiuntive..."></textarea>
+        </div>
+        <div class="pf-row" style="justify-content:flex-end;gap:12px">
+          <button type="button" class="pf-btn ghost" onclick="closeModal('customerModal')">Annulla</button>
+          <button type="submit" class="pf-btn success">Salva Cliente</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Prodotto -->
+  <div id="productModal" class="pf-modal">
+    <div class="pf-modal-content">
+      <div class="pf-modal-header">
+        <h3 class="pf-modal-title" id="productModalTitle">Nuovo Prodotto</h3>
+        <button class="pf-modal-close" onclick="closeModal('productModal')">&times;</button>
+      </div>
+      <form id="productForm">
+        <div class="pf-form-group">
+          <label>Titolo *</label>
+          <input id="productTitle" class="pf-input" type="text" required>
+        </div>
+        <div class="pf-form-group">
+          <label>Descrizione</label>
+          <textarea id="productDescription" class="pf-textarea" placeholder="Descrizione prodotto..."></textarea>
+        </div>
+        <div class="pf-grid pf-grid-3">
+          <div class="pf-form-group">
+            <label>Prezzo *</label>
+            <input id="productPrice" class="pf-input" type="number" step="0.01" required>
+          </div>
+          <div class="pf-form-group">
+            <label>SKU</label>
+            <input id="productSku" class="pf-input" type="text">
+          </div>
+          <div class="pf-form-group">
+            <label>Inventario</label>
+            <input id="productInventory" class="pf-input" type="number" min="0">
+          </div>
+        </div>
+        <div class="pf-form-group">
+          <label>URL Immagine</label>
+          <input id="productImage" class="pf-input" type="url" placeholder="https://...">
+        </div>
+        <div class="pf-row" style="justify-content:flex-end;gap:12px">
+          <button type="button" class="pf-btn ghost" onclick="closeModal('productModal')">Annulla</button>
+          <button type="submit" class="pf-btn success">Salva Prodotto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Aggiorna Inventario -->
+  <div id="inventoryModal" class="pf-modal">
+    <div class="pf-modal-content">
+      <div class="pf-modal-header">
+        <h3 class="pf-modal-title">Aggiorna Inventario</h3>
+        <button class="pf-modal-close" onclick="closeModal('inventoryModal')">&times;</button>
+      </div>
+      <div id="inventoryModalContent">
+        <div class="pf-form-group">
+          <label>Prodotto</label>
+          <div id="inventoryProductName" class="muted"></div>
+        </div>
+        <div class="pf-form-group">
+          <label>Nuova Quantità *</label>
+          <input id="inventoryQuantity" class="pf-input" type="number" min="0" required>
+        </div>
+        <div class="pf-row" style="justify-content:flex-end;gap:12px">
+          <button type="button" class="pf-btn ghost" onclick="closeModal('inventoryModal')">Annulla</button>
+          <button type="button" class="pf-btn success" onclick="updateInventoryQuantity()">Aggiorna</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ========== CONFIG ==========
+    const workerBaseUrl = "https://shopify-backend.massarocalogero1997.workers.dev/"; 
+    const sharedKey = "felix_backend_2025";
+    
+    const state = {
+      activeTab: 'orders',
+      currentCustomerId: null,
+      currentProductId: null,
+      currentInventoryId: null,
+      orders: { 
+        filters: { 
+          limit: 25, 
+          status: 'any', 
+          from: null, 
+          to: null 
+        } 
+      },
+      customers: {
+        search: ''
+      },
+      products: {
+        search: ''
+      },
+      inventory: {
+        filter: 'all'
+      }
+    };
+
+    // ========== UTILITY FUNCTIONS ==========
+    async function fetchJSON(path, paramsObj = {}) {
+      const qs = new URLSearchParams(paramsObj).toString();
+      const url = `${workerBaseUrl}${path}${qs ? "?" + qs : ""}`;
+      
+      console.log('🔍 Fetching:', url);
+      
+      const res = await fetch(url, {
+        headers: { "X-Worker-Key": sharedKey },
+        credentials: "omit"
+      });
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error('❌ Response not OK:', res.status, errorText);
+        throw new Error(`Errore ${res.status}: ${errorText}`);
+      }
+      
+      return res.json();
+    }
+
+    async function postJSON(path, data = {}) {
+      const url = `${workerBaseUrl}${path}`;
+      
+      console.log('📤 Posting to:', url, data);
+      
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: { 
+          "X-Worker-Key": sharedKey,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data),
+        credentials: "omit"
+      });
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error('❌ POST failed:', res.status, errorText);
+        throw new Error(`Errore ${res.status}: ${errorText}`);
+      }
+      
+      return res.json();
+    }
+
+    async function putJSON(path, data = {}) {
+      const url = `${workerBaseUrl}${path}`;
+      
+      console.log('📝 Putting to:', url, data);
+      
+      const res = await fetch(url, {
+        method: 'PUT',
+        headers: { 
+          "X-Worker-Key": sharedKey,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data),
+        credentials: "omit"
+      });
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error('❌ PUT failed:', res.status, errorText);
+        throw new Error(`Errore ${res.status}: ${errorText}`);
+      }
+      
+      return res.json();
+    }
+
+    async function deleteJSON(path) {
+      const url = `${workerBaseUrl}${path}`;
+      
+      console.log('🗑️ Deleting:', url);
+      
+      const res = await fetch(url, {
+        method: 'DELETE',
+        headers: { "X-Worker-Key": sharedKey },
+        credentials: "omit"
+      });
+      
+      if (!res.ok) {
+        const errorText = await res.text();
+        console.error('❌ DELETE failed:', res.status, errorText);
+        throw new Error(`Errore ${res.status}: ${errorText}`);
+      }
+      
+      return res.json();
+    }
+
+    function money(val, currency = 'EUR') {
+      if (val == null) return "—";
+      if (typeof val === "string") val = parseFloat(val);
+      return new Intl.NumberFormat('it-IT', { 
+        style: 'currency', 
+        currency: currency || 'EUR' 
+      }).format(val);
+    }
+
+    function formatDate(dateStr) {
+      if (!dateStr) return "—";
+      return new Date(dateStr).toLocaleString('it-IT');
+    }
+
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.add('active');
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    function getStatusBadge(status) {
+      const badges = {
+        'paid': 'success',
+        'pending': 'warning',
+        'refunded': 'danger',
+        'authorized': 'info',
+        'partially_paid': 'warning',
+        'partially_refunded': 'warning',
+        'voided': 'danger',
+        'fulfilled': 'success',
+        'partial': 'warning',
+        'unfulfilled': 'danger',
+        'active': 'success',
+        'draft': 'warning',
+        'archived': 'danger'
+      };
+      const badgeClass = badges[status?.toLowerCase()] || 'info';
+      return `<span class="pf-badge ${badgeClass}">${status || '—'}</span>`;
+    }
+
+    // ========== TAB MANAGEMENT ==========
+    function switchTab(tabName) {
+      state.activeTab = tabName;
+      
+      // Update tab buttons
+      document.querySelectorAll('.pf-tab').forEach(tab => {
+        if (tab.dataset.tab === tabName) {
+          tab.classList.add('active');
+        } else {
+          tab.classList.remove('active');
+        }
+      });
+      
+      // Update tab content
+      document.querySelectorAll('.pf-tab-content').forEach(content => {
+        if (content.id === `tab-${tabName}`) {
+          content.classList.remove('hidden');
+        } else {
+          content.classList.add('hidden');
+        }
+      });
+      
+      // Load data for the active tab
+      switch (tabName) {
+        case 'orders':
+          loadOrders();
+          break;
+        case 'customers':
+          loadCustomers();
+          break;
+        case 'products':
+          loadProducts();
+          break;
+        case 'inventory':
+          loadInventory();
+          break;
+      }
+    }
+
+    // ========== ORDERS FUNCTIONS ==========
+    async function loadOrders() {
+      try {
+        const params = { 
+          limit: state.orders.filters.limit || 25,
+          status: state.orders.filters.status || 'any',
+          order: 'created_at desc'
+        };
+        
+        if (state.orders.filters.from) {
+          params.created_at_min = new Date(state.orders.filters.from).toISOString();
+        }
+        if (state.orders.filters.to) {
+          params.created_at_max = new Date(state.orders.filters.to).toISOString();
+        }
+
+        console.log('📦 Loading orders with params:', params);
+        
+        const tb = document.querySelector("#ordersTable tbody");
+        tb.innerHTML = `<tr><td colspan="7" class="muted">⏳ Caricamento in corso...</td></tr>`;
+        
+        const response = await fetchJSON("orders", params);
+        const orders = response.page.orders || [];
+        
+        console.log('✅ Orders loaded:', orders.length);
+
+        if (!orders.length) {
+          tb.innerHTML = `<tr><td colspan="7" class="muted">
+            ℹ️ Nessun ordine trovato con questi filtri.<br>
+            <small class="text-sm">Prova a rimuovere i filtri di data o cambiare lo stato.</small>
+          </td></tr>`;
+          return;
+        }
+
+        tb.innerHTML = "";
+
+        for (const o of orders) {
+          const tr = document.createElement("tr");
+          const customerName = o.customer 
+            ? `${o.customer.first_name || ""} ${o.customer.last_name || ""}`.trim() 
+            : "Ospite";
+          
+          tr.innerHTML = `
+            <td><span class="clickable" onclick="viewOrder('${o.id}')">${o.name || o.id}</span></td>
+            <td class="text-sm">${formatDate(o.created_at)}</td>
+            <td>${customerName}</td>
+            <td><strong>${money(o.total_price, o.currency)}</strong></td>
+            <td>${getStatusBadge(o.financial_status)}</td>
+            <td>${getStatusBadge(o.fulfillment_status || 'unfulfilled')}</td>
+            <td>
+              <button class="pf-btn ghost" style="padding:6px 12px;font-size:12px" onclick="viewOrder('${o.id}')">Dettagli</button>
+            </td>`;
+          tb.appendChild(tr);
+        }
+        
+        console.log('✅ Orders table populated successfully');
+        
+      } catch (err) {
+        console.error('❌ Error loading orders:', err);
+        
+        const tb = document.querySelector("#ordersTable tbody");
+        tb.innerHTML = `<tr><td colspan="7" style="color:red;padding:20px">
+          ⚠️ <strong>Errore:</strong> ${err.message}<br>
+          <small class="text-sm muted">Controlla la console (F12) per dettagli</small>
+        </td></tr>`;
+      }
+    }
+
+    async function viewOrder(orderId) {
+      try {
+        console.log('📦 Loading order details for:', orderId);
+        
+        const { page } = await fetchJSON(`orders/${orderId}`);
+        const order = page.order;
+        
+        console.log('✅ Order details:', order);
+        
+        let html = `
+          <div class="pf-form-group">
+            <label>Numero Ordine</label>
+            <div><strong>${order.name}</strong></div>
+          </div>
+          <div class="pf-form-group">
+            <label>Data</label>
+            <div>${formatDate(order.created_at)}</div>
+          </div>
+          <div class="pf-form-group">
+            <label>Cliente</label>
+            <div>${order.customer ? `${order.customer.first_name} ${order.customer.last_name}` : 'Ospite'}</div>
+            ${order.customer ? `<div class="text-sm muted">${order.customer.email}</div>` : ''}
+          </div>
+          <div class="pf-form-group">
+            <label>Totale</label>
+            <div style="font-size:24px;font-weight:700">${money(order.total_price, order.currency)}</div>
+          </div>
+          <div class="pf-form-group">
+            <label>Stato Pagamento</label>
+            <div>${getStatusBadge(order.financial_status)}</div>
+          </div>
+          <div class="pf-form-group">
+            <label>Stato Evasione</label>
+            <div>${getStatusBadge(order.fulfillment_status || 'unfulfilled')}</div>
+          </div>
+          <div class="pf-form-group">
+            <label>Prodotti</label>
+            <table class="pf-table">
+              <thead>
+                <tr><th>Prodotto</th><th>Quantità</th><th>Prezzo</th></tr>
+              </thead>
+              <tbody>`;
+        
+        for (const item of order.line_items || []) {
+          html += `<tr>
+            <td>${item.name}</td>
+            <td>${item.quantity}</td>
+            <td>${money(item.price, order.currency)}</td>
+          </tr>`;
+        }
+        
+        html += `</tbody></table></div>`;
+        
+        if (order.note) {
+          html += `<div class="pf-form-group">
+            <label>Note</label>
+            <div class="muted">${order.note}</div>
+          </div>`;
+        }
+        
+        document.getElementById('orderModalContent').innerHTML = html;
+        openModal('orderModal');
+      } catch (err) {
+        console.error('❌ Error loading order details:', err);
+        alert('Errore nel caricamento dell\'ordine: ' + err.message);
+      }
+    }
+
+    async function exportOrdersCsv() {
+      try {
+        console.log('📥 Exporting CSV...');
+        
+        const params = { 
+          limit: 250,
+          status: state.orders.filters.status || 'any',
+          order: 'created_at desc'
+        };
+        if (state.orders.filters.from) {
+          params.created_at_min = new Date(state.orders.filters.from).toISOString();
+        }
+        if (state.orders.filters.to) {
+          params.created_at_max = new Date(state.orders.filters.to).toISOString();
+        }
+        
+        const { page } = await fetchJSON("orders", params);
+        const orders = page.orders || [];
+        
+        console.log('📥 Exporting', orders.length, 'orders');
+        
+        const header = ["Numero","Data","Cliente","Email","Totale","Valuta","Pagamento","Fulfillment"];
+        const rows = [header];
+        
+        for (const o of orders) {
+          rows.push([
+            o.name || o.id,
+            o.created_at || "",
+            o.customer ? `${o.customer.first_name || ""} ${o.customer.last_name || ""}`.trim() : "",
+            o.customer?.email || "",
+            o.total_price || "",
+            o.currency || "",
+            o.financial_status || "",
+            o.fulfillment_status || ""
+          ]);
+        }
+        
+        const csvContent = rows.map(r => r.map(c => `"${c}"`).join(",")).join("\n");
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `ordini_${new Date().toISOString().slice(0,10)}.csv`;
+        a.click();
+        
+        console.log('✅ CSV exported successfully');
+        alert('CSV esportato con successo!');
+      } catch (err) {
+        console.error('❌ Error exporting CSV:', err);
+        alert('Errore durante l\'export: ' + err.message);
+      }
+    }
+
+    // ========== CUSTOMERS FUNCTIONS ==========
+    async function loadCustomers() {
+      try {
+        const params = {
+          limit: 250,
+          order: 'created_at desc'
+        };
+
+        if (state.customers.search) {
+          params.query = state.customers.search;
+        }
+
+        console.log('👥 Loading customers with params:', params);
+
+        const tb = document.querySelector("#customersTable tbody");
+        tb.innerHTML = `<tr><td colspan="6" class="muted">⏳ Caricamento in corso...</td></tr>`;
+
+        const response = await fetchJSON("customers", params);
+        const allCustomers = response.page?.customers || [];
+
+        console.log(`👥 Loaded ${allCustomers.length} customers from API`);
+
+        // ✅ ARRICCHIMENTO DATI: Prendi i dati dagli ordini per i clienti con dati mancanti
+        console.log('🔄 Arricchimento dati clienti da ordini...');
+
+        for (let customer of allCustomers) {
+          // Se il cliente ha ordini ma manca nome/email/phone, prova a recuperarli dagli ordini
+          if (customer.orders_count > 0 && (!customer.first_name || !customer.last_name || !customer.email || !customer.phone)) {
+            try {
+              // ✅ USA L'ENDPOINT SPECIFICO /customers/:id/orders invece di caricare tutti gli ordini
+              const ordersResp = await fetchJSON(`customers/${customer.id}/orders`, {
+                limit: 1,
+                status: 'any'
+              });
+
+              const orders = ordersResp.page?.orders || [];
+
+              if (orders.length > 0) {
+                const firstOrder = orders[0];
+
+                console.log(`🔍 Ordine #${firstOrder.id || firstOrder.name} trovato per cliente ${customer.id}`);
+
+                // Prendi i dati dall'oggetto customer nell'ordine
+                if (firstOrder.customer) {
+                  if (!customer.first_name && firstOrder.customer.first_name) {
+                    customer.first_name = firstOrder.customer.first_name;
+                    console.log(`✅ Nome recuperato da ordine: ${customer.first_name}`);
+                  }
+                  if (!customer.last_name && firstOrder.customer.last_name) {
+                    customer.last_name = firstOrder.customer.last_name;
+                    console.log(`✅ Cognome recuperato da ordine: ${customer.last_name}`);
+                  }
+                  if (!customer.email && firstOrder.customer.email) {
+                    customer.email = firstOrder.customer.email;
+                    console.log(`✅ Email recuperata da ordine: ${customer.email}`);
+                  }
+                  if (!customer.phone && firstOrder.customer.phone) {
+                    customer.phone = firstOrder.customer.phone;
+                    console.log(`✅ Telefono recuperato da ordine: ${customer.phone}`);
+                  }
+                }
+
+                // Prova anche dall'indirizzo di spedizione/fatturazione
+                const address = firstOrder.shipping_address || firstOrder.billing_address;
+                if (address) {
+                  if (!customer.first_name && address.first_name) {
+                    customer.first_name = address.first_name;
+                    console.log(`✅ Nome recuperato da indirizzo: ${customer.first_name}`);
+                  }
+                  if (!customer.last_name && address.last_name) {
+                    customer.last_name = address.last_name;
+                    console.log(`✅ Cognome recuperato da indirizzo: ${customer.last_name}`);
+                  }
+                  if (!customer.phone && address.phone) {
+                    customer.phone = address.phone;
+                    console.log(`✅ Telefono recuperato da indirizzo: ${customer.phone}`);
+                  }
+                }
+              }
+            } catch (orderErr) {
+              console.warn(`⚠️ Impossibile caricare ordini per cliente ${customer.id}:`, orderErr);
+            }
+          }
+        }
+
+        console.log('✅ Arricchimento dati clienti completato');
+
+        // ✅ NESSUN FILTRO - Mostra TUTTI i clienti
+        console.log(`👥 Mostrando TUTTI i ${allCustomers.length} clienti (NESSUN FILTRO applicato)`);
+
+        // Ordina i clienti: prima quelli con più dati completi
+        allCustomers.sort((a, b) => {
+          const scoreA = (a.first_name ? 1 : 0) + (a.last_name ? 1 : 0) + (a.email ? 2 : 0) + (a.phone ? 1 : 0) + (a.orders_count || 0);
+          const scoreB = (b.first_name ? 1 : 0) + (b.last_name ? 1 : 0) + (b.email ? 2 : 0) + (b.phone ? 1 : 0) + (b.orders_count || 0);
+          return scoreB - scoreA;
+        });
+
+        if (!allCustomers.length) {
+          tb.innerHTML = `<tr><td colspan="6" class="muted">
+            ℹ️ Nessun cliente trovato.<br>
+            <small class="text-sm">Crea il primo cliente per iniziare.</small>
+            <br><br>
+            <button class="pf-btn success" onclick="createCustomer()" style="font-size:12px">➕ Crea Primo Cliente</button>
+          </td></tr>`;
+          return;
+        }
+
+        tb.innerHTML = "";
+
+        for (const c of allCustomers) {
+          const tr = document.createElement("tr");
+
+          // Nome completo con logica migliorata
+          let displayName = '';
+          const firstName = (c.first_name || '').trim();
+          const lastName = (c.last_name || '').trim();
+
+          if (firstName && lastName) {
+            displayName = `${firstName} ${lastName}`;
+          } else if (firstName) {
+            displayName = firstName;
+          } else if (lastName) {
+            displayName = lastName;
+          } else if (c.email && c.email.includes('@')) {
+            // Se non ha nome ma ha email, usa la parte prima della @
+            displayName = c.email.split('@')[0];
+          } else {
+            // Ultimo fallback: usa ID cliente
+            displayName = `Cliente #${c.id.toString().slice(-6)}`;
+          }
+
+          // Email con gestione migliore
+          let emailDisplay = '';
+          if (c.email && c.email.includes('@') && !c.email.includes('guest')) {
+            emailDisplay = c.email;
+          } else if (c.email) {
+            emailDisplay = `<span class="muted">${c.email}</span>`;
+          } else {
+            emailDisplay = '<span class="muted">Non fornita</span>';
+          }
+          
+          // Telefono
+          const phone = c.phone || '—';
+          
+          // Ordini e spesa
+          const ordersCount = c.orders_count || 0;
+          const totalSpent = parseFloat(c.total_spent || 0);
+          
+          // Data creazione
+          const createdAt = c.created_at ? new Date(c.created_at).toLocaleDateString('it-IT') : '—';
+
+          // Badge indicatori dati mancanti
+          let missingDataBadges = '';
+          if (!firstName && !lastName) {
+            missingDataBadges += '<span class="pf-badge warning" style="font-size:10px;margin-left:6px">Senza Nome</span>';
+          }
+          if (!c.email || !c.email.includes('@')) {
+            missingDataBadges += '<span class="pf-badge warning" style="font-size:10px;margin-left:6px">Senza Email</span>';
+          }
+          if (!c.phone) {
+            missingDataBadges += '<span class="pf-badge info" style="font-size:10px;margin-left:6px">Senza Tel</span>';
+          }
+
+          tr.innerHTML = `
+            <td>
+              <div>
+                <strong>${displayName}</strong>
+                ${missingDataBadges}
+              </div>
+              <div class="text-sm muted">Creato: ${createdAt}</div>
+            </td>
+            <td>
+              <div>${emailDisplay}</div>
+              <div class="text-sm muted">ID: ${c.id}</div>
+            </td>
+            <td>${phone}</td>
+            <td>
+              <span class="pf-badge ${ordersCount > 0 ? 'success' : 'info'}">${ordersCount}</span>
+              ${totalSpent > 0 ? `<div class="text-sm muted" style="margin-top:4px">${money(totalSpent, 'EUR')}</div>` : ''}
+            </td>
+            <td><strong>${money(totalSpent, 'EUR')}</strong></td>
+            <td>
+              <div style="display:flex;gap:4px;flex-wrap:wrap">
+                <button class="pf-btn ghost" style="padding:6px 10px;font-size:12px" onclick="viewCustomerFull('${c.id}')" title="Visualizza dettagli">👁️</button>
+                <button class="pf-btn ghost" style="padding:6px 10px;font-size:12px" onclick="editCustomer('${c.id}')" title="Modifica cliente">✏️</button>
+                <button class="pf-btn danger" style="padding:6px 10px;font-size:12px" onclick="deleteCustomer('${c.id}')" title="Elimina cliente">🗑️</button>
+              </div>
+            </td>`;
+          tb.appendChild(tr);
+        }
+        
+        console.log('✅ Real customers table populated successfully');
+        
+      } catch (err) {
+        console.error('❌ Error loading customers:', err);
+        
+        const tb = document.querySelector("#customersTable tbody");
+        tb.innerHTML = `<tr><td colspan="6" style="color:red;padding:20px">
+          ⚠️ <strong>Errore:</strong> ${err.message}<br>
+          <small class="text-sm muted">Controlla la console (F12) per dettagli</small><br><br>
+          <button class="pf-btn ghost" onclick="loadCustomers()" style="font-size:12px">🔄 Riprova</button>
+        </td></tr>`;
+      }
+    }
+
+    function createCustomer() {
+      state.currentCustomerId = null;
+      document.getElementById('customerModalTitle').textContent = '➕ Nuovo Cliente Reale';
+      document.getElementById('customerForm').reset();
+      
+      // Pre-riempi con dati di esempio per facilitare la creazione
+      document.getElementById('customerFirstName').placeholder = 'Es: Mario';
+      document.getElementById('customerLastName').placeholder = 'Es: Rossi';
+      document.getElementById('customerEmail').placeholder = 'Es: mario.rossi@email.com';
+      document.getElementById('customerPhone').placeholder = 'Es: +39 123 456 7890';
+      
+      openModal('customerModal');
+    }
+
+    async function viewCustomerFull(customerId) {
+      try {
+        console.log('👁️ Loading full customer details:', customerId);
+        
+        const response = await fetchJSON(`customers/${customerId}`);
+        const customer = response.page?.customer;
+        
+        if (!customer) {
+          throw new Error('Cliente non trovato');
+        }
+        
+        console.log('👁️ Full customer data:', customer);
+        
+        // Crea HTML con tutti i dettagli disponibili
+        let detailsHtml = `
+          <div style="max-height:500px;overflow-y:auto">
+            <h4 style="color:#333;margin-bottom:16px">👤 Dettagli Cliente Completi</h4>
+            
+            <div style="background:#f9f9f9;padding:12px;border-radius:8px;margin-bottom:16px">
+              <strong>Nome:</strong> ${customer.first_name || 'Non fornito'} ${customer.last_name || 'Non fornito'}<br>
+              <strong>Email:</strong> ${customer.email || 'Non fornita'}<br>
+              <strong>Telefono:</strong> ${customer.phone || 'Non fornito'}<br>
+              <strong>ID Cliente:</strong> ${customer.id}<br>
+              <strong>Creato il:</strong> ${formatDate(customer.created_at)}<br>
+              <strong>Ultimo aggiornamento:</strong> ${formatDate(customer.updated_at)}
+            </div>
+            
+            <div style="background:#f0f8ff;padding:12px;border-radius:8px;margin-bottom:16px">
+              <h5 style="margin:0 0 8px 0">📊 Statistiche Ordini</h5>
+              <strong>Numero ordini:</strong> ${customer.orders_count || 0}<br>
+              <strong>Totale speso:</strong> ${money(customer.total_spent, 'EUR')}<br>
+              <strong>Stato:</strong> ${customer.state === 'enabled' ? '✅ Attivo' : '❌ Disabilitato'}
+            </div>`;
+        
+        // Indirizzi se disponibili
+        if (customer.addresses && customer.addresses.length > 0) {
+          detailsHtml += `
+            <div style="background:#f0fff0;padding:12px;border-radius:8px;margin-bottom:16px">
+              <h5 style="margin:0 0 8px 0">🏠 Indirizzi (${customer.addresses.length})</h5>`;
+          
+          customer.addresses.forEach((addr, index) => {
+            detailsHtml += `
+              <div style="margin-bottom:8px;padding:8px;background:white;border-radius:4px">
+                <strong>${addr.default ? '📍 Predefinito' : `Indirizzo ${index + 1}`}</strong><br>
+                ${addr.first_name || ''} ${addr.last_name || ''}<br>
+                ${addr.address1 || ''} ${addr.address2 || ''}<br>
+                ${addr.city || ''} ${addr.zip || ''} ${addr.province || ''}<br>
+                ${addr.country || ''}
+                ${addr.phone ? `<br>📱 ${addr.phone}` : ''}
+              </div>`;
+          });
+          
+          detailsHtml += `</div>`;
+        }
+        
+        // Marketing consent
+        if (customer.email_marketing_consent || customer.sms_marketing_consent) {
+          detailsHtml += `
+            <div style="background:#fff5ee;padding:12px;border-radius:8px;margin-bottom:16px">
+              <h5 style="margin:0 0 8px 0">📧 Consensi Marketing</h5>
+              <strong>Email Marketing:</strong> ${customer.email_marketing_consent?.state === 'subscribed' ? '✅ Iscritto' : '❌ Non iscritto'}<br>
+              <strong>SMS Marketing:</strong> ${customer.sms_marketing_consent?.state === 'subscribed' ? '✅ Iscritto' : '❌ Non iscritto'}
+            </div>`;
+        }
+        
+        // Note se presenti
+        if (customer.note) {
+          detailsHtml += `
+            <div style="background:#fffacd;padding:12px;border-radius:8px;margin-bottom:16px">
+              <h5 style="margin:0 0 8px 0">📝 Note</h5>
+              ${customer.note}
+            </div>`;
+        }
+        
+        // Tags se presenti
+        if (customer.tags) {
+          detailsHtml += `
+            <div style="background:#f5f5f5;padding:12px;border-radius:8px">
+              <h5 style="margin:0 0 8px 0">🏷️ Tag</h5>
+              ${customer.tags || 'Nessun tag'}
+            </div>`;
+        }
+        
+        detailsHtml += `</div>`;
+        
+        // Usa il modal degli ordini per mostrare i dettagli
+        document.getElementById('orderModalContent').innerHTML = detailsHtml;
+        document.querySelector('#orderModal .pf-modal-title').textContent = `👤 ${customer.first_name || ''} ${customer.last_name || ''} - Dettagli Completi`;
+        openModal('orderModal');
+        
+      } catch (err) {
+        console.error('❌ Error viewing customer details:', err);
+        alert('Errore nel caricamento dei dettagli: ' + err.message);
+      }
+    }
+
+    async function editCustomer(customerId) {
+      try {
+        console.log('✏️ Loading customer for edit:', customerId);
+        
+        const response = await fetchJSON(`customers/${customerId}`);
+        const customer = response.page?.customer;
+        
+        if (!customer) {
+          throw new Error('Cliente non trovato');
+        }
+        
+        console.log('✏️ Customer data for edit:', customer);
+        
+        state.currentCustomerId = customerId;
+        document.getElementById('customerModalTitle').textContent = `✏️ Modifica: ${customer.first_name || ''} ${customer.last_name || ''}`;
+        
+        // Popola il form con i dati reali
+        document.getElementById('customerFirstName').value = customer.first_name || '';
+        document.getElementById('customerLastName').value = customer.last_name || '';
+        document.getElementById('customerEmail').value = customer.email || '';
+        document.getElementById('customerPhone').value = customer.phone || '';
+        document.getElementById('customerNote').value = customer.note || '';
+        
+        console.log('✏️ Form populated successfully');
+        
+        openModal('customerModal');
+        
+      } catch (err) {
+        console.error('❌ Error loading customer for edit:', err);
+        alert('Errore nel caricamento del cliente: ' + err.message);
+      }
+    }
+
+    async function saveCustomer(event) {
+      event.preventDefault();
+      
+      try {
+        const customerData = {
+          first_name: document.getElementById('customerFirstName').value.trim(),
+          last_name: document.getElementById('customerLastName').value.trim(),
+          email: document.getElementById('customerEmail').value.trim(),
+          phone: document.getElementById('customerPhone').value.trim(),
+          note: document.getElementById('customerNote').value.trim(),
+          // Assicuriamoci che sia abilitato
+          state: 'enabled',
+          // Aggiungi consenso marketing di base
+          email_marketing_consent: {
+            state: 'not_subscribed',
+            opt_in_level: 'single_opt_in'
+          }
+        };
+        
+        // Validazioni più rigorose
+        if (!customerData.email || !customerData.email.includes('@')) {
+          alert('❌ L\'email è obbligatoria e deve essere valida!');
+          return;
+        }
+        
+        if (!customerData.first_name && !customerData.last_name) {
+          alert('❌ Inserisci almeno il nome o il cognome!');
+          return;
+        }
+        
+        // Controllo lunghezza minima
+        if (customerData.first_name.length < 2 && customerData.last_name.length < 2) {
+          alert('❌ Nome e cognome devono avere almeno 2 caratteri!');
+          return;
+        }
+        
+        console.log('💾 Saving customer with validated data:', customerData);
+        
+        let response;
+        
+        if (state.currentCustomerId) {
+          // Update existing customer
+          console.log('📝 Updating existing customer:', state.currentCustomerId);
+          response = await putJSON(`customers/${state.currentCustomerId}`, { customer: customerData });
+          console.log('✅ Customer updated successfully:', response);
+          alert('✅ Cliente aggiornato con successo!');
+        } else {
+          // Create new customer
+          console.log('➕ Creating new customer');
+          response = await postJSON('customers', { customer: customerData });
+          console.log('✅ Customer created successfully:', response);
+          alert('✅ Cliente creato con successo!');
+        }
+        
+        closeModal('customerModal');
+        
+        // Aspetta un momento prima di ricaricare per dare tempo a Shopify
+        setTimeout(() => {
+          loadCustomers();
+        }, 1000);
+        
+      } catch (err) {
+        console.error('❌ Error saving customer:', err);
+        alert('❌ Errore nel salvataggio del cliente: ' + err.message);
+      }
+    }
+
+    async function deleteCustomer(customerId) {
+      // Chiedi conferma con più dettagli
+      const confirmMessage = `⚠️ ATTENZIONE! ⚠️
+
+Sei sicuro di voler eliminare questo cliente?
+
+Questa azione:
+• Eliminerà permanentemente il cliente
+• NON eliminerà i suoi ordini passati
+• NON può essere annullata
+
+Digitare "ELIMINA" per confermare:`;
+
+      const userConfirmation = prompt(confirmMessage);
+      
+      if (userConfirmation !== 'ELIMINA') {
+        alert('Eliminazione annullata.');
+        return;
+      }
+      
+      try {
+        console.log('🗑️ Deleting customer with confirmation:', customerId);
+        
+        await deleteJSON(`customers/${customerId}`);
+        
+        console.log('✅ Customer deleted successfully');
+        alert('✅ Cliente eliminato con successo!');
+        loadCustomers(); // Ricarica la tabella
+        
+      } catch (err) {
+        console.error('❌ Error deleting customer:', err);
+        alert('❌ Errore nell\'eliminazione del cliente: ' + err.message);
+      }
+    }
+
+    // ========== PRODUCTS FUNCTIONS ==========
+    async function loadProducts() {
+      try {
+        const params = { 
+          limit: 25,
+          order: 'created_at desc'
+        };
+        
+        if (state.products.search) {
+          params.title = state.products.search;
+        }
+
+        console.log('📱 Loading products with params:', params);
+        
+        const tb = document.querySelector("#productsTable tbody");
+        tb.innerHTML = `<tr><td colspan="7" class="muted">⏳ Caricamento in corso...</td></tr>`;
+        
+        const response = await fetchJSON("products", params);
+        const products = response.page.products || [];
+        
+        console.log('✅ Products loaded:', products.length);
+
+        if (!products.length) {
+          tb.innerHTML = `<tr><td colspan="7" class="muted">
+            ℹ️ Nessun prodotto trovato.<br>
+            <small class="text-sm">Prova a modificare la ricerca.</small>
+          </td></tr>`;
+          return;
+        }
+
+        tb.innerHTML = "";
+
+        for (const p of products) {
+          const tr = document.createElement("tr");
+          const variant = p.variants?.[0] || {};
+          const image = p.images?.[0]?.src || '';
+          
+          tr.innerHTML = `
+            <td>
+              ${image ? `<img src="${image}" alt="${p.title}" class="pf-img">` : '📦'}
+            </td>
+            <td>${p.title}</td>
+            <td>${variant.sku || '—'}</td>
+            <td><strong>${money(variant.price, 'EUR')}</strong></td>
+            <td>${variant.inventory_quantity || 0}</td>
+            <td>${getStatusBadge(p.status)}</td>
+            <td>
+              <button class="pf-btn ghost" style="padding:6px 12px;font-size:12px" onclick="editProduct('${p.id}')">Modifica</button>
+              <button class="pf-btn danger" style="padding:6px 12px;font-size:12px" onclick="deleteProduct('${p.id}')">Elimina</button>
+            </td>`;
+          tb.appendChild(tr);
+        }
+        
+        console.log('✅ Products table populated successfully');
+        
+      } catch (err) {
+        console.error('❌ Error loading products:', err);
+        
+        const tb = document.querySelector("#productsTable tbody");
+        tb.innerHTML = `<tr><td colspan="7" style="color:red;padding:20px">
+          ⚠️ <strong>Errore:</strong> ${err.message}<br>
+          <small class="text-sm muted">Controlla la console (F12) per dettagli</small>
+        </td></tr>`;
+      }
+    }
+
+    function createProduct() {
+      state.currentProductId = null;
+      document.getElementById('productModalTitle').textContent = 'Nuovo Prodotto';
+      document.getElementById('productForm').reset();
+      openModal('productModal');
+    }
+
+    async function editProduct(productId) {
+      try {
+        console.log('📱 Loading product details for:', productId);
+        
+        const { page } = await fetchJSON(`products/${productId}`);
+        const product = page.product;
+        const variant = product.variants?.[0] || {};
+        
+        state.currentProductId = productId;
+        document.getElementById('productModalTitle').textContent = 'Modifica Prodotto';
+        
+        document.getElementById('productTitle').value = product.title || '';
+        document.getElementById('productDescription').value = product.body_html || '';
+        document.getElementById('productPrice').value = variant.price || '';
+        document.getElementById('productSku').value = variant.sku || '';
+        document.getElementById('productInventory').value = variant.inventory_quantity || '';
+        document.getElementById('productImage').value = product.images?.[0]?.src || '';
+        
+        openModal('productModal');
+      } catch (err) {
+        console.error('❌ Error loading product:', err);
+        alert('Errore nel caricamento del prodotto: ' + err.message);
+      }
+    }
+
+    async function saveProduct(event) {
+      event.preventDefault();
+      
+      try {
+        const productData = {
+          title: document.getElementById('productTitle').value,
+          body_html: document.getElementById('productDescription').value,
+          status: 'active',
+          variants: [{
+            price: document.getElementById('productPrice').value,
+            sku: document.getElementById('productSku').value,
+            inventory_quantity: parseInt(document.getElementById('productInventory').value) || 0,
+            inventory_management: 'shopify'
+          }]
+        };
+        
+        const imageUrl = document.getElementById('productImage').value;
+        if (imageUrl) {
+          productData.images = [{ src: imageUrl }];
+        }
+        
+        console.log('💾 Saving product:', productData);
+        
+        if (state.currentProductId) {
+          // Update existing product
+          await putJSON(`products/${state.currentProductId}`, { product: productData });
+          console.log('✅ Product updated successfully');
+          alert('Prodotto aggiornato con successo!');
+        } else {
+          // Create new product
+          await postJSON('products', { product: productData });
+          console.log('✅ Product created successfully');
+          alert('Prodotto creato con successo!');
+        }
+        
+        closeModal('productModal');
+        loadProducts();
+        
+      } catch (err) {
+        console.error('❌ Error saving product:', err);
+        alert('Errore nel salvataggio del prodotto: ' + err.message);
+      }
+    }
+
+    async function deleteProduct(productId) {
+      if (!confirm('Sei sicuro di voler eliminare questo prodotto?')) return;
+      
+      try {
+        console.log('🗑️ Deleting product:', productId);
+        
+        await deleteJSON(`products/${productId}`);
+        
+        console.log('✅ Product deleted successfully');
+        alert('Prodotto eliminato con successo!');
+        loadProducts();
+        
+      } catch (err) {
+        console.error('❌ Error deleting product:', err);
+        alert('Errore nell\'eliminazione del prodotto: ' + err.message);
+      }
+    }
+
+    // ========== INVENTORY FUNCTIONS ==========
+    async function loadInventory() {
+      try {
+        console.log('📊 Loading inventory...');
+        
+        const tb = document.querySelector("#inventoryTable tbody");
+        tb.innerHTML = `<tr><td colspan="5" class="muted">⏳ Caricamento in corso...</td></tr>`;
+        
+        const response = await fetchJSON("products", { limit: 100 });
+        const products = response.page.products || [];
+        
+        console.log('✅ Inventory data loaded:', products.length, 'products');
+
+        if (!products.length) {
+          tb.innerHTML = `<tr><td colspan="5" class="muted">
+            ℹ️ Nessun prodotto trovato per l'inventario.
+          </td></tr>`;
+          return;
+        }
+
+        tb.innerHTML = "";
+
+        for (const product of products) {
+          for (const variant of product.variants || []) {
+            const tr = document.createElement("tr");
+            const quantity = variant.inventory_quantity || 0;
+            
+            // Apply low stock styling
+            if (quantity < 10) {
+              tr.classList.add('low-stock');
+            }
+            
+            // Filter based on inventory filter
+            if (state.inventory.filter === 'low' && quantity >= 10) continue;
+            if (state.inventory.filter === 'zero' && quantity > 0) continue;
+            
+            tr.innerHTML = `
+              <td>${product.title}</td>
+              <td>${variant.title === 'Default Title' ? '—' : variant.title}</td>
+              <td>${variant.sku || '—'}</td>
+              <td><strong>${quantity}</strong> ${quantity < 10 ? '⚠️' : ''}</td>
+              <td>
+                <button class="pf-btn ghost" style="padding:6px 12px;font-size:12px" onclick="updateInventory('${variant.id}', '${product.title}', '${variant.title}', ${quantity})">Aggiorna</button>
+              </td>`;
+            tb.appendChild(tr);
+          }
+        }
+        
+        console.log('✅ Inventory table populated successfully');
+        
+      } catch (err) {
+        console.error('❌ Error loading inventory:', err);
+        
+        const tb = document.querySelector("#inventoryTable tbody");
+        tb.innerHTML = `<tr><td colspan="5" style="color:red;padding:20px">
+          ⚠️ <strong>Errore:</strong> ${err.message}<br>
+          <small class="text-sm muted">Controlla la console (F12) per dettagli</small>
+        </td></tr>`;
+      }
+    }
+
+    function updateInventory(variantId, productTitle, variantTitle, currentQuantity) {
+      state.currentInventoryId = variantId;
+      
+      const displayTitle = variantTitle === 'Default Title' ? productTitle : `${productTitle} - ${variantTitle}`;
+      document.getElementById('inventoryProductName').textContent = displayTitle;
+      document.getElementById('inventoryQuantity').value = currentQuantity;
+      
+      openModal('inventoryModal');
+    }
+
+    async function updateInventoryQuantity() {
+      try {
+        const newQuantity = parseInt(document.getElementById('inventoryQuantity').value);
+        
+        if (isNaN(newQuantity) || newQuantity < 0) {
+          alert('Inserisci una quantità valida (>= 0)');
+          return;
+        }
+        
+        console.log('📊 Updating inventory for variant:', state.currentInventoryId, 'to quantity:', newQuantity);
+        
+        await putJSON(`variants/${state.currentInventoryId}`, {
+          variant: {
+            inventory_quantity: newQuantity
+          }
+        });
+        
+        console.log('✅ Inventory updated successfully');
+        alert('Inventario aggiornato con successo!');
+        
+        closeModal('inventoryModal');
+        loadInventory();
+        
+      } catch (err) {
+        console.error('❌ Error updating inventory:', err);
+        alert('Errore nell\'aggiornamento dell\'inventario: ' + err.message);
+      }
+    }
+
+    // ========== EVENT LISTENERS ==========
+    
+    // Tab switching
+    document.querySelectorAll('.pf-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        switchTab(tab.dataset.tab);
+      });
+    });
+
+    // Orders filters
+    document.getElementById('applyOrdersFilters').addEventListener('click', function() {
+      console.log('🔄 Applying orders filters...');
+      state.orders.filters.from = document.getElementById('ordersFromDate').value || null;
+      state.orders.filters.to = document.getElementById('ordersToDate').value || null;
+      state.orders.filters.limit = parseInt(document.getElementById('ordersLimit').value) || 25;
+      state.orders.filters.status = document.getElementById('ordersStatus').value || 'any';
+      console.log('🔄 New orders filters:', state.orders.filters);
+      loadOrders();
+    });
+
+    document.getElementById('refreshOrders').addEventListener('click', function() {
+      console.log('🔄 Refreshing orders...');
+      loadOrders();
+    });
+
+    document.getElementById('ordersCsv').addEventListener('click', exportOrdersCsv);
+
+    // Customers search
+    document.getElementById('customerSearch').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('searchCustomers').click();
+      }
+    });
+
+    document.getElementById('searchCustomers').addEventListener('click', function() {
+      console.log('🔍 Searching customers...');
+      state.customers.search = document.getElementById('customerSearch').value;
+      loadCustomers();
+    });
+
+    document.getElementById('refreshCustomers').addEventListener('click', function() {
+      console.log('🔄 Refreshing customers...');
+      state.customers.search = '';
+      document.getElementById('customerSearch').value = '';
+      loadCustomers();
+    });
+
+    document.getElementById('createCustomer').addEventListener('click', createCustomer);
+    document.getElementById('customerForm').addEventListener('submit', saveCustomer);
+
+    // Products search
+    document.getElementById('productSearch').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('searchProducts').click();
+      }
+    });
+
+    document.getElementById('searchProducts').addEventListener('click', function() {
+      console.log('🔍 Searching products...');
+      state.products.search = document.getElementById('productSearch').value;
+      loadProducts();
+    });
+
+    document.getElementById('refreshProducts').addEventListener('click', function() {
+      console.log('🔄 Refreshing products...');
+      state.products.search = '';
+      document.getElementById('productSearch').value = '';
+      loadProducts();
+    });
+
+    document.getElementById('createProduct').addEventListener('click', createProduct);
+    document.getElementById('productForm').addEventListener('submit', saveProduct);
+
+    // Inventory filters
+    document.getElementById('applyInventoryFilter').addEventListener('click', function() {
+      console.log('🔄 Applying inventory filter...');
+      state.inventory.filter = document.getElementById('inventoryFilter').value;
+      loadInventory();
+    });
+
+    document.getElementById('refreshInventory').addEventListener('click', function() {
+      console.log('🔄 Refreshing inventory...');
+      loadInventory();
+    });
+
+    // ========== INIT ==========
+    console.log('🚀 Backend Dashboard Completa loaded - Starting...');
+    switchTab('orders'); // Start with orders tab
+  </script>
+</div>

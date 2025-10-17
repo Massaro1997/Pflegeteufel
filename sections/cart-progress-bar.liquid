@@ -1,0 +1,628 @@
+{% comment %}
+  Cart Progress Bar — Krankenkasse Erstattung (Ziel 37€)
+  Versione semplificata e più compatibile
+{% endcomment %}
+
+<div id="cart-progress-bar" class="cpb-section" 
+  data-goal="3700"
+  data-shipping="500"
+  data-animate="true">
+  
+  <div class="cpb-container">
+    <!-- Header -->
+    <div class="cpb-header">
+      <div class="cpb-icon">💊</div>
+      <div class="cpb-content">
+        <h3 class="cpb-title">Krankenkasse Erstattung</h3>
+        <p class="cpb-subtitle">Erreichen Sie 37€ für die Rückerstattung</p>
+      </div>
+    </div>
+
+    <!-- Status Message -->
+    <div class="cpb-message" id="cpb-message">
+      Fügen Sie Produkte hinzu, um die Erstattungsschwelle zu erreichen
+    </div>
+
+    <!-- Extra Amount Warning (hidden by default) -->
+    <div class="cpb-warning" id="cpb-warning" style="display: none;">
+      <div class="cpb-warning-icon">⚠️</div>
+      <div class="cpb-warning-content">
+        <div class="cpb-warning-title">Achtung: Überschuss im Warenkorb!</div>
+        <div class="cpb-warning-text" id="cpb-warning-text"></div>
+        <div class="cpb-warning-suggestion" id="cpb-warning-suggestion"></div>
+      </div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="cpb-progress-wrapper">
+      <div class="cpb-progress-bg">
+        <div class="cpb-progress-fill" id="cpb-fill" style="width: 0%">
+          <div class="cpb-shine"></div>
+        </div>
+        <div class="cpb-percentage" id="cpb-percentage">0%</div>
+      </div>
+    </div>
+
+    <!-- Goal Info -->
+    <div class="cpb-goal-info">
+      <span class="cpb-goal-badge" id="cpb-badge">
+        🎯 Ziel: 37,00€ + 5,00€ Versand = 42,00€
+      </span>
+    </div>
+
+    <!-- Debug Info (hidden by default) -->
+    <div class="cpb-debug" id="cpb-debug" style="display: none;">
+      <small>Debug: Warenkorb = <span id="debug-cart">0€</span> | Fortschritt = <span id="debug-progress">0%</span></small>
+    </div>
+  </div>
+</div>
+
+<style>
+.cpb-section {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-radius: 16px;
+  padding: 24px;
+  margin: 20px 0;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.cpb-section:hover {
+  border-color: rgba(193, 38, 36, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.12);
+}
+
+.cpb-container {
+  max-width: 100%;
+}
+
+.cpb-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.cpb-icon {
+  font-size: 24px;
+  background: linear-gradient(45deg, #C12624, #A01F1D);
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(193, 38, 36, 0.3);
+}
+
+.cpb-content {
+  flex: 1;
+}
+
+.cpb-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0 0 4px 0;
+  line-height: 1.2;
+}
+
+.cpb-subtitle {
+  font-size: 14px;
+  color: #6c757d;
+  margin: 0;
+  font-weight: 400;
+}
+
+.cpb-message {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border-left: 4px solid #C12624;
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 16px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.cpb-message.success {
+  border-left-color: #28a745;
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  color: #155724;
+}
+
+.cpb-warning {
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+  border: 2px solid #ffc107;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2);
+  animation: warningPulse 2s ease-in-out infinite;
+}
+
+@keyframes warningPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+.cpb-warning-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  animation: bounce 1s ease-in-out infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-5px); }
+  60% { transform: translateY(-3px); }
+}
+
+.cpb-warning-content {
+  flex: 1;
+}
+
+.cpb-warning-title {
+  font-weight: 700;
+  color: #856404;
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.cpb-warning-text {
+  color: #856404;
+  font-size: 14px;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.cpb-warning-suggestion {
+  color: #6c757d;
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.3;
+}
+
+.cpb-progress-wrapper {
+  background: white;
+  padding: 16px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  margin-bottom: 16px;
+}
+
+.cpb-progress-bg {
+  position: relative;
+  width: 100%;
+  height: 24px;
+  background: #eef0f3;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.cpb-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #C12624 0%, #A01F1D 50%, #C12624 100%);
+  border-radius: 12px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.cpb-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%);
+  animation: shine 2s infinite;
+}
+
+.cpb-percentage {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  font-size: 12px;
+  font-weight: 700;
+  color: #2c3e50;
+  background: rgba(255,255,255,0.9);
+  padding: 2px 6px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+@keyframes shine {
+  0% { left: -100%; }
+  50% { left: 100%; }
+  100% { left: 100%; }
+}
+
+.cpb-goal-info {
+  text-align: center;
+}
+
+.cpb-goal-badge {
+  display: inline-block;
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.8);
+  border: 1px solid rgba(193, 38, 36, 0.2);
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #2c3e50;
+  transition: all 0.3s ease;
+}
+
+.cpb-goal-badge.reached {
+  background: linear-gradient(45deg, #C12624, #A01F1D);
+  color: white;
+  border-color: #C12624;
+  transform: scale(1.02);
+  box-shadow: 0 2px 8px rgba(193, 38, 36, 0.3);
+}
+
+.cpb-goal-badge.reached::before {
+  content: '✅ ';
+}
+
+.cpb-debug {
+  margin-top: 16px;
+  padding: 8px;
+  background: rgba(0,0,0,0.05);
+  border-radius: 8px;
+  font-family: monospace;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cpb-section {
+    padding: 20px;
+    margin: 16px 0;
+  }
+  
+  .cpb-header {
+    gap: 10px;
+  }
+  
+  .cpb-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+  
+  .cpb-title {
+    font-size: 18px;
+  }
+  
+  .cpb-subtitle {
+    font-size: 13px;
+  }
+  
+  .cpb-message {
+    padding: 14px;
+    font-size: 15px;
+  }
+  
+  .cpb-progress-wrapper {
+    padding: 14px;
+  }
+  
+  .cpb-progress-bg {
+    height: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .cpb-section {
+    padding: 16px;
+  }
+  
+  .cpb-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+  
+  .cpb-goal-badge {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  console.log('[CPB] Inizializzazione Cart Progress Bar...');
+  
+  // Elementi DOM
+  const progressBar = document.getElementById('cart-progress-bar');
+  const fillElement = document.getElementById('cpb-fill');
+  const messageElement = document.getElementById('cpb-message');
+  const percentageElement = document.getElementById('cpb-percentage');
+  const badgeElement = document.getElementById('cpb-badge');
+  const debugElement = document.getElementById('cpb-debug');
+  const warningElement = document.getElementById('cpb-warning');
+  const warningTextElement = document.getElementById('cpb-warning-text');
+  const warningSuggestionElement = document.getElementById('cpb-warning-suggestion');
+  
+  if (!progressBar || !fillElement || !messageElement) {
+    console.error('[CPB] Elementi DOM essenziali non trovati');
+    return;
+  }
+  
+  // Configurazione
+  const GOAL_CENTS = parseInt(progressBar.dataset.goal) || 3700; // 37€
+  const SHIPPING_CENTS = parseInt(progressBar.dataset.shipping) || 500; // 5€
+  const TOTAL_TARGET = GOAL_CENTS + SHIPPING_CENTS;
+  
+  console.log('[CPB] Configurazione:', {
+    goal: GOAL_CENTS / 100 + '€',
+    shipping: SHIPPING_CENTS / 100 + '€',
+    total: TOTAL_TARGET / 100 + '€'
+  });
+  
+  // Funzione per formattare il prezzo
+  function formatMoney(cents) {
+    return new Intl.NumberFormat('de-DE', {
+      style: 'currency',
+      currency: 'EUR'
+    }).format(cents / 100);
+  }
+  
+  // Funzione per ottenere il totale del carrello
+  async function getCartTotal() {
+    console.log('[CPB] Tentativo di recupero totale carrello...');
+    
+    // Metodo 1: API Shopify
+    try {
+      const response = await fetch('/cart.js');
+      if (response.ok) {
+        const cart = await response.json();
+        console.log('[CPB] Cart API risposta:', cart);
+        if (typeof cart.total_price === 'number') {
+          console.log('[CPB] Totale da API:', cart.total_price);
+          return cart.total_price;
+        }
+      }
+    } catch (error) {
+      console.log('[CPB] Errore API cart.js:', error);
+    }
+    
+    // Metodo 2: Parse DOM
+    const selectors = [
+      '[data-cart-total]',
+      '.cart-total .money',
+      '.cart__subtotal .money',
+      '.totals__subtotal .money',
+      '.cart-drawer__total .money',
+      '[data-checkout-subtotal-price-target]'
+    ];
+    
+    for (const selector of selectors) {
+      const element = document.querySelector(selector);
+      if (element) {
+        const text = element.textContent || element.dataset.cartTotal || '';
+        const cents = parsePrice(text);
+        if (cents !== null) {
+          console.log('[CPB] Totale da DOM (' + selector + '):', cents);
+          return cents;
+        }
+      }
+    }
+    
+    console.log('[CPB] Nessun totale trovato, ritorno 0');
+    return 0;
+  }
+  
+  // Funzione per convertire prezzo in centesimi
+  function parsePrice(priceText) {
+    if (!priceText) return null;
+    
+    // Rimuovi tutto tranne numeri, virgole e punti
+    const cleaned = priceText.replace(/[^\d,.-]/g, '');
+    if (!cleaned) return null;
+    
+    // Gestione formato europeo (virgola come decimale)
+    let price = cleaned;
+    if (price.includes(',') && price.includes('.')) {
+      // Se ha entrambi, l'ultimo è il decimale
+      const lastComma = price.lastIndexOf(',');
+      const lastDot = price.lastIndexOf('.');
+      if (lastComma > lastDot) {
+        price = price.replace(/\./g, '').replace(',', '.');
+      } else {
+        price = price.replace(/,/g, '');
+      }
+    } else if (price.includes(',')) {
+      price = price.replace(',', '.');
+    }
+    
+    const number = parseFloat(price);
+    return isNaN(number) ? null : Math.round(number * 100);
+  }
+  
+  // Funzione per aggiornare la UI
+  function updateUI(cartCents) {
+    console.log('[CPB] Aggiornamento UI con totale:', cartCents);
+    
+    const percentage = Math.min(100, Math.max(0, Math.round((cartCents / GOAL_CENTS) * 100)));
+    const remaining = Math.max(0, GOAL_CENTS - cartCents);
+    const excess = Math.max(0, cartCents - GOAL_CENTS);
+    
+    // Aggiorna barra di progresso
+    fillElement.style.width = percentage + '%';
+    percentageElement.textContent = percentage + '%';
+    
+    // Nascondi warning di default
+    if (warningElement) {
+      warningElement.style.display = 'none';
+    }
+    
+    // Aggiorna messaggio e gestisci warning per eccesso
+    if (cartCents >= GOAL_CENTS) {
+      messageElement.innerHTML = `✅ <strong>Ziel erreicht!</strong> Sie haben ${formatMoney(cartCents)} im Warenkorb.`;
+      messageElement.classList.add('success');
+      badgeElement.classList.add('reached');
+      
+      // Mostra warning solo se c'è un eccesso significativo (più di 1€)
+      if (excess > 100 && warningElement) { // 100 centesimi = 1€
+        warningElement.style.display = 'flex';
+        
+        const excessEuros = Math.round(excess / 100 * 100) / 100; // Arrotonda a 2 decimali
+        const optimalAmount = formatMoney(GOAL_CENTS);
+        const excessAmount = formatMoney(excess);
+        
+        warningTextElement.innerHTML = `Sie haben <strong>${excessAmount}</strong> mehr als nötig im Warenkorb. Das optimale Ziel wären <strong>${optimalAmount}</strong> gewesen.`;
+        
+        // Suggerimenti dinamici basati sull'eccesso
+        let suggestion = '';
+        if (excess <= 200) { // Fino a 2€
+          suggestion = '💡 Tipp: Erwägen Sie, ein kleineres Produkt zu wählen oder dieses für einen zukünftigen Einkauf aufzuheben.';
+        } else if (excess <= 500) { // Fino a 5€
+          suggestion = '💡 Tipp: Sie könnten ein günstigeres Alternativprodukt wählen oder mehrere kleine Artikel für zukünftige Bestellungen aufteilen.';
+        } else if (excess <= 1000) { // Fino a 10€
+          suggestion = '💡 Tipp: Überlegen Sie, diesen Einkauf in zwei separate Bestellungen aufzuteilen, um bei beiden die Erstattung zu maximieren.';
+        } else { // Oltre 10€
+          suggestion = '💡 Tipp: Teilen Sie diesen Einkauf in mehrere Bestellungen auf - so können Sie mehrfach die Krankenkasse-Erstattung von 37€ erhalten!';
+        }
+        
+        warningSuggestionElement.textContent = suggestion;
+      }
+    } else {
+      messageElement.innerHTML = `Fügen Sie noch <strong>${formatMoney(remaining)}</strong> hinzu, um die Krankenkasse-Erstattungsschwelle von <strong>${formatMoney(GOAL_CENTS)}</strong> zu erreichen.`;
+      messageElement.classList.remove('success');
+      badgeElement.classList.remove('reached');
+    }
+    
+    // Debug info
+    if (debugElement) {
+      document.getElementById('debug-cart').textContent = formatMoney(cartCents);
+      document.getElementById('debug-progress').textContent = percentage + '%';
+    }
+  }
+  
+  // Funzione principale di aggiornamento
+  async function updateProgress() {
+    try {
+      const total = await getCartTotal();
+      updateUI(total);
+    } catch (error) {
+      console.error('[CPB] Errore nell\'aggiornamento:', error);
+    }
+  }
+  
+  // Event listeners
+  document.addEventListener('cart:updated', updateProgress);
+  document.addEventListener('shopify:cart:updated', updateProgress);
+  
+  // Observer per cambiamenti DOM del carrello
+  const observer = new MutationObserver(function(mutations) {
+    let shouldUpdate = false;
+    mutations.forEach(function(mutation) {
+      const target = mutation.target;
+      if (target.closest('.cart') || 
+          target.closest('[data-cart]') ||
+          target.classList.contains('cart-total') ||
+          target.textContent && target.textContent.includes('€')) {
+        shouldUpdate = true;
+      }
+    });
+    if (shouldUpdate) {
+      setTimeout(updateProgress, 100);
+    }
+  });
+  
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    characterData: true
+  });
+  
+  // Polling di backup ogni 3 secondi
+  setInterval(updateProgress, 3000);
+  
+  // Inizializzazione
+  updateProgress();
+  
+  // Debug utilities globali
+  window.CPB_DEBUG = function() {
+    debugElement.style.display = debugElement.style.display === 'none' ? 'block' : 'none';
+    console.log('[CPB] Debug mode:', debugElement.style.display !== 'none');
+  };
+  
+  window.CPB_TEST = function(euros) {
+    const cents = Math.round(euros * 100);
+    console.log('[CPB] Test con', euros + '€', '(' + cents + ' centesimi)');
+    updateUI(cents);
+  };
+  
+  // Test specifici per eccesso
+  window.CPB_TEST_EXCESS = function() {
+    console.log('[CPB] Test scenari eccesso:');
+    console.log('- CPB_TEST(39) = +2€ eccesso');
+    console.log('- CPB_TEST(42) = +5€ eccesso'); 
+    console.log('- CPB_TEST(47) = +10€ eccesso');
+    console.log('- CPB_TEST(60) = +23€ eccesso');
+  };
+  
+  window.CPB_UPDATE = updateProgress;
+  
+  console.log('[CPB] Inizializzazione completata');
+  console.log('[CPB] Comandi debug disponibili:');
+  console.log('- CPB_DEBUG() = mostra/nascondi debug');
+  console.log('- CPB_TEST(euros) = testa con importo specifico');
+  console.log('- CPB_TEST_EXCESS() = mostra esempi di test eccesso');
+  console.log('- CPB_UPDATE() = forza aggiornamento');
+});
+</script>
+
+{% schema %}
+{
+  "name": "Erstattung Progress",
+  "tag": "section",
+  "class": "cart-progress",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Krankenkasse Erstattung Einstellungen"
+    },
+    {
+      "type": "number",
+      "id": "goal_amount",
+      "label": "Ziel Betrag (EUR)",
+      "default": 37,
+      "info": "Mindestbetrag für Krankenkasse Erstattung"
+    },
+    {
+      "type": "number",
+      "id": "shipping_cost",
+      "label": "Versandkosten (EUR)",
+      "default": 5
+    },
+    {
+      "type": "checkbox",
+      "id": "show_debug",
+      "label": "Debug Informationen anzeigen",
+      "default": false
+    }
+  ],
+  "presets": [
+    {
+      "name": "Erstattung Progress"
+    }
+  ]
+}
+{% endschema %}
