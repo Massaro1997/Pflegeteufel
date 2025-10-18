@@ -1,0 +1,388 @@
+<style>
+.pflegebox-info-wrapper {
+  max-width: 1200px;
+  margin: 60px auto;
+  padding: 0 20px;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.pflegebox-info-card {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  border-radius: 20px;
+  padding: 50px 60px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  border: 2px solid #e9ecef;
+  position: relative;
+  overflow: hidden;
+}
+
+.pflegebox-info-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 5px;
+  background: linear-gradient(90deg, #C12624 0%, #28a745 100%);
+}
+
+.pflegebox-money-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  font-size: 2rem;
+  font-weight: 900;
+  padding: 15px 30px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+}
+
+.pflegebox-info-title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #2c3e50;
+  margin-bottom: 15px;
+  line-height: 1.2;
+}
+
+.pflegebox-info-description {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 35px;
+  line-height: 1.6;
+}
+
+.pflegebox-question {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 25px;
+  text-align: center;
+}
+
+.pflegebox-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.pflegebox-option-card {
+  background: white;
+  border: 3px solid #e9ecef;
+  border-radius: 16px;
+  padding: 30px;
+  text-align: center;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.pflegebox-option-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.pflegebox-option-card.primary {
+  border-color: #C12624;
+  background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
+}
+
+.pflegebox-option-card.primary:hover {
+  border-color: #A01F1D;
+  box-shadow: 0 8px 30px rgba(193, 38, 36, 0.2);
+}
+
+.pflegebox-option-card.secondary {
+  opacity: 0.85;
+}
+
+.pflegebox-option-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.pflegebox-option-card.primary .pflegebox-option-icon {
+  color: #C12624;
+}
+
+.pflegebox-option-card.secondary .pflegebox-option-icon {
+  color: #6c757d;
+}
+
+.pflegebox-option-label {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.pflegebox-option-sublabel {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+.pflegebox-cta-btn {
+  display: inline-block;
+  padding: 15px 40px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-radius: 10px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.pflegebox-cta-btn.primary {
+  background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%);
+  color: white;
+  box-shadow: 0 5px 15px rgba(193, 38, 36, 0.3);
+}
+
+.pflegebox-cta-btn.primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(193, 38, 36, 0.4);
+}
+
+.pflegebox-cta-btn.secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.pflegebox-cta-btn.secondary:hover {
+  background: #5a6268;
+  transform: translateY(-2px);
+}
+
+.pflegebox-badge {
+  position: absolute;
+  top: -12px;
+  right: 20px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 6px 15px;
+  border-radius: 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+}
+
+.pflegebox-mehr-info {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.pflegebox-mehr-info-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1rem;
+  color: #C12624;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.pflegebox-mehr-info-link:hover {
+  color: #A01F1D;
+  gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .pflegebox-info-card {
+    padding: 30px 25px;
+  }
+
+  .pflegebox-money-badge {
+    font-size: 1.5rem;
+    padding: 12px 20px;
+  }
+
+  .pflegebox-info-title {
+    font-size: 1.6rem;
+  }
+
+  .pflegebox-info-description {
+    font-size: 1rem;
+  }
+
+  .pflegebox-options {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .pflegebox-question {
+    font-size: 1.1rem;
+  }
+
+  .pflegebox-option-card {
+    padding: 25px 20px;
+  }
+
+  .pflegebox-cta-btn {
+    width: 100%;
+    padding: 12px 30px;
+  }
+}
+</style>
+
+<div class="pflegebox-info-wrapper">
+  <div class="pflegebox-info-card">
+    <div class="pflegebox-money-badge">
+      💶 BIS ZU 42€ MONATLICH ZURÜCKERHALTEN
+    </div>
+
+    <h2 class="pflegebox-info-title">{{ section.settings.title }}</h2>
+    <p class="pflegebox-info-description">{{ section.settings.description }}</p>
+
+    <p class="pflegebox-question">{{ section.settings.question }}</p>
+
+    <div class="pflegebox-options">
+      <!-- OPZIONE 1: Nein, noch nicht (PRINCIPALE - Formulario online) -->
+      <div class="pflegebox-option-card primary">
+        <span class="pflegebox-badge">EMPFOHLEN</span>
+        <span class="pflegebox-option-icon">✗</span>
+        <div class="pflegebox-option-label">{{ section.settings.option_no_label }}</div>
+        <div class="pflegebox-option-sublabel">{{ section.settings.option_no_sublabel }}</div>
+        <a href="{{ section.settings.online_form_url }}" class="pflegebox-cta-btn primary">
+          📝 {{ section.settings.online_form_button_text }}
+        </a>
+      </div>
+
+      <!-- OPZIONE 2: Ja, habe ich (Secondaria - Download PDF) -->
+      <div class="pflegebox-option-card secondary">
+        <span class="pflegebox-option-icon">✓</span>
+        <div class="pflegebox-option-label">{{ section.settings.option_yes_label }}</div>
+        <div class="pflegebox-option-sublabel">{{ section.settings.option_yes_sublabel }}</div>
+        <a href="{{ section.settings.pdf_download_url }}" class="pflegebox-cta-btn secondary" download>
+          📄 {{ section.settings.pdf_download_button_text }}
+        </a>
+      </div>
+    </div>
+
+    {% if section.settings.show_mehr_info %}
+    <div class="pflegebox-mehr-info">
+      <a href="{{ section.settings.mehr_info_url }}" class="pflegebox-mehr-info-link">
+        ℹ️ {{ section.settings.mehr_info_text }} →
+      </a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Pflegebox Info CTA",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titolo",
+      "default": "Kostenlose Pflegehilfsmittel erhalten"
+    },
+    {
+      "type": "textarea",
+      "id": "description",
+      "label": "Descrizione",
+      "default": "Ihre Pflegekasse übernimmt die Kosten für Pflegehilfsmittel zum Verbrauch mit bis zu 42€ pro Monat. Beantragen Sie jetzt Ihre kostenlose Pflegebox!"
+    },
+    {
+      "type": "text",
+      "id": "question",
+      "label": "Domanda",
+      "default": "Haben Sie bereits einen Antrag bei Ihrer Pflegekasse gestellt?"
+    },
+    {
+      "type": "header",
+      "content": "Opzione NO (Principale - Online Form)"
+    },
+    {
+      "type": "text",
+      "id": "option_no_label",
+      "label": "Label",
+      "default": "Nein, noch nicht"
+    },
+    {
+      "type": "text",
+      "id": "option_no_sublabel",
+      "label": "Sottotitolo",
+      "default": "Antrag jetzt online ausfüllen"
+    },
+    {
+      "type": "url",
+      "id": "online_form_url",
+      "label": "URL Formulario Online",
+      "default": "/pages/pflegebox-formular"
+    },
+    {
+      "type": "text",
+      "id": "online_form_button_text",
+      "label": "Testo Bottone",
+      "default": "Jetzt online beantragen"
+    },
+    {
+      "type": "header",
+      "content": "Opzione YES (Secondaria - PDF Download)"
+    },
+    {
+      "type": "text",
+      "id": "option_yes_label",
+      "label": "Label",
+      "default": "Ja, habe ich"
+    },
+    {
+      "type": "text",
+      "id": "option_yes_sublabel",
+      "label": "Sottotitolo",
+      "default": "Formular herunterladen"
+    },
+    {
+      "type": "url",
+      "id": "pdf_download_url",
+      "label": "URL PDF Download",
+      "info": "Link al PDF vuoto"
+    },
+    {
+      "type": "text",
+      "id": "pdf_download_button_text",
+      "label": "Testo Bottone",
+      "default": "PDF herunterladen"
+    },
+    {
+      "type": "header",
+      "content": "Mehr Infos Link"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_mehr_info",
+      "label": "Mostra 'Mehr Infos'",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "mehr_info_text",
+      "label": "Testo Link",
+      "default": "Mehr Infos zu Pflegehilfsmitteln"
+    },
+    {
+      "type": "url",
+      "id": "mehr_info_url",
+      "label": "URL Mehr Infos"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pflegebox Info CTA"
+    }
+  ]
+}
+{% endschema %}
