@@ -1,0 +1,15 @@
+name = "shopify-backend"
+main = "cloudflare-worker-with-pdf.js"
+compatibility_date = "2024-01-01"
+
+# Environment variables (aggiungi le chiavi su Cloudflare Dashboard)
+[vars]
+SHOPIFY_API_VERSION = "2024-01"
+ALLOWED_ORIGIN = "*"
+
+# Secrets (da configurare con: wrangler secret put NOME_VARIABILE)
+# - SHOPIFY_ADMIN_TOKEN
+# - SHOPIFY_SHOP
+# - WORKER_SHARED_KEY
+# - RESEND_API_KEY
+# - SENDGRID_API_KEY (opzionale)
