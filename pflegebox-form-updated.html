@@ -32,8 +32,8 @@
     .pflegeteufel-page-wrapper .form-input {width: 100%;padding: 12px 15px;font-size: 1rem;border: 2px solid #e9ecef;border-radius: 8px;font-family: 'Inter', sans-serif;transition: all 0.3s;}
     .pflegeteufel-page-wrapper .form-input:focus {outline: none;border-color: #C12624;box-shadow: 0 0 0 3px rgba(193, 38, 36, 0.1);}
     .pflegeteufel-page-wrapper .form-row {display: grid;grid-template-columns: 1fr 1fr;gap: 20px;}
-    .pflegeteufel-page-wrapper .radio-group {display: flex;gap: 15px;flex-wrap: wrap;}
-    .pflegeteufel-page-wrapper .radio-option {flex: 1;min-width: 100px;}
+    .pflegeteufel-page-wrapper .radio-group {display: grid;grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));gap: 20px;}
+    .pflegeteufel-page-wrapper .radio-option {}
     .pflegeteufel-page-wrapper .radio-label {display: flex;align-items: center;padding: 12px 15px;border: 2px solid #e9ecef;border-radius: 8px;cursor: pointer;transition: all 0.3s;font-weight: 500;word-break: break-word;}
     .pflegeteufel-page-wrapper .radio-label:hover {border-color: #C12624;background: #fff5f5;}
     .pflegeteufel-page-wrapper .radio-label input {margin-right: 10px;flex-shrink: 0;}
@@ -88,8 +88,7 @@
         .pflegeteufel-page-wrapper .form-container {padding: 30px 20px;margin-bottom: 25px;overflow: hidden;}
         .pflegeteufel-page-wrapper .section-title {font-size: 1.2rem;word-break: break-word;}
         .pflegeteufel-page-wrapper .form-row {grid-template-columns: 1fr;gap: 15px;}
-        .pflegeteufel-page-wrapper .radio-group {flex-direction: column;gap: 10px;}
-        .pflegeteufel-page-wrapper .radio-option {min-width: 100%;flex: none;}
+        .pflegeteufel-page-wrapper .radio-group {grid-template-columns: 1fr;gap: 12px;}
         .pflegeteufel-page-wrapper .checkbox-group {grid-template-columns: 1fr;gap: 10px;}
         .pflegeteufel-page-wrapper .form-navigation {flex-direction: column;gap: 10px;}
         .pflegeteufel-page-wrapper .btn {width: 100%;padding: 12px 20px;font-size: 1rem;}
