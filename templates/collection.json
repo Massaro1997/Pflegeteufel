@@ -1,1 +1,458 @@
-{"sections":{"section_RFrkNJ":{"type":"section","name":"t:names.custom_section","settings":{"content_direction":"column","vertical_on_mobile":true,"horizontal_alignment":"flex-start","vertical_alignment":"center","align_baseline":false,"horizontal_alignment_flex_direction_column":"flex-start","vertical_alignment_flex_direction_column":"center","gap":0,"section_width":"page-width","section_height":"","section_height_custom":50,"color_scheme":"scheme-4","background_media":"none","video_position":"cover","background_image_position":"cover","border":"none","border_width":1,"border_opacity":100,"border_radius":0,"toggle_overlay":false,"overlay_color":"#00000026","overlay_style":"solid","gradient_direction":"to top","padding-block-start":0,"padding-block-end":0}},"hero_iPQ9xc":{"type":"hero","name":"t:names.hero","settings":{"link":"","open_in_new_tab":false,"media_type_1":"image","image_1":"shopify:\/\/shop_images\/ChatGPT_Image_30_mag_2025_09_00_38_e8f1b146-60ea-46b3-9954-10136eb45f8a.png","media_type_2":"image","content_direction":"column","vertical_on_mobile":true,"horizontal_alignment":"flex-start","vertical_alignment":"center","align_baseline":false,"horizontal_alignment_flex_direction_column":"center","vertical_alignment_flex_direction_column":"center","gap":16,"section_width":"page-width","section_height":"medium","section_height_custom":50,"color_scheme":"scheme-5","toggle_overlay":false,"overlay_color":"#00000026","overlay_style":"gradient","gradient_direction":"to top","blurred_reflection":false,"reflection_opacity":75,"padding-block-start":100,"padding-block-end":0}},"section_xjzTNV":{"type":"section","blocks":{"custom_liquid_gGzYqJ":{"type":"custom-liquid","name":"t:names.custom_liquid","settings":{"custom_liquid":"{% comment %}\n  PFLEGEBOX + KRANKENKASSE BONUS SEKTION - Completo\n{% endcomment %}\n\n<!-- PFLEGEBOX SEZIONE -->\n<div id=\"pflegebox-clean-container\"><\/div>\n\n<!-- KRANKENKASSE BONUS SEZIONE -->\n<div id=\"krankenkasse-bonus-container\"><\/div>\n\n<script>\n\/\/ Font Google Fonts\nif (!document.querySelector('link[href*=\"Inter\"]')) {\n    const fontLink = document.createElement('link');\n    fontLink.href = 'https:\/\/fonts.googleapis.com\/css2?family=Inter:wght@400;500;600;700;800&display=swap';\n    fontLink.rel = 'stylesheet';\n    document.head.appendChild(fontLink);\n}\n\n\/* ========================================\n   PFLEGEBOX SEKTION\n   ======================================== *\/\n\n\/\/ Dati della sezione PFLEGEBOX\nvar pflegeboxInfo = [\n    {\n        id: 1,\n        icon: \"📦\",\n        title: \"WAS IST DIE PFLEGEBOX?\",\n        content: \"Die Pflegebox ist Ihr monatliches Paket mit hochwertigen Pflegehilfsmitteln zum Verbrauch. Individuell zusammengestellt nach Ihren Bedürfnissen und vollständig von der Pflegekasse finanziert - bis zu 42€ jeden Monat kostenfrei für Sie.\"\n    },\n    {\n        id: 2,\n        icon: \"🏠\",\n        title: \"WER HAT ANSPRUCH?\",\n        content: \"Alle Personen mit anerkanntem Pflegegrad 1-5 haben laut § 40 SGB XI Anspruch auf kostenlose Pflegehilfsmittel. Die Pflege muss zu Hause stattfinden - durch Angehörige, Freunde oder professionelle Pflegedienste.\"\n    },\n    {\n        id: 3,\n        icon: \"🧤\",\n        title: \"WAS IST ENTHALTEN?\",\n        content: \"Einmalhandschuhe in verschiedenen Größen, Desinfektionsmittel für Hände und Flächen, Mundschutzmasken, Schutzschürzen, Bettschutzeinlagen und weitere Hilfsmittel - alles perfekt auf Ihre Pflegesituation abgestimmt.\"\n    },\n    {\n        id: 4,\n        icon: \"🚚\",\n        title: \"WIE LÄUFT ES AB?\",\n        content: \"Nach einmaliger Anmeldung erhalten Sie automatisch jeden Monat Ihre persönliche Pflegebox direkt vor die Haustür. Wir übernehmen Antragstellung, Abrechnung mit der Pflegekasse und alle Formalitäten - komplett kostenlos.\"\n    }\n];\n\n\/\/ JavaScript per creare la sezione PFLEGEBOX\nfunction createCleanPflegeboxSection() {\n    const container = document.getElementById('pflegebox-clean-container');\n    \n    if (!container) {\n        console.error('Container pflegebox-clean-container non trovato');\n        return;\n    }\n    \n    const sectionHTML = '<div class=\"pflegebox-clean-section\" style=\"padding: 20px 0 20px 0; background: white; font-family: Inter, sans-serif;\">' +\n        '<div class=\"pflegebox-clean-container\" style=\"max-width: 1400px; margin: 0 auto; padding: 0 20px; width: 100%;\">' +\n        '<div class=\"pflegebox-clean-header\" id=\"pflegebox-clean-header\" style=\"text-align: center; margin-bottom: 40px; opacity: 0; transform: translateY(30px); transition: all 1.2s ease;\">' +\n            '<h2 class=\"pflegebox-clean-title\" style=\"font-size: 2.2rem; font-weight: 700; color: #2c3e50; margin-bottom: 12px; line-height: 1.2;\">DIE PFLEGEBOX – IHR MONATLICHES PAKET<\/h2>' +\n            '<p class=\"pflegebox-clean-subtitle\" style=\"font-size: 1.1rem; color: #6c757d; max-width: 700px; margin: 0 auto; line-height: 1.4;\">Hochwertige Pflegehilfsmittel direkt zu Ihnen nach Hause. Von der Pflegekasse bezahlt, jeden Monat kostenfrei bis zu 42€.<\/p>' +\n        '<\/div>' +\n        '<div class=\"pflegebox-clean-grid\" id=\"pflegebox-clean-grid\" style=\"display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;\">' +\n            pflegeboxInfo.map(function(info, index) { return createCleanInfoCard(info, index); }).join('') +\n        '<\/div>' +\n        '<\/div>' +\n        '<\/div>';\n    \n    container.innerHTML = sectionHTML;\n    addCleanStyles();\n    addCleanIntersectionObserver();\n    \n    console.log('✅ Sezione Pflegebox pulita creata con successo!');\n}\n\nfunction createCleanInfoCard(info, index) {\n    return '<div class=\"pflegebox-clean-item\" style=\"background: white; border-radius: 8px; padding: 25px 20px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 1px solid #e9ecef; display: flex; flex-direction: column; height: 100%; opacity: 0; transform: translateY(50px);\">' +\n        '<div class=\"pflegebox-clean-icon\" style=\"background: #f8f9fa; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 2px solid #C12624; transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-size: 28px;\">' + info.icon + '<\/div>' +\n        '<h3 class=\"pflegebox-clean-card-title\" style=\"font-size: 1.1rem; font-weight: 700; color: #2c3e50; margin-bottom: 15px; text-align: center; line-height: 1.2;\">' + info.title + '<\/h3>' +\n        '<div class=\"pflegebox-clean-content\" style=\"flex-grow: 1; display: flex; align-items: center;\">' +\n            '<p class=\"pflegebox-clean-text\" style=\"color: #555; line-height: 1.6; margin: 0; font-size: 0.95rem; text-align: center;\">' + info.content + '<\/p>' +\n        '<\/div>' +\n        '<\/div>';\n}\n\nfunction addCleanStyles() {\n    if (document.getElementById('pflegebox-clean-styles')) return;\n    \n    const styles = document.createElement('style');\n    styles.id = 'pflegebox-clean-styles';\n    styles.innerHTML = '.pflegebox-clean-item:hover { transform: translateY(-8px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); }' +\n        '.pflegebox-clean-item:hover .pflegebox-clean-icon { transform: scale(1.1); border-color: #A01F1D; box-shadow: 0 5px 15px rgba(193, 38, 36, 0.3); }' +\n        '.pflegebox-clean-header.animate { opacity: 1 !important; transform: translateY(0) !important; }' +\n        '.pflegebox-clean-item.animate { opacity: 1 !important; transform: translateY(0) !important; }' +\n        '@media (max-width: 1200px) { .pflegebox-clean-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 15px !important; } }' +\n        '@media (max-width: 767px) { .pflegebox-clean-grid { grid-template-columns: 1fr !important; } .pflegebox-clean-title { font-size: 1.8rem !important; } .pflegebox-clean-item { padding: 20px 15px !important; } }';\n    \n    document.head.appendChild(styles);\n}\n\nfunction addCleanIntersectionObserver() {\n    const observer = new IntersectionObserver(function(entries) {\n        entries.forEach(function(entry) {\n            if (entry.isIntersecting) {\n                entry.target.classList.add('animate');\n            }\n        });\n    }, { \n        threshold: 0.1,\n        rootMargin: '0px 0px -50px 0px'\n    });\n\n    setTimeout(function() {\n        const header = document.getElementById('pflegebox-clean-header');\n        if (header) {\n            observer.observe(header);\n        }\n\n        const cleanItems = document.querySelectorAll('.pflegebox-clean-item');\n        cleanItems.forEach(function(item, index) {\n            item.style.transitionDelay = (0.2 + (index * 0.15)) + 's';\n            observer.observe(item);\n        });\n        \n        console.log('✨ Pflegebox Clean Intersection Observer attivato!');\n    }, 100);\n}\n\n\/* ========================================\n   KRANKENKASSE BONUS SEKTION\n   ======================================== *\/\n\nfunction createKrankenkasseBonusSection() {\n    const container = document.getElementById('krankenkasse-bonus-container');\n    \n    if (!container) {\n        console.error('Container krankenkasse-bonus-container nicht gefunden');\n        return;\n    }\n    \n    const sectionHTML = '<div class=\"kk-bonus-section\" style=\"padding: 5px 0 40px 0; background: white; font-family: Inter, sans-serif;\">' +\n        '<div class=\"kk-bonus-container\" style=\"max-width: 1200px; margin: 0 auto; padding: 0 20px;\">' +\n        '<div class=\"kk-bonus-header\" id=\"kk-bonus-header\" style=\"text-align: center; margin-bottom: 25px;\">' +\n            '<div class=\"kk-bonus-icon\" style=\"background: #f8f9fa; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 2px solid #C12624; font-size: 40px; transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);\">💶<\/div>' +\n            '<h2 style=\"font-size: 1.8rem; font-weight: 700; color: #2c3e50; margin-bottom: 12px; line-height: 1.2;\">BIS ZU 42€ MONATLICH ZURÜCKERHALTEN<\/h2>' +\n            '<p style=\"font-size: 1.05rem; color: #6c757d; max-width: 650px; margin: 0 auto; line-height: 1.5;\">Ihre Pflegekasse übernimmt die Kosten für Pflegehilfsmittel zum Verbrauch mit bis zu <strong style=\"color: #2c3e50;\">42€ pro Monat<\/strong><\/p>' +\n        '<\/div>' +\n        '<div class=\"kk-bonus-card\" id=\"kk-bonus-card\" style=\"background: white; border-radius: 8px; padding: 30px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); border: 1px solid #e9ecef; max-width: 100%;\">' +\n            '<div class=\"kk-bonus-question\" style=\"background: #f8f9fa; padding: 20px; margin-bottom: 20px; border-left: 3px solid #C12624; border-radius: 4px;\">' +\n                '<p style=\"margin: 0 0 20px 0; font-weight: 700; color: #2c3e50; font-size: 1.1rem;\">Haben Sie bereits einen Antrag bei Ihrer Pflegekasse gestellt?<\/p>' +\n                '<div class=\"kk-bonus-buttons\" style=\"display: flex; gap: 12px; flex-wrap: wrap;\">' +\n                    '<button type=\"button\" class=\"kk-btn\" data-answer=\"ja\" style=\"background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; padding: 14px 28px; cursor: pointer; font-size: 1rem; border-radius: 6px; font-weight: 600; font-family: Inter, sans-serif; transition: all 0.3s ease; flex: 1; min-width: 150px; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);\">✓ Ja, habe ich<\/button>' +\n                    '<button type=\"button\" class=\"kk-btn\" data-answer=\"nein\" style=\"background: linear-gradient(135deg, #dc3545 0%, #e63946 100%); color: white; border: none; padding: 14px 28px; cursor: pointer; font-size: 1rem; border-radius: 6px; font-weight: 600; font-family: Inter, sans-serif; transition: all 0.3s ease; flex: 1; min-width: 150px; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);\">✗ Nein, noch nicht<\/button>' +\n                    '<button type=\"button\" class=\"kk-btn\" data-answer=\"info\" style=\"background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); color: white; border: none; padding: 14px 28px; cursor: pointer; font-size: 1rem; border-radius: 6px; font-weight: 600; font-family: Inter, sans-serif; transition: all 0.3s ease; flex: 1; min-width: 150px; box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);\">ℹ Mehr Infos<\/button>' +\n                '<\/div>' +\n            '<\/div>' +\n            '<div class=\"kk-answer kk-answer-ja\" style=\"display: none; background: #d4edda; padding: 20px; margin-bottom: 20px; border-left: 3px solid #28a745; border-radius: 4px;\">' +\n                '<p style=\"margin: 0 0 20px 0; line-height: 1.7; color: #155724; font-weight: 700; font-size: 1.05rem;\">✓ Perfekt!<\/p>' +\n                '<div style=\"background: white; padding: 20px; border-radius: 4px; margin-bottom: 15px;\">' +\n                    '<p style=\"margin: 0 0 15px 0; color: #2c3e50; line-height: 1.6;\">Jetzt können Sie Ihre <strong>personalisierte Pflegebox<\/strong> zusammenstellen und bei uns bestellen.<\/p>' +\n                    '<div style=\"background: #fff3cd; padding: 15px; border-radius: 6px; border-left: 3px solid #ffc107;\">' +\n                        '<p style=\"margin: 0; color: #856404; font-size: 0.95rem; line-height: 1.6;\"><strong>💡 Wichtig zu wissen:<\/strong><br>Die Pflegekasse übernimmt bis zu 42€ pro Monat. Alle Kosten darüber hinaus werden Ihnen per Rechnung in Rechnung gestellt.<\/p>' +\n                    '<\/div>' +\n                '<\/div>' +\n                '<a href=\"\/collections\" style=\"display: inline-block; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; text-decoration: none; padding: 14px 28px; border-radius: 6px; font-weight: 700; font-size: 1rem; text-align: center; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3); margin: 0 auto; display: block; max-width: 350px;\">🛒 Pflegebox jetzt zusammenstellen<\/a>' +\n            '<\/div>' +\n            '<div class=\"kk-answer kk-answer-info\" style=\"display: none; background: #e7f3ff; padding: 20px; margin-bottom: 20px; border-left: 3px solid #0066cc; border-radius: 4px;\">' +\n                '<p style=\"margin: 0 0 20px 0; color: #2c3e50; font-weight: 700; font-size: 1.05rem;\">📋 Kostenübernahme durch die Pflegekasse:<\/p>' +\n                '<div style=\"background: white; padding: 20px; border-radius: 4px; margin-bottom: 15px;\">' +\n                    '<div style=\"display: flex; flex-direction: column; gap: 12px;\">' +\n                        '<div style=\"display: flex; align-items: start; gap: 12px;\"><span style=\"color: #C12624; font-weight: 700; font-size: 1.2rem; line-height: 1;\">•<\/span><p style=\"margin: 0; color: #555; line-height: 1.6;\"><strong>Monatlicher Zuschuss:<\/strong> bis zu 42€<\/p><\/div>' +\n                        '<div style=\"display: flex; align-items: start; gap: 12px;\"><span style=\"color: #C12624; font-weight: 700; font-size: 1.2rem; line-height: 1;\">•<\/span><p style=\"margin: 0; color: #555; line-height: 1.6;\"><strong>Gilt für:<\/strong> Pflegehilfsmittel zum Verbrauch (Handschuhe, Desinfektionsmittel, Masken, Bettschutz, etc.)<\/p><\/div>' +\n                        '<div style=\"display: flex; align-items: start; gap: 12px;\"><span style=\"color: #C12624; font-weight: 700; font-size: 1.2rem; line-height: 1;\">•<\/span><p style=\"margin: 0; color: #555; line-height: 1.6;\"><strong>Voraussetzung:<\/strong> Ärztliches Rezept<\/p><\/div>' +\n                        '<div style=\"display: flex; align-items: start; gap: 12px;\"><span style=\"color: #C12624; font-weight: 700; font-size: 1.2rem; line-height: 1;\">•<\/span><p style=\"margin: 0; color: #555; line-height: 1.6;\"><strong>Antrag:<\/strong> Einmalig bei Ihrer Pflegekasse<\/p><\/div>' +\n                        '<div style=\"display: flex; align-items: start; gap: 12px;\"><span style=\"color: #C12624; font-weight: 700; font-size: 1.2rem; line-height: 1;\">•<\/span><p style=\"margin: 0; color: #555; line-height: 1.6;\"><strong>Abrechnung:<\/strong> Monatlich mit Rechnung<\/p><\/div>' +\n                    '<\/div>' +\n                '<\/div>' +\n                '<a href=\"\/pages\/krankenkasse-ratgeber\" style=\"display: inline-block; color: #0066cc; text-decoration: none; font-weight: 700; font-size: 1rem; transition: all 0.3s ease;\">→ Vollständige Informationen & Antragsformular<\/a>' +\n            '<\/div>' +\n            '<div class=\"kk-answer kk-answer-nein\" style=\"display: none; background: #fff3cd; padding: 20px; margin-bottom: 20px; border-left: 3px solid #ffc107; border-radius: 4px;\">' +\n                '<p style=\"margin: 0 0 20px 0; line-height: 1.7; color: #856404; font-weight: 700; font-size: 1.05rem;\">⚠️ Wichtig: Sie verschenken bis zu 42€ jeden Monat!<\/p>' +\n                '<div style=\"background: white; padding: 20px; border-radius: 4px; margin-bottom: 15px;\">' +\n                    '<p style=\"margin: 0 0 20px 0; color: #2c3e50; font-weight: 700; font-size: 1.05rem;\">📋 So einfach geht es in 3 Schritten:<\/p>' +\n                    '<div style=\"display: flex; flex-direction: column; gap: 15px;\">' +\n                        '<div style=\"display: flex; align-items: start; gap: 12px;\"><span style=\"background: #C12624; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 0.9rem;\">1<\/span><p style=\"margin: 0; color: #555; line-height: 1.6; padding-top: 3px;\"><strong>PDF herunterladen & ausdrucken<\/strong><br><span style=\"color: #777;\">Laden Sie das Formular herunter und drucken Sie es aus<\/span><\/p><\/div>' +\n                        '<div style=\"display: flex; align-items: start; gap: 12px;\"><span style=\"background: #C12624; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 0.9rem;\">2<\/span><p style=\"margin: 0; color: #555; line-height: 1.6; padding-top: 3px;\"><strong>Ausfüllen & unterschreiben<\/strong><br><span style=\"color: #777;\">Füllen Sie alle Felder aus und setzen Sie Ihre Unterschrift<\/span><\/p><\/div>' +\n                        '<div style=\"display: flex; align-items: start; gap: 12px;\"><span style=\"background: #C12624; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; font-size: 0.9rem;\">3<\/span><p style=\"margin: 0; color: #555; line-height: 1.6; padding-top: 3px;\"><strong>Per Post an uns senden<\/strong><br><span style=\"font-weight: 600; color: #2c3e50;\">Pflegeteufel Agentur<br>Regentenstraße 88<br>51063 Köln-Mülheim<\/span><\/p><\/div>' +\n                    '<\/div>' +\n                    '<div style=\"background: #d4edda; padding: 15px; border-radius: 6px; margin-top: 15px; border-left: 3px solid #28a745;\">' +\n                        '<p style=\"margin: 0; color: #155724; font-size: 0.95rem; line-height: 1.6;\"><strong>✓ Fertig!<\/strong> Wir kümmern uns um alles Weitere und reichen Ihren Antrag bei der Pflegekasse ein. Sie erhalten eine Bestätigung, sobald der Antrag genehmigt wurde.<\/p>' +\n                    '<\/div>' +\n                '<\/div>' +\n                '<a href=\"#\" onclick=\"downloadPDF(event)\" style=\"display: inline-block; background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%); color: white; text-decoration: none; padding: 14px 28px; border-radius: 6px; font-weight: 700; font-size: 1rem; text-align: center; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(193, 38, 36, 0.3); margin: 0 auto; display: block; max-width: 350px;\">📥 Formular jetzt herunterladen<\/a>' +\n            '<\/div>' +\n        '<\/div>' +\n        '<\/div>' +\n        '<\/div>';\n    \n    container.innerHTML = sectionHTML;\n    addKKBonusStyles();\n    addKKBonusAnimations();\n    addKKBonusEventListeners();\n    \n    console.log('✅ Krankenkasse Bonus Sektion erfolgreich erstellt!');\n}\n\nfunction addKKBonusStyles() {\n    if (document.getElementById('kk-bonus-styles')) return;\n    \n    const styles = document.createElement('style');\n    styles.id = 'kk-bonus-styles';\n    styles.innerHTML = '.kk-btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25) !important; opacity: 1 !important; }' +\n        '.kk-btn:active { transform: translateY(-1px) scale(0.98); }' +\n        'a[href*=\"krankenkasse-ratgeber.pdf\"] { display: block !important; margin: 15px auto 0 !important; max-width: 350px; }' +\n        'a[href*=\"krankenkasse-ratgeber.pdf\"]:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(193, 38, 36, 0.4) !important; }' +\n        'a[href=\"\/collections\"] { display: block !important; margin: 15px auto 0 !important; max-width: 350px; }' +\n        'a[href=\"\/collections\"]:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4) !important; }' +\n        'a[href*=\"krankenkasse-ratgeber\"]:hover { text-decoration: underline !important; }' +\n        '@media (max-width: 767px) { ' +\n        '.kk-bonus-section { padding: 20px 0 !important; } ' +\n        '.kk-bonus-container { padding: 0 15px !important; } ' +\n        '.kk-bonus-header h2 { font-size: 1.6rem !important; line-height: 1.3 !important; } ' +\n        '.kk-bonus-header p { font-size: 1rem !important; } ' +\n        '.kk-bonus-icon { width: 70px !important; height: 70px !important; font-size: 35px !important; } ' +\n        '.kk-bonus-card { padding: 25px 20px !important; } ' +\n        '.kk-bonus-question { padding: 20px 15px !important; } ' +\n        '.kk-bonus-question p { font-size: 1.05rem !important; } ' +\n        '.kk-bonus-buttons { flex-direction: column !important; } ' +\n        '.kk-btn { width: 100% !important; padding: 16px 24px !important; font-size: 1.05rem !important; } ' +\n        '.kk-answer { padding: 20px 15px !important; } ' +\n        '.kk-answer p { font-size: 1rem !important; line-height: 1.7 !important; } ' +\n        '.kk-answer strong { font-size: 1.05rem !important; } ' +\n        '.kk-answer > p:first-child { font-size: 1.1rem !important; } ' +\n        'a[href*=\"krankenkasse-ratgeber.pdf\"] { max-width: 100% !important; margin: 10px 0 0 0 !important; } ' +\n        'a[href=\"\/collections\"] { max-width: 100% !important; margin: 10px 0 0 0 !important; } ' +\n        '}';\n    \n    document.head.appendChild(styles);\n}\n\nfunction addKKBonusAnimations() {\n    \/\/ Animazioni rimosse - le card sono ora sempre visibili\n    console.log('✨ Krankenkasse Bonus sezione caricata (senza animazioni)');\n}\n\nfunction addKKBonusEventListeners() {\n    const buttons = document.querySelectorAll('.kk-btn');\n    const answers = document.querySelectorAll('.kk-answer');\n    \n    if (!buttons.length) return;\n    \n    buttons.forEach(function(button) {\n        button.addEventListener('click', function() {\n            const answer = this.getAttribute('data-answer');\n            \n            \/\/ Nascondi tutte le risposte\n            answers.forEach(function(ans) { ans.style.display = 'none'; });\n            \n            \/\/ Reset Button Opacity\n            buttons.forEach(function(btn) { btn.style.opacity = '0.7'; });\n            \n            \/\/ Evidenzia pulsante selezionato\n            this.style.opacity = '1';\n            \n            \/\/ Mostra la risposta corrispondente\n            const answerClass = '.kk-answer-' + answer;\n            const answerElement = document.querySelector(answerClass);\n            if (answerElement) {\n                answerElement.style.display = 'block';\n                setTimeout(function() {\n                    answerElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });\n                }, 100);\n            }\n        });\n    });\n}\n\n\/\/ Funzione per forzare il download del PDF\nfunction downloadPDF(event) {\n    event.preventDefault();\n    \n    const pdfUrl = 'https:\/\/cdn.shopify.com\/s\/files\/1\/0909\/2805\/4653\/files\/Bestellformular_Pflegebox.pdf?v=1760449576';\n    const fileName = 'Bestellformular_Pflegebox.pdf';\n    \n    fetch(pdfUrl)\n        .then(response => response.blob())\n        .then(blob => {\n            const url = window.URL.createObjectURL(blob);\n            const a = document.createElement('a');\n            a.style.display = 'none';\n            a.href = url;\n            a.download = fileName;\n            document.body.appendChild(a);\n            a.click();\n            window.URL.revokeObjectURL(url);\n            document.body.removeChild(a);\n        })\n        .catch(error => {\n            console.error('Errore nel download:', error);\n            \/\/ Fallback: apri in una nuova tab\n            window.open(pdfUrl, '_blank');\n        });\n}\n\n\/\/ Auto-Initialisierung ENTRAMBE LE SEZIONI\ndocument.addEventListener('DOMContentLoaded', function() {\n    createCleanPflegeboxSection();\n    createKrankenkasseBonusSection();\n});\n\nif (document.readyState === 'loading') {\n    document.addEventListener('DOMContentLoaded', function() {\n        createCleanPflegeboxSection();\n        createKrankenkasseBonusSection();\n    });\n} else {\n    createCleanPflegeboxSection();\n    createKrankenkasseBonusSection();\n}\n\n\/\/ Esporta entrambe le funzioni\nif (typeof window !== 'undefined') {\n    window.CleanPflegeboxSection = {\n        create: createCleanPflegeboxSection\n    };\n    window.KrankenkasseBonusSection = {\n        create: createKrankenkasseBonusSection\n    };\n}\n<\/script>"},"blocks":{}}},"block_order":["custom_liquid_gGzYqJ"],"name":"t:names.custom_section","settings":{"content_direction":"column","vertical_on_mobile":true,"horizontal_alignment":"flex-start","vertical_alignment":"center","align_baseline":false,"horizontal_alignment_flex_direction_column":"center","vertical_alignment_flex_direction_column":"center","gap":0,"section_width":"full-width","section_height":"full-screen","section_height_custom":50,"color_scheme":"scheme-1","background_media":"none","video_position":"cover","background_image_position":"cover","border":"none","border_width":1,"border_opacity":100,"border_radius":0,"toggle_overlay":false,"overlay_color":"#00000026","overlay_style":"solid","gradient_direction":"to top","padding-block-start":0,"padding-block-end":0}},"section_A7DRCh":{"type":"section","blocks":{"custom_liquid_bbFJwm":{"type":"custom-liquid","name":"t:names.custom_liquid","settings":{"custom_liquid":"{% comment %}\n  ALTERNATIVE SEKTION - Direkt bestellen mit Shopify Collections\n  Stile identico alla Pflegebox Section\n{% endcomment %}\n\n<!-- Font Google Fonts -->\n{% unless content_for_header contains 'Inter' %}\n<link href=\"https:\/\/fonts.googleapis.com\/css2?family=Inter:wght@400;500;600;700;800&display=swap\" rel=\"stylesheet\">\n{% endunless %}\n\n<style>\n.alternative-section {\n  padding: 20px 0 40px 0;\n  background: white;\n  font-family: 'Inter', sans-serif;\n}\n\n.alternative-container {\n  max-width: 1400px;\n  margin: 0 auto;\n  padding: 0 20px;\n  width: 100%;\n}\n\n.alternative-header {\n  text-align: center;\n  margin-bottom: 40px;\n}\n\n.alternative-title {\n  font-size: 2.2rem;\n  font-weight: 700;\n  color: #2c3e50;\n  margin-bottom: 12px;\n  line-height: 1.2;\n}\n\n.alternative-subtitle {\n  font-size: 1.1rem;\n  color: #6c757d;\n  max-width: 700px;\n  margin: 0 auto;\n  line-height: 1.4;\n}\n\n.alternative-card {\n  background: white;\n  border-radius: 8px;\n  padding: 30px;\n  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);\n  border: 1px solid #e9ecef;\n}\n\n.alternative-question {\n  background: #f8f9fa;\n  padding: 20px;\n  margin-bottom: 25px;\n  border-left: 3px solid #C12624;\n  border-radius: 4px;\n}\n\n.alternative-question p {\n  margin: 0;\n  font-weight: 700;\n  color: #2c3e50;\n  font-size: 1.1rem;\n}\n\n.collections-grid {\n  display: grid;\n  grid-template-columns: repeat(4, 1fr);\n  gap: 20px;\n}\n\n.collection-item {\n  background: white;\n  border-radius: 8px;\n  padding: 20px;\n  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);\n  transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);\n  border: 1px solid #e9ecef;\n  display: flex;\n  flex-direction: column;\n  height: 100%;\n  text-align: center;\n}\n\n.collection-item:hover {\n  transform: translateY(-8px);\n  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);\n}\n\n.collection-image {\n  width: 100%;\n  height: 150px;\n  border-radius: 8px;\n  overflow: hidden;\n  margin-bottom: 15px;\n}\n\n.collection-image img {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n}\n\n.collection-icon {\n  background: #f8f9fa;\n  width: 80px;\n  height: 80px;\n  border-radius: 50%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  margin: 0 auto 15px;\n  border: 2px solid #C12624;\n  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);\n  font-size: 32px;\n}\n\n.collection-item:hover .collection-icon {\n  transform: scale(1.1);\n  border-color: #A01F1D;\n  box-shadow: 0 5px 15px rgba(193, 38, 36, 0.3);\n}\n\n.collection-title {\n  font-size: 1.05rem;\n  font-weight: 700;\n  color: #2c3e50;\n  margin-bottom: 10px;\n  line-height: 1.2;\n}\n\n.collection-content {\n  flex-grow: 1;\n  display: flex;\n  align-items: center;\n  margin-bottom: 15px;\n}\n\n.collection-text {\n  color: #555;\n  line-height: 1.5;\n  margin: 0;\n  font-size: 0.9rem;\n}\n\n.collection-button {\n  background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%);\n  color: white;\n  text-decoration: none;\n  padding: 10px 20px;\n  border-radius: 6px;\n  font-weight: 600;\n  font-size: 0.95rem;\n  text-align: center;\n  transition: all 0.3s ease;\n  display: block;\n  box-shadow: 0 2px 8px rgba(193, 38, 36, 0.3);\n}\n\n.collection-button:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 4px 15px rgba(193, 38, 36, 0.5);\n  color: white !important;\n  text-decoration: none !important;\n}\n\n.info-box {\n  background: #fff3cd;\n  padding: 20px;\n  border-radius: 4px;\n  border-left: 3px solid #ffc107;\n  margin-top: 25px;\n}\n\n.info-box p {\n  margin: 0;\n  color: #856404;\n  line-height: 1.6;\n  font-size: 0.95rem;\n}\n\n@media (max-width: 1200px) {\n  .collections-grid {\n    grid-template-columns: repeat(3, 1fr);\n    gap: 15px;\n  }\n}\n\n@media (max-width: 900px) {\n  .collections-grid {\n    grid-template-columns: repeat(2, 1fr);\n  }\n}\n\n@media (max-width: 767px) {\n  .collections-grid {\n    grid-template-columns: 1fr;\n  }\n  \n  .alternative-title {\n    font-size: 1.8rem;\n  }\n  \n  .alternative-card {\n    padding: 20px;\n  }\n}\n<\/style>\n\n<div class=\"alternative-section\">\n  <div class=\"alternative-container\">\n    \n    <!-- Header -->\n    <div class=\"alternative-header\">\n      <h2 class=\"alternative-title\">ALTERNATIVE: DIREKT BESTELLEN auf  rechnung<\/h2>\n      <p class=\"alternative-subtitle\">Sie möchten nicht warten oder haben keinen Anspruch? Bestellen Sie flexibel und unkompliziert – Bezahlung per Rechnung.<\/p>\n    <\/div>\n    \n    <!-- Single Card con tutte le Collections -->\n    <div class=\"alternative-card\">\n      <div class=\"alternative-question\">\n        <p>🛍️ Wählen Sie Ihre Kategorie:<\/p>\n      <\/div>\n      \n      <!-- Grid Collections -->\n      <div class=\"collections-grid\">\n        {% for collection in collections %}\n          {% unless collection.handle == 'frontpage' or collection.handle == 'all' %}\n            <div class=\"collection-item\">\n              {% if collection.image %}\n                <div class=\"collection-image\">\n                  <img \n                    src=\"{{ collection.image | img_url: '400x' }}\" \n                    alt=\"{{ collection.title | escape }}\"\n                    loading=\"lazy\"\n                  >\n                <\/div>\n              {% else %}\n                <div class=\"collection-icon\">📦<\/div>\n              {% endif %}\n              \n              <h3 class=\"collection-title\">{{ collection.title }}<\/h3>\n              \n              <div class=\"collection-content\">\n                <p class=\"collection-text\">\n                  {% if collection.description != blank %}\n                    {{ collection.description | strip_html | truncate: 80 }}\n                  {% else %}\n                    Entdecken Sie unsere Produkte\n                  {% endif %}\n                <\/p>\n              <\/div>\n              \n              <a href=\"{{ collection.url }}\" class=\"collection-button\">\n                Produkte ansehen\n              <\/a>\n            <\/div>\n          {% endunless %}\n        {% endfor %}\n      <\/div>\n      \n      <!-- Info Box -->\n      <div class=\"info-box\">\n        <p><strong>💳 Wichtig zu wissen:<\/strong> Alle Produkte werden Ihnen per Rechnung in Rechnung gestellt. Sie bezahlen bequem nach Erhalt der Ware.<\/p>\n      <\/div>\n    <\/div>\n    \n  <\/div>\n<\/div>"},"blocks":{}}},"block_order":["custom_liquid_bbFJwm"],"name":"t:names.custom_section","settings":{"content_direction":"column","vertical_on_mobile":true,"horizontal_alignment":"flex-start","vertical_alignment":"center","align_baseline":false,"horizontal_alignment_flex_direction_column":"center","vertical_alignment_flex_direction_column":"center","gap":0,"section_width":"full-width","section_height":"full-screen","section_height_custom":50,"color_scheme":"scheme-1","background_media":"none","video_position":"cover","background_image_position":"cover","border":"none","border_width":1,"border_opacity":100,"border_radius":0,"toggle_overlay":false,"overlay_color":"#00000026","overlay_style":"solid","gradient_direction":"to top","padding-block-start":0,"padding-block-end":0}},"main":{"type":"main-collection","blocks":{"filters":{"type":"filters","static":true,"settings":{"enable_filtering":false,"filter_style":"horizontal","filter_width":"full-width","text_label_case":"default","show_swatch_label":false,"show_filter_label":false,"enable_sorting":false,"enable_grid_density":false,"inherit_color_scheme":false,"color_scheme":"scheme-4","padding-block-start":8,"padding-block-end":8,"padding-inline-start":40,"padding-inline-end":40,"facets_margin_bottom":0,"facets_margin_right":0},"blocks":{}},"product-card":{"type":"product-card","disabled":true,"static":true,"settings":{"product":"{{ closest.product }}","product_card_gap":0,"inherit_color_scheme":false,"color_scheme":"scheme-2","border":"none","border_width":1,"border_opacity":100,"border_radius":0,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{"product_card_gallery_68C7TN":{"type":"_product-card-gallery","settings":{"product":"{{ closest.product }}","image_ratio":"adapt","border":"solid","border_width":0,"border_opacity":0,"border_radius":0,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}},"group_JNegy4":{"type":"group","settings":{"link":"","open_in_new_tab":false,"content_direction":"column","vertical_on_mobile":true,"horizontal_alignment":"space-between","vertical_alignment":"flex-start","align_baseline":false,"horizontal_alignment_flex_direction_column":"flex-start","vertical_alignment_flex_direction_column":"space-between","gap":4,"width":"fill","custom_width":100,"width_mobile":"fill","custom_width_mobile":100,"height":"fit","custom_height":100,"inherit_color_scheme":false,"color_scheme":"scheme-2","background_media":"none","video_position":"cover","background_image_position":"cover","border":"none","border_width":1,"border_opacity":100,"border_radius":0,"toggle_overlay":false,"overlay_color":"#00000026","overlay_style":"solid","gradient_direction":"to top","padding-block-start":12,"padding-block-end":12,"padding-inline-start":12,"padding-inline-end":12},"blocks":{"group_i9KeQ7":{"type":"group","settings":{"link":"","open_in_new_tab":false,"content_direction":"row","vertical_on_mobile":true,"horizontal_alignment":"space-between","vertical_alignment":"center","align_baseline":false,"horizontal_alignment_flex_direction_column":"flex-start","vertical_alignment_flex_direction_column":"flex-start","gap":8,"width":"fill","custom_width":75,"width_mobile":"fill","custom_width_mobile":75,"height":"fit","custom_height":100,"inherit_color_scheme":true,"color_scheme":"","background_media":"none","video_position":"cover","background_image_position":"cover","border":"none","border_width":1,"border_opacity":100,"border_radius":0,"toggle_overlay":false,"overlay_color":"#00000026","overlay_style":"solid","gradient_direction":"to top","padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{"product_title_X4Hxci":{"type":"product-title","settings":{"product":"{{ closest.product }}","width":"fit-content","max_width":"normal","alignment":"left","type_preset":"h5","font":"var(--font-body--family)","font_size":"1rem","line_height":"normal","letter_spacing":"normal","case":"none","wrap":"pretty","color":"var(--color-foreground)","background":false,"background_color":"#00000026","corner_radius":0,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}},"price_r3D933":{"type":"price","settings":{"product":"{{ closest.product }}","show_sale_price_first":true,"show_installments":false,"show_tax_info":false,"type_preset":"paragraph","width":"fit-content","alignment":"right","font":"var(--font-body--family)","font_size":"1rem","line_height":"normal","letter_spacing":"normal","case":"none","color":"var(--color-foreground)","padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}}},"block_order":["product_title_X4Hxci","price_r3D933"]},"group_HnURV7":{"type":"group","settings":{"link":"","open_in_new_tab":false,"content_direction":"column","vertical_on_mobile":true,"horizontal_alignment":"flex-start","vertical_alignment":"center","align_baseline":false,"horizontal_alignment_flex_direction_column":"flex-start","vertical_alignment_flex_direction_column":"flex-start","gap":12,"width":"fit-content","custom_width":100,"width_mobile":"fill","custom_width_mobile":25,"height":"fit","custom_height":100,"inherit_color_scheme":true,"color_scheme":"","background_media":"none","video_position":"cover","background_image_position":"cover","border":"none","border_width":1,"border_opacity":100,"border_radius":0,"toggle_overlay":false,"overlay_color":"#00000026","overlay_style":"solid","gradient_direction":"to top","padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{"text_yYkK7E":{"type":"text","settings":{"text":"<p>{{ closest.product.metafields.descriptors.subtitle.value }}<\/p>","width":"fit-content","max_width":"none","alignment":"left","type_preset":"custom","font":"var(--font-primary--family)","font_size":"var(--font-size--body-md)","line_height":"normal","letter_spacing":"normal","case":"none","wrap":"pretty","color":"","background":false,"background_color":"#00000026","corner_radius":0,"padding-block-start":0,"padding-block-end":0,"padding-inline-start":0,"padding-inline-end":0},"blocks":{}}},"block_order":["text_yYkK7E"]}},"block_order":["group_i9KeQ7","group_HnURV7"]}},"block_order":["product_card_gallery_68C7TN","group_JNegy4"]}},"disabled":true,"settings":{"layout_type":"grid","product_card_size":"large","mobile_product_card_size":"small","product_grid_width":"full-width","full_width_on_mobile":true,"columns_gap_horizontal":1,"columns_gap_vertical":1,"padding-inline-start":0,"padding-inline-end":0,"color_scheme":"","padding-block-start":0,"padding-block-end":1}}},"order":["section_RFrkNJ","hero_iPQ9xc","section_xjzTNV","section_A7DRCh","main"]}
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "section_RFrkNJ": {
+      "type": "section",
+      "name": "t:names.custom_section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 0,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-4",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "hero_iPQ9xc": {
+      "type": "hero",
+      "name": "t:names.hero",
+      "settings": {
+        "link": "",
+        "open_in_new_tab": false,
+        "media_type_1": "image",
+        "image_1": "shopify://shop_images/ChatGPT_Image_30_mag_2025_09_00_38_e8f1b146-60ea-46b3-9954-10136eb45f8a.png",
+        "media_type_2": "image",
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 16,
+        "section_width": "page-width",
+        "section_height": "medium",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-5",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "gradient",
+        "gradient_direction": "to top",
+        "blurred_reflection": false,
+        "reflection_opacity": 75,
+        "padding-block-start": 100,
+        "padding-block-end": 0
+      }
+    },
+    "section_xjzTNV": {
+      "type": "section",
+      "blocks": {
+        "custom_liquid_gGzYqJ": {
+          "type": "custom-liquid",
+          "name": "t:names.custom_liquid",
+          "settings": {
+            "custom_liquid": "{% comment %}\n  PFLEGEBOX + KRANKENKASSE BONUS SEKTION - Completo con Formulario Online\n{% endcomment %}\n\n<!-- PFLEGEBOX SEZIONE -->\n<div id=\"pflegebox-clean-container\"></div>\n\n<!-- KRANKENKASSE BONUS SEZIONE -->\n<div id=\"krankenkasse-bonus-container\"></div>\n\n<script>\n// Font Google Fonts\nif (!document.querySelector('link[href*=\"Inter\"]')) {\n    const fontLink = document.createElement('link');\n    fontLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap';\n    fontLink.rel = 'stylesheet';\n    document.head.appendChild(fontLink);\n}\n\n/* ========================================\n   PFLEGEBOX SEKTION\n   ======================================== */\n\n// Dati della sezione PFLEGEBOX\nvar pflegeboxInfo = [\n    {\n        id: 1,\n        icon: \"📦\",\n        title: \"WAS IST DIE PFLEGEBOX?\",\n        content: \"Die Pflegebox ist Ihr monatliches Paket mit hochwertigen Pflegehilfsmitteln zum Verbrauch. Individuell zusammengestellt nach Ihren Bedürfnissen und vollständig von der Pflegekasse finanziert - bis zu 42€ jeden Monat kostenfrei für Sie.\"\n    },\n    {\n        id: 2,\n        icon: \"🏠\",\n        title: \"WER HAT ANSPRUCH?\",\n        content: \"Alle Personen mit anerkanntem Pflegegrad 1-5 haben laut § 40 SGB XI Anspruch auf kostenlose Pflegehilfsmittel. Die Pflege muss zu Hause stattfinden - durch Angehörige, Freunde oder professionelle Pflegedienste.\"\n    },\n    {\n        id: 3,\n        icon: \"🧤\",\n        title: \"WAS IST ENTHALTEN?\",\n        content: \"Einmalhandschuhe in verschiedenen Größen, Desinfektionsmittel für Hände und Flächen, Mundschutzmasken, Schutzschürzen, Bettschutzeinlagen und weitere Hilfsmittel - alles perfekt auf Ihre Pflegesituation abgestimmt.\"\n    },\n    {\n        id: 4,\n        icon: \"🚚\",\n        title: \"WIE LÄUFT ES AB?\",\n        content: \"Nach einmaliger Anmeldung erhalten Sie automatisch jeden Monat Ihre persönliche Pflegebox direkt vor die Haustür. Wir übernehmen Antragstellung, Abrechnung mit der Pflegekasse und alle Formalitäten - komplett kostenlos.\"\n    }\n];\n\n// JavaScript per creare la sezione PFLEGEBOX\nfunction createCleanPflegeboxSection() {\n    const container = document.getElementById('pflegebox-clean-container');\n    \n    if (!container) {\n        console.error('Container pflegebox-clean-container non trovato');\n        return;\n    }\n    \n    const sectionHTML = '<div class=\"pflegebox-clean-section\" style=\"padding: 20px 0 20px 0; background: white; font-family: Inter, sans-serif;\">' +\n        '<div class=\"pflegebox-clean-container\" style=\"max-width: 1400px; margin: 0 auto; padding: 0 20px; width: 100%;\">' +\n        '<div class=\"pflegebox-clean-header\" id=\"pflegebox-clean-header\" style=\"text-align: center; margin-bottom: 40px; opacity: 0; transform: translateY(30px); transition: all 1.2s ease;\">' +\n            '<h2 class=\"pflegebox-clean-title\" style=\"font-size: 2.2rem; font-weight: 700; color: #2c3e50; margin-bottom: 12px; line-height: 1.2;\">DIE PFLEGEBOX – IHR MONATLICHES PAKET</h2>' +\n            '<p class=\"pflegebox-clean-subtitle\" style=\"font-size: 1.1rem; color: #6c757d; max-width: 700px; margin: 0 auto; line-height: 1.4;\">Hochwertige Pflegehilfsmittel direkt zu Ihnen nach Hause. Von der Pflegekasse bezahlt, jeden Monat kostenfrei bis zu 42€.</p>' +\n        '</div>' +\n        '<div class=\"pflegebox-clean-grid\" id=\"pflegebox-clean-grid\" style=\"display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;\">' +\n            pflegeboxInfo.map(function(info, index) { return createCleanInfoCard(info, index); }).join('') +\n        '</div>' +\n        '</div>' +\n        '</div>';\n    \n    container.innerHTML = sectionHTML;\n    addCleanStyles();\n    addCleanIntersectionObserver();\n    \n    console.log('✅ Sezione Pflegebox pulita creata con successo!');\n}\n\nfunction createCleanInfoCard(info, index) {\n    return '<div class=\"pflegebox-clean-item\" style=\"background: white; border-radius: 8px; padding: 25px 20px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); border: 1px solid #e9ecef; display: flex; flex-direction: column; height: 100%; opacity: 0; transform: translateY(50px);\">' +\n        '<div class=\"pflegebox-clean-icon\" style=\"background: #f8f9fa; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 2px solid #C12624; transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-size: 28px;\">' + info.icon + '</div>' +\n        '<h3 class=\"pflegebox-clean-card-title\" style=\"font-size: 1.1rem; font-weight: 700; color: #2c3e50; margin-bottom: 15px; text-align: center; line-height: 1.2;\">' + info.title + '</h3>' +\n        '<div class=\"pflegebox-clean-content\" style=\"flex-grow: 1; display: flex; align-items: center;\">' +\n            '<p class=\"pflegebox-clean-text\" style=\"color: #555; line-height: 1.6; margin: 0; font-size: 0.95rem; text-align: center;\">' + info.content + '</p>' +\n        '</div>' +\n        '</div>';\n}\n\nfunction addCleanStyles() {\n    if (document.getElementById('pflegebox-clean-styles')) return;\n    \n    const styles = document.createElement('style');\n    styles.id = 'pflegebox-clean-styles';\n    styles.innerHTML = '.pflegebox-clean-item:hover { transform: translateY(-8px); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15); }' +\n        '.pflegebox-clean-item:hover .pflegebox-clean-icon { transform: scale(1.1); border-color: #A01F1D; box-shadow: 0 5px 15px rgba(193, 38, 36, 0.3); }' +\n        '.pflegebox-clean-header.animate { opacity: 1 !important; transform: translateY(0) !important; }' +\n        '.pflegebox-clean-item.animate { opacity: 1 !important; transform: translateY(0) !important; }' +\n        '@media (max-width: 1200px) { .pflegebox-clean-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 15px !important; } }' +\n        '@media (max-width: 767px) { .pflegebox-clean-grid { grid-template-columns: 1fr !important; } .pflegebox-clean-title { font-size: 1.8rem !important; } .pflegebox-clean-item { padding: 20px 15px !important; } }';\n    \n    document.head.appendChild(styles);\n}\n\nfunction addCleanIntersectionObserver() {\n    const observer = new IntersectionObserver(function(entries) {\n        entries.forEach(function(entry) {\n            if (entry.isIntersecting) {\n                entry.target.classList.add('animate');\n            }\n        });\n    }, { \n        threshold: 0.1,\n        rootMargin: '0px 0px -50px 0px'\n    });\n\n    setTimeout(function() {\n        const header = document.getElementById('pflegebox-clean-header');\n        if (header) {\n            observer.observe(header);\n        }\n\n        const cleanItems = document.querySelectorAll('.pflegebox-clean-item');\n        cleanItems.forEach(function(item, index) {\n            item.style.transitionDelay = (0.2 + (index * 0.15)) + 's';\n            observer.observe(item);\n        });\n        \n        console.log('✨ Pflegebox Clean Intersection Observer attivato!');\n    }, 100);\n}\n\n/* ========================================\n   KRANKENKASSE BONUS SEKTION\n   ======================================== */\n\nfunction createKrankenkasseBonusSection() {\n    const container = document.getElementById('krankenkasse-bonus-container');\n    \n    if (!container) {\n        console.error('Container krankenkasse-bonus-container nicht gefunden');\n        return;\n    }\n    \n    const sectionHTML = '<div class=\"kk-bonus-section\" style=\"padding: 5px 0 40px 0; background: white; font-family: Inter, sans-serif;\">' +\n        '<div class=\"kk-bonus-container\" style=\"max-width: 1200px; margin: 0 auto; padding: 0 20px;\">' +\n        '<div class=\"kk-bonus-header\" id=\"kk-bonus-header\" style=\"text-align: center; margin-bottom: 25px;\">' +\n            '<div class=\"kk-bonus-icon\" style=\"background: #f8f9fa; width: 80px; height: 80px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; border: 2px solid #C12624; font-size: 40px; transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);\">💶</div>' +\n            '<h2 style=\"font-size: 1.8rem; font-weight: 700; color: #2c3e50; margin-bottom: 12px; line-height: 1.2;\">BIS ZU 42€ MONATLICH ZURÜCKERHALTEN</h2>' +\n            '<p style=\"font-size: 1.05rem; color: #6c757d; max-width: 650px; margin: 0 auto; line-height: 1.5;\">Ihre Pflegekasse übernimmt die Kosten für Pflegehilfsmittel zum Verbrauch mit bis zu <strong style=\"color: #2c3e50;\">42€ pro Monat</strong></p>' +\n        '</div>' +\n        '<div class=\"kk-bonus-card\" id=\"kk-bonus-card\" style=\"background: white; border-radius: 8px; padding: 30px; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); border: 1px solid #e9ecef; max-width: 100%;\">' +\n            '<div class=\"kk-bonus-question\" style=\"background: #f8f9fa; padding: 20px; margin-bottom: 20px; border-left: 3px solid #C12624; border-radius: 4px;\">' +\n                '<p style=\"margin: 0 0 20px 0; font-weight: 700; color: #2c3e50; font-size: 1.1rem;\">Haben Sie bereits einen Antrag bei Ihrer Pflegekasse gestellt?</p>' +\n                '<div class=\"kk-bonus-buttons\" style=\"display: flex; gap: 12px; flex-wrap: wrap;\">' +\n                    '<button type=\"button\" class=\"kk-btn\" data-answer=\"ja\" style=\"background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; padding: 14px 28px; cursor: pointer; font-size: 1rem; border-radius: 6px; font-weight: 600; font-family: Inter, sans-serif; transition: all 0.3s ease; flex: 1; min-width: 150px; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);\">✓ Ja, habe ich</button>' +\n                    '<button type=\"button\" class=\"kk-btn\" data-answer=\"nein\" style=\"background: linear-gradient(135deg, #dc3545 0%, #e63946 100%); color: white; border: none; padding: 14px 28px; cursor: pointer; font-size: 1rem; border-radius: 6px; font-weight: 600; font-family: Inter, sans-serif; transition: all 0.3s ease; flex: 1; min-width: 150px; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);\">✗ Nein, noch nicht</button>' +\n                    '<button type=\"button\" class=\"kk-btn\" data-answer=\"info\" style=\"background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); color: white; border: none; padding: 14px 28px; cursor: pointer; font-size: 1rem; border-radius: 6px; font-weight: 600; font-family: Inter, sans-serif; transition: all 0.3s ease; flex: 1; min-width: 150px; box-shadow: 0 4px 15px rgba(0, 123, 255, 0.3);\">ℹ Mehr Infos</button>' +\n                '</div>' +\n            '</div>' +\n            '<div class=\"kk-answer kk-answer-ja\" style=\"display: none; background: #d4edda; padding: 20px; margin-bottom: 20px; border-left: 3px solid #28a745; border-radius: 4px;\">' +\n                '<p style=\"margin: 0 0 20px 0; line-height: 1.7; color: #155724; font-weight: 700; font-size: 1.05rem;\">✓ Perfekt!</p>' +\n                '<div style=\"background: white; padding: 20px; border-radius: 4px; margin-bottom: 15px;\">' +\n                    '<p style=\"margin: 0 0 15px 0; color: #2c3e50; line-height: 1.6;\">Jetzt können Sie Ihre <strong>personalisierte Pflegebox</strong> zusammenstellen und bei uns bestellen.</p>' +\n                    '<div style=\"background: #fff3cd; padding: 15px; border-radius: 6px; border-left: 3px solid #ffc107;\">' +\n                        '<p style=\"margin: 0; color: #856404; font-size: 0.95rem; line-height: 1.6;\"><strong>💡 Wichtig zu wissen:</strong><br>Die Pflegekasse übernimmt bis zu 42€ pro Monat. Alle Kosten darüber hinaus werden Ihnen per Rechnung in Rechnung gestellt.</p>' +\n                    '</div>' +\n                '</div>' +\n                '<a href=\"/collections\" style=\"display: inline-block; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; text-decoration: none; padding: 14px 28px; border-radius: 6px; font-weight: 700; font-size: 1rem; text-align: center; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3); margin: 0 auto; display: block; max-width: 350px;\">🛒 Pflegebox jetzt zusammenstellen</a>' +\n            '</div>' +\n            '<div class=\"kk-answer kk-answer-info\" style=\"display: none; background: #e7f3ff; padding: 20px; margin-bottom: 20px; border-left: 3px solid #0066cc; border-radius: 4px;\">' +\n                '<p style=\"margin: 0 0 20px 0; color: #2c3e50; font-weight: 700; font-size: 1.05rem;\">📋 Kostenübernahme durch die Pflegekasse:</p>' +\n                '<div style=\"background: white; padding: 20px; border-radius: 4px; margin-bottom: 15px;\">' +\n                    '<div style=\"display: flex; flex-direction: column; gap: 12px;\">' +\n                        '<div style=\"display: flex; align-items: start; gap: 12px;\"><span style=\"color: #C12624; font-weight: 700; font-size: 1.2rem; line-height: 1;\">•</span><p style=\"margin: 0; color: #555; line-height: 1.6;\"><strong>Monatlicher Zuschuss:</strong> bis zu 42€</p></div>' +\n                        '<div style=\"display: flex; align-items: start; gap: 12px;\"><span style=\"color: #C12624; font-weight: 700; font-size: 1.2rem; line-height: 1;\">•</span><p style=\"margin: 0; color: #555; line-height: 1.6;\"><strong>Gilt für:</strong> Pflegehilfsmittel zum Verbrauch (Handschuhe, Desinfektionsmittel, Masken, Bettschutz, etc.)</p></div>' +\n                        '<div style=\"display: flex; align-items: start; gap: 12px;\"><span style=\"color: #C12624; font-weight: 700; font-size: 1.2rem; line-height: 1;\">•</span><p style=\"margin: 0; color: #555; line-height: 1.6;\"><strong>Voraussetzung:</strong> Ärztliches Rezept</p></div>' +\n                        '<div style=\"display: flex; align-items: start; gap: 12px;\"><span style=\"color: #C12624; font-weight: 700; font-size: 1.2rem; line-height: 1;\">•</span><p style=\"margin: 0; color: #555; line-height: 1.6;\"><strong>Antrag:</strong> Einmalig bei Ihrer Pflegekasse</p></div>' +\n                        '<div style=\"display: flex; align-items: start; gap: 12px;\"><span style=\"color: #C12624; font-weight: 700; font-size: 1.2rem; line-height: 1;\">•</span><p style=\"margin: 0; color: #555; line-height: 1.6;\"><strong>Abrechnung:</strong> Monatlich mit Rechnung</p></div>' +\n                    '</div>' +\n                '</div>' +\n                '<a href=\"/pages/krankenkasse-ratgeber\" style=\"display: inline-block; color: #0066cc; text-decoration: none; font-weight: 700; font-size: 1rem; transition: all 0.3s ease;\">→ Vollständige Informationen & Antragsformular</a>' +\n            '</div>' +\n            '<div class=\"kk-answer kk-answer-nein\" style=\"display: none; background: #fff3cd; padding: 20px; margin-bottom: 20px; border-left: 3px solid #ffc107; border-radius: 4px;\">' +\n                '<p style=\"margin: 0 0 20px 0; line-height: 1.7; color: #856404; font-weight: 700; font-size: 1.05rem;\">⚠️ Wichtig: Sie verschenken bis zu 42€ jeden Monat!</p>' +\n                '<div style=\"background: white; padding: 20px; border-radius: 4px; margin-bottom: 15px;\">' +\n                    '<p style=\"margin: 0 0 20px 0; color: #2c3e50; font-weight: 700; font-size: 1.05rem;\">📋 Wählen Sie Ihre bevorzugte Methode:</p>' +\n                    '<div style=\"background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%); padding: 25px; border-radius: 8px; margin-bottom: 20px; border: 3px solid #C12624; position: relative;\">' +\n                        '<span style=\"position: absolute; top: -12px; right: 20px; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%); color: white; font-size: 0.75rem; font-weight: 700; padding: 6px 15px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);\">EMPFOHLEN</span>' +\n                        '<div style=\"text-align: center; margin-bottom: 15px; font-size: 2.5rem;\">🚀</div>' +\n                        '<p style=\"margin: 0 0 10px 0; color: #C12624; font-weight: 700; font-size: 1.15rem; text-align: center;\">Online-Formular ausfüllen</p>' +\n                        '<p style=\"margin: 0 0 20px 0; color: #666; text-align: center; line-height: 1.6;\">Schnell, einfach und ohne Ausdrucken - füllen Sie das Formular direkt online aus!</p>' +\n                        '<a href=\"/pages/pflegebox-formular\" style=\"display: block; background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%); color: white; text-decoration: none; padding: 16px 28px; border-radius: 8px; font-weight: 700; font-size: 1.05rem; text-align: center; transition: all 0.3s ease; box-shadow: 0 5px 20px rgba(193, 38, 36, 0.3);\">📝 Jetzt online beantragen</a>' +\n                    '</div>' +\n                    '<div style=\"background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f4 100%); padding: 20px; border-radius: 8px; border: 2px solid #c8e6c9;\">' +\n                        '<div style=\"text-align: center; margin-bottom: 12px; font-size: 2rem;\">📄</div>' +\n                        '<p style=\"margin: 0 0 8px 0; color: #2e7d32; font-weight: 700; font-size: 1rem; text-align: center;\">Alternative: PDF herunterladen</p>' +\n                        '<p style=\"margin: 0 0 15px 0; color: #558b2f; text-align: center; font-size: 0.9rem; line-height: 1.5;\">Klassisch per Post - Formular ausdrucken, ausfüllen und einsenden</p>' +\n                        '<a href=\"#\" onclick=\"downloadPDF(event)\" style=\"display: block; background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%); color: white; text-decoration: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; font-size: 0.95rem; text-align: center; transition: all 0.3s ease; box-shadow: 0 3px 12px rgba(76, 175, 80, 0.3);\">📄 PDF herunterladen</a>' +\n                    '</div>' +\n                    '<div style=\"background: #d4edda; padding: 15px; border-radius: 6px; margin-top: 20px; border-left: 3px solid #28a745;\">' +\n                        '<p style=\"margin: 0; color: #155724; font-size: 0.95rem; line-height: 1.6;\"><strong>✓ Nach dem Absenden:</strong> Wir kümmern uns um alles Weitere und reichen Ihren Antrag bei der Pflegekasse ein. Sie erhalten eine Bestätigung per E-Mail.</p>' +\n                    '</div>' +\n                '</div>' +\n            '</div>' +\n        '</div>' +\n        '</div>' +\n        '</div>';\n    \n    container.innerHTML = sectionHTML;\n    addKKBonusStyles();\n    addKKBonusAnimations();\n    addKKBonusEventListeners();\n    \n    console.log('✅ Krankenkasse Bonus Sektion erfolgreich erstellt!');\n}\n\nfunction addKKBonusStyles() {\n    if (document.getElementById('kk-bonus-styles')) return;\n    \n    const styles = document.createElement('style');\n    styles.id = 'kk-bonus-styles';\n    styles.innerHTML = '.kk-btn:hover { transform: translateY(-3px) scale(1.02); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25) !important; opacity: 1 !important; }' +\n        '.kk-btn:active { transform: translateY(-1px) scale(0.98); }' +\n        'a[href*=\"pflegebox-formular\"]:hover { transform: translateY(-2px); box-shadow: 0 6px 25px rgba(193, 38, 36, 0.5) !important; }' +\n        'a[onclick*=\"downloadPDF\"]:hover { transform: translateY(-2px); box-shadow: 0 5px 18px rgba(76, 175, 80, 0.5) !important; }' +\n        'a[href*=\"krankenkasse-ratgeber.pdf\"] { display: block !important; margin: 15px auto 0 !important; max-width: 350px; }' +\n        'a[href*=\"krankenkasse-ratgeber.pdf\"]:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(193, 38, 36, 0.4) !important; }' +\n        'a[href=\"/collections\"] { display: block !important; margin: 15px auto 0 !important; max-width: 350px; }' +\n        'a[href=\"/collections\"]:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(40, 167, 69, 0.4) !important; }' +\n        'a[href*=\"krankenkasse-ratgeber\"]:hover { text-decoration: underline !important; }' +\n        '@media (max-width: 767px) { ' +\n        '.kk-bonus-section { padding: 20px 0 !important; } ' +\n        '.kk-bonus-container { padding: 0 15px !important; } ' +\n        '.kk-bonus-header h2 { font-size: 1.6rem !important; line-height: 1.3 !important; } ' +\n        '.kk-bonus-header p { font-size: 1rem !important; } ' +\n        '.kk-bonus-icon { width: 70px !important; height: 70px !important; font-size: 35px !important; } ' +\n        '.kk-bonus-card { padding: 25px 20px !important; } ' +\n        '.kk-bonus-question { padding: 20px 15px !important; } ' +\n        '.kk-bonus-question p { font-size: 1.05rem !important; } ' +\n        '.kk-bonus-buttons { flex-direction: column !important; } ' +\n        '.kk-btn { width: 100% !important; padding: 16px 24px !important; font-size: 1.05rem !important; } ' +\n        '.kk-answer { padding: 20px 15px !important; } ' +\n        '.kk-answer p { font-size: 1rem !important; line-height: 1.7 !important; } ' +\n        '.kk-answer strong { font-size: 1.05rem !important; } ' +\n        '.kk-answer > p:first-child { font-size: 1.1rem !important; } ' +\n        'a[href*=\"krankenkasse-ratgeber.pdf\"] { max-width: 100% !important; margin: 10px 0 0 0 !important; } ' +\n        'a[href=\"/collections\"] { max-width: 100% !important; margin: 10px 0 0 0 !important; } ' +\n        'a[href*=\"pflegebox-formular\"] { max-width: 100% !important; } ' +\n        '}';\n    \n    document.head.appendChild(styles);\n}\n\nfunction addKKBonusAnimations() {\n    console.log('✨ Krankenkasse Bonus sezione caricata');\n}\n\nfunction addKKBonusEventListeners() {\n    const buttons = document.querySelectorAll('.kk-btn');\n    const answers = document.querySelectorAll('.kk-answer');\n    \n    if (!buttons.length) return;\n    \n    buttons.forEach(function(button) {\n        button.addEventListener('click', function() {\n            const answer = this.getAttribute('data-answer');\n            \n            answers.forEach(function(ans) { ans.style.display = 'none'; });\n            buttons.forEach(function(btn) { btn.style.opacity = '0.7'; });\n            \n            this.style.opacity = '1';\n            \n            const answerClass = '.kk-answer-' + answer;\n            const answerElement = document.querySelector(answerClass);\n            if (answerElement) {\n                answerElement.style.display = 'block';\n                setTimeout(function() {\n                    answerElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });\n                }, 100);\n            }\n        });\n    });\n}\n\nfunction downloadPDF(event) {\n    event.preventDefault();\n    \n    const pdfUrl = 'https://cdn.shopify.com/s/files/1/0909/2805/4653/files/Bestellformular_Pflegebox.pdf?v=1760449576';\n    const fileName = 'Bestellformular_Pflegebox.pdf';\n    \n    fetch(pdfUrl)\n        .then(response => response.blob())\n        .then(blob => {\n            const url = window.URL.createObjectURL(blob);\n            const a = document.createElement('a');\n            a.style.display = 'none';\n            a.href = url;\n            a.download = fileName;\n            document.body.appendChild(a);\n            a.click();\n            window.URL.revokeObjectURL(url);\n            document.body.removeChild(a);\n        })\n        .catch(error => {\n            console.error('Errore nel download:', error);\n            window.open(pdfUrl, '_blank');\n        });\n}\n\ndocument.addEventListener('DOMContentLoaded', function() {\n    createCleanPflegeboxSection();\n    createKrankenkasseBonusSection();\n});\n\nif (document.readyState === 'loading') {\n    document.addEventListener('DOMContentLoaded', function() {\n        createCleanPflegeboxSection();\n        createKrankenkasseBonusSection();\n    });\n} else {\n    createCleanPflegeboxSection();\n    createKrankenkasseBonusSection();\n}\n\nif (typeof window !== 'undefined') {\n    window.CleanPflegeboxSection = {\n        create: createCleanPflegeboxSection\n    };\n    window.KrankenkasseBonusSection = {\n        create: createKrankenkasseBonusSection\n    };\n}\n</script>"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "custom_liquid_gGzYqJ"
+      ],
+      "name": "t:names.custom_section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 0,
+        "section_width": "full-width",
+        "section_height": "full-screen",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-1",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "section_A7DRCh": {
+      "type": "section",
+      "blocks": {
+        "custom_liquid_bbFJwm": {
+          "type": "custom-liquid",
+          "name": "t:names.custom_liquid",
+          "settings": {
+            "custom_liquid": "{% comment %}\n  ALTERNATIVE SEKTION - Direkt bestellen mit Shopify Collections\n  Stile identico alla Pflegebox Section\n{% endcomment %}\n\n<!-- Font Google Fonts -->\n{% unless content_for_header contains 'Inter' %}\n<link href=\"https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap\" rel=\"stylesheet\">\n{% endunless %}\n\n<style>\n.alternative-section {\n  padding: 20px 0 40px 0;\n  background: white;\n  font-family: 'Inter', sans-serif;\n}\n\n.alternative-container {\n  max-width: 1400px;\n  margin: 0 auto;\n  padding: 0 20px;\n  width: 100%;\n}\n\n.alternative-header {\n  text-align: center;\n  margin-bottom: 40px;\n}\n\n.alternative-title {\n  font-size: 2.2rem;\n  font-weight: 700;\n  color: #2c3e50;\n  margin-bottom: 12px;\n  line-height: 1.2;\n}\n\n.alternative-subtitle {\n  font-size: 1.1rem;\n  color: #6c757d;\n  max-width: 700px;\n  margin: 0 auto;\n  line-height: 1.4;\n}\n\n.alternative-card {\n  background: white;\n  border-radius: 8px;\n  padding: 30px;\n  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);\n  border: 1px solid #e9ecef;\n}\n\n.alternative-question {\n  background: #f8f9fa;\n  padding: 20px;\n  margin-bottom: 25px;\n  border-left: 3px solid #C12624;\n  border-radius: 4px;\n}\n\n.alternative-question p {\n  margin: 0;\n  font-weight: 700;\n  color: #2c3e50;\n  font-size: 1.1rem;\n}\n\n.collections-grid {\n  display: grid;\n  grid-template-columns: repeat(4, 1fr);\n  gap: 20px;\n}\n\n.collection-item {\n  background: white;\n  border-radius: 8px;\n  padding: 20px;\n  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);\n  transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);\n  border: 1px solid #e9ecef;\n  display: flex;\n  flex-direction: column;\n  height: 100%;\n  text-align: center;\n}\n\n.collection-item:hover {\n  transform: translateY(-8px);\n  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);\n}\n\n.collection-image {\n  width: 100%;\n  height: 150px;\n  border-radius: 8px;\n  overflow: hidden;\n  margin-bottom: 15px;\n}\n\n.collection-image img {\n  width: 100%;\n  height: 100%;\n  object-fit: cover;\n}\n\n.collection-icon {\n  background: #f8f9fa;\n  width: 80px;\n  height: 80px;\n  border-radius: 50%;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  margin: 0 auto 15px;\n  border: 2px solid #C12624;\n  transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);\n  font-size: 32px;\n}\n\n.collection-item:hover .collection-icon {\n  transform: scale(1.1);\n  border-color: #A01F1D;\n  box-shadow: 0 5px 15px rgba(193, 38, 36, 0.3);\n}\n\n.collection-title {\n  font-size: 1.05rem;\n  font-weight: 700;\n  color: #2c3e50;\n  margin-bottom: 10px;\n  line-height: 1.2;\n}\n\n.collection-content {\n  flex-grow: 1;\n  display: flex;\n  align-items: center;\n  margin-bottom: 15px;\n}\n\n.collection-text {\n  color: #555;\n  line-height: 1.5;\n  margin: 0;\n  font-size: 0.9rem;\n}\n\n.collection-button {\n  background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%);\n  color: white;\n  text-decoration: none;\n  padding: 10px 20px;\n  border-radius: 6px;\n  font-weight: 600;\n  font-size: 0.95rem;\n  text-align: center;\n  transition: all 0.3s ease;\n  display: block;\n  box-shadow: 0 2px 8px rgba(193, 38, 36, 0.3);\n}\n\n.collection-button:hover {\n  transform: translateY(-2px);\n  box-shadow: 0 4px 15px rgba(193, 38, 36, 0.5);\n  color: white !important;\n  text-decoration: none !important;\n}\n\n.info-box {\n  background: #fff3cd;\n  padding: 20px;\n  border-radius: 4px;\n  border-left: 3px solid #ffc107;\n  margin-top: 25px;\n}\n\n.info-box p {\n  margin: 0;\n  color: #856404;\n  line-height: 1.6;\n  font-size: 0.95rem;\n}\n\n@media (max-width: 1200px) {\n  .collections-grid {\n    grid-template-columns: repeat(3, 1fr);\n    gap: 15px;\n  }\n}\n\n@media (max-width: 900px) {\n  .collections-grid {\n    grid-template-columns: repeat(2, 1fr);\n  }\n}\n\n@media (max-width: 767px) {\n  .collections-grid {\n    grid-template-columns: 1fr;\n  }\n  \n  .alternative-title {\n    font-size: 1.8rem;\n  }\n  \n  .alternative-card {\n    padding: 20px;\n  }\n}\n</style>\n\n<div class=\"alternative-section\">\n  <div class=\"alternative-container\">\n    \n    <!-- Header -->\n    <div class=\"alternative-header\">\n      <h2 class=\"alternative-title\">ALTERNATIVE: DIREKT BESTELLEN auf  rechnung</h2>\n      <p class=\"alternative-subtitle\">Sie möchten nicht warten oder haben keinen Anspruch? Bestellen Sie flexibel und unkompliziert – Bezahlung per Rechnung.</p>\n    </div>\n    \n    <!-- Single Card con tutte le Collections -->\n    <div class=\"alternative-card\">\n      <div class=\"alternative-question\">\n        <p>🛍️ Wählen Sie Ihre Kategorie:</p>\n      </div>\n      \n      <!-- Grid Collections -->\n      <div class=\"collections-grid\">\n        {% for collection in collections %}\n          {% unless collection.handle == 'frontpage' or collection.handle == 'all' %}\n            <div class=\"collection-item\">\n              {% if collection.image %}\n                <div class=\"collection-image\">\n                  <img \n                    src=\"{{ collection.image | img_url: '400x' }}\" \n                    alt=\"{{ collection.title | escape }}\"\n                    loading=\"lazy\"\n                  >\n                </div>\n              {% else %}\n                <div class=\"collection-icon\">📦</div>\n              {% endif %}\n              \n              <h3 class=\"collection-title\">{{ collection.title }}</h3>\n              \n              <div class=\"collection-content\">\n                <p class=\"collection-text\">\n                  {% if collection.description != blank %}\n                    {{ collection.description | strip_html | truncate: 80 }}\n                  {% else %}\n                    Entdecken Sie unsere Produkte\n                  {% endif %}\n                </p>\n              </div>\n              \n              <a href=\"{{ collection.url }}\" class=\"collection-button\">\n                Produkte ansehen\n              </a>\n            </div>\n          {% endunless %}\n        {% endfor %}\n      </div>\n      \n      <!-- Info Box -->\n      <div class=\"info-box\">\n        <p><strong>💳 Wichtig zu wissen:</strong> Alle Produkte werden Ihnen per Rechnung in Rechnung gestellt. Sie bezahlen bequem nach Erhalt der Ware.</p>\n      </div>\n    </div>\n    \n  </div>\n</div>"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "custom_liquid_bbFJwm"
+      ],
+      "name": "t:names.custom_section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 0,
+        "section_width": "full-width",
+        "section_height": "full-screen",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-1",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "main": {
+      "type": "main-collection",
+      "blocks": {
+        "filters": {
+          "type": "filters",
+          "static": true,
+          "settings": {
+            "enable_filtering": false,
+            "filter_style": "horizontal",
+            "filter_width": "full-width",
+            "text_label_case": "default",
+            "show_swatch_label": false,
+            "show_filter_label": false,
+            "enable_sorting": false,
+            "enable_grid_density": false,
+            "inherit_color_scheme": false,
+            "color_scheme": "scheme-4",
+            "padding-block-start": 8,
+            "padding-block-end": 8,
+            "padding-inline-start": 40,
+            "padding-inline-end": 40,
+            "facets_margin_bottom": 0,
+            "facets_margin_right": 0
+          },
+          "blocks": {}
+        },
+        "product-card": {
+          "type": "product-card",
+          "disabled": true,
+          "static": true,
+          "settings": {
+            "product": "{{ closest.product }}",
+            "product_card_gap": 0,
+            "inherit_color_scheme": false,
+            "color_scheme": "scheme-2",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "product_card_gallery_68C7TN": {
+              "type": "_product-card-gallery",
+              "settings": {
+                "product": "{{ closest.product }}",
+                "image_ratio": "adapt",
+                "border": "solid",
+                "border_width": 0,
+                "border_opacity": 0,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "group_JNegy4": {
+              "type": "group",
+              "settings": {
+                "link": "",
+                "open_in_new_tab": false,
+                "content_direction": "column",
+                "vertical_on_mobile": true,
+                "horizontal_alignment": "space-between",
+                "vertical_alignment": "flex-start",
+                "align_baseline": false,
+                "horizontal_alignment_flex_direction_column": "flex-start",
+                "vertical_alignment_flex_direction_column": "space-between",
+                "gap": 4,
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "custom_height": 100,
+                "inherit_color_scheme": false,
+                "color_scheme": "scheme-2",
+                "background_media": "none",
+                "video_position": "cover",
+                "background_image_position": "cover",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "toggle_overlay": false,
+                "overlay_color": "#00000026",
+                "overlay_style": "solid",
+                "gradient_direction": "to top",
+                "padding-block-start": 12,
+                "padding-block-end": 12,
+                "padding-inline-start": 12,
+                "padding-inline-end": 12
+              },
+              "blocks": {
+                "group_i9KeQ7": {
+                  "type": "group",
+                  "settings": {
+                    "link": "",
+                    "open_in_new_tab": false,
+                    "content_direction": "row",
+                    "vertical_on_mobile": true,
+                    "horizontal_alignment": "space-between",
+                    "vertical_alignment": "center",
+                    "align_baseline": false,
+                    "horizontal_alignment_flex_direction_column": "flex-start",
+                    "vertical_alignment_flex_direction_column": "flex-start",
+                    "gap": 8,
+                    "width": "fill",
+                    "custom_width": 75,
+                    "width_mobile": "fill",
+                    "custom_width_mobile": 75,
+                    "height": "fit",
+                    "custom_height": 100,
+                    "inherit_color_scheme": true,
+                    "color_scheme": "",
+                    "background_media": "none",
+                    "video_position": "cover",
+                    "background_image_position": "cover",
+                    "border": "none",
+                    "border_width": 1,
+                    "border_opacity": 100,
+                    "border_radius": 0,
+                    "toggle_overlay": false,
+                    "overlay_color": "#00000026",
+                    "overlay_style": "solid",
+                    "gradient_direction": "to top",
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {
+                    "product_title_X4Hxci": {
+                      "type": "product-title",
+                      "settings": {
+                        "product": "{{ closest.product }}",
+                        "width": "fit-content",
+                        "max_width": "normal",
+                        "alignment": "left",
+                        "type_preset": "h5",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "color": "var(--color-foreground)",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    },
+                    "price_r3D933": {
+                      "type": "price",
+                      "settings": {
+                        "product": "{{ closest.product }}",
+                        "show_sale_price_first": true,
+                        "show_installments": false,
+                        "show_tax_info": false,
+                        "type_preset": "paragraph",
+                        "width": "fit-content",
+                        "alignment": "right",
+                        "font": "var(--font-body--family)",
+                        "font_size": "1rem",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "color": "var(--color-foreground)",
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "product_title_X4Hxci",
+                    "price_r3D933"
+                  ]
+                },
+                "group_HnURV7": {
+                  "type": "group",
+                  "settings": {
+                    "link": "",
+                    "open_in_new_tab": false,
+                    "content_direction": "column",
+                    "vertical_on_mobile": true,
+                    "horizontal_alignment": "flex-start",
+                    "vertical_alignment": "center",
+                    "align_baseline": false,
+                    "horizontal_alignment_flex_direction_column": "flex-start",
+                    "vertical_alignment_flex_direction_column": "flex-start",
+                    "gap": 12,
+                    "width": "fit-content",
+                    "custom_width": 100,
+                    "width_mobile": "fill",
+                    "custom_width_mobile": 25,
+                    "height": "fit",
+                    "custom_height": 100,
+                    "inherit_color_scheme": true,
+                    "color_scheme": "",
+                    "background_media": "none",
+                    "video_position": "cover",
+                    "background_image_position": "cover",
+                    "border": "none",
+                    "border_width": 1,
+                    "border_opacity": 100,
+                    "border_radius": 0,
+                    "toggle_overlay": false,
+                    "overlay_color": "#00000026",
+                    "overlay_style": "solid",
+                    "gradient_direction": "to top",
+                    "padding-block-start": 0,
+                    "padding-block-end": 0,
+                    "padding-inline-start": 0,
+                    "padding-inline-end": 0
+                  },
+                  "blocks": {
+                    "text_yYkK7E": {
+                      "type": "text",
+                      "settings": {
+                        "text": "<p>{{ closest.product.metafields.descriptors.subtitle.value }}</p>",
+                        "width": "fit-content",
+                        "max_width": "none",
+                        "alignment": "left",
+                        "type_preset": "custom",
+                        "font": "var(--font-primary--family)",
+                        "font_size": "var(--font-size--body-md)",
+                        "line_height": "normal",
+                        "letter_spacing": "normal",
+                        "case": "none",
+                        "wrap": "pretty",
+                        "color": "",
+                        "background": false,
+                        "background_color": "#00000026",
+                        "corner_radius": 0,
+                        "padding-block-start": 0,
+                        "padding-block-end": 0,
+                        "padding-inline-start": 0,
+                        "padding-inline-end": 0
+                      },
+                      "blocks": {}
+                    }
+                  },
+                  "block_order": [
+                    "text_yYkK7E"
+                  ]
+                }
+              },
+              "block_order": [
+                "group_i9KeQ7",
+                "group_HnURV7"
+              ]
+            }
+          },
+          "block_order": [
+            "product_card_gallery_68C7TN",
+            "group_JNegy4"
+          ]
+        }
+      },
+      "disabled": true,
+      "settings": {
+        "layout_type": "grid",
+        "product_card_size": "large",
+        "mobile_product_card_size": "small",
+        "product_grid_width": "full-width",
+        "full_width_on_mobile": true,
+        "columns_gap_horizontal": 1,
+        "columns_gap_vertical": 1,
+        "padding-inline-start": 0,
+        "padding-inline-end": 0,
+        "color_scheme": "",
+        "padding-block-start": 0,
+        "padding-block-end": 1
+      }
+    }
+  },
+  "order": [
+    "section_RFrkNJ",
+    "hero_iPQ9xc",
+    "section_xjzTNV",
+    "section_A7DRCh",
+    "main"
+  ]
+}
