@@ -2,8 +2,8 @@
 <style>
     .pflegeteufel-page-wrapper {all: initial;display: block;font-family: 'Inter', sans-serif;isolation: isolate;}
     .pflegeteufel-page-wrapper *, .pflegeteufel-page-wrapper *::before, .pflegeteufel-page-wrapper *::after {box-sizing: border-box;margin: 0;padding: 0;}
-    .pflegeteufel-page-wrapper .pflegebox-page {max-width: 1800px;margin: 0 auto;padding: 60px 60px;background: #fafafa;font-family: 'Inter', sans-serif;}
-    .pflegeteufel-page-wrapper .hero-section {text-align: center;margin-bottom: 40px;padding: 20px 20px 20px;}
+    .pflegeteufel-page-wrapper .pflegebox-page {max-width: 1800px;margin: 0 auto;padding: 20px 60px;background: #fafafa;font-family: 'Inter', sans-serif;}
+    .pflegeteufel-page-wrapper .hero-section {text-align: center;margin-bottom: 20px;padding: 0;}
     .pflegeteufel-page-wrapper .hero-title {font-size: 2.8rem;font-weight: 900;margin-bottom: 0;color: #2c3e50;font-family: 'Arial Black', sans-serif;}
     .pflegeteufel-page-wrapper .progress-section {background: white;padding: 40px 80px;border-radius: 16px;margin-top: 40px;box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);}
     .pflegeteufel-page-wrapper .progress-steps {display: flex;justify-content: space-between;position: relative;margin-bottom: 0;}
@@ -614,7 +614,7 @@ function nextStep() {
         document.getElementById('step-' + currentStep).classList.remove('hidden');
         updateProgress();
         updateButtons();
-        window.scrollTo(0, 0);
+        // Non fare scroll automatico - rimani sulla card
         if (currentStep === 6) { setTimeout(initCanvas, 100); }
     }
 }
@@ -626,7 +626,7 @@ function prevStep() {
         document.getElementById('step-' + currentStep).classList.remove('hidden');
         updateProgress();
         updateButtons();
-        window.scrollTo(0, 0);
+        // Non fare scroll automatico - rimani sulla card
     }
 }
 
