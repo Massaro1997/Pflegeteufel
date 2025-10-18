@@ -1,11 +1,16 @@
 name = "shopify-backend"
-main = "cloudflare-worker-with-pdf.js"
+main = "cloudflare-worker-pdf-template.js"
 compatibility_date = "2024-01-01"
 
 # Environment variables (aggiungi le chiavi su Cloudflare Dashboard)
 [vars]
 SHOPIFY_API_VERSION = "2024-01"
 ALLOWED_ORIGIN = "*"
+
+# R2 Bucket Bindings
+[[r2_buckets]]
+binding = "PDF_TEMPLATE"
+bucket_name = "pflegebox-templates"
 
 # Secrets (da configurare con: wrangler secret put NOME_VARIABILE)
 # - SHOPIFY_ADMIN_TOKEN
