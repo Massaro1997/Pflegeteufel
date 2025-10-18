@@ -340,12 +340,18 @@
 
     <div id="successPage" class="form-container hidden">
         <div class="success-page">
-            <div class="success-icon">✅</div>
-            <h2 class="success-title">Vielen Dank!</h2>
-            <p style="font-size: 1.1rem; color: #555; margin-bottom: 30px;">Ihr Antrag wurde erfolgreich übermittelt. Sie erhalten in Kürze eine Bestätigungs-E-Mail.</p>
-            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 30px; flex-wrap: wrap;">
-                <button type="button" class="btn btn-next" onclick="window.print()">🖨️ Drucken</button>
-                <button type="button" class="btn btn-back" onclick="location.reload()">🔄 Neu</button>
+            <div style="background: linear-gradient(135deg, #28a745 0%, #20c997 100%); width: 120px; height: 120px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px; box-shadow: 0 10px 30px rgba(40, 167, 69, 0.3);">
+                <span style="font-size: 60px;">✓</span>
+            </div>
+            <h2 class="success-title" style="font-size: 2.5rem; margin-bottom: 20px;">Formular erfolgreich gesendet!</h2>
+            <p style="font-size: 1.2rem; color: #555; margin-bottom: 15px; line-height: 1.8; max-width: 600px; margin-left: auto; margin-right: auto;">
+                Vielen Dank für Ihre Anfrage. Wir haben Ihren Antrag erhalten und werden ihn schnellstmöglich bearbeiten.
+            </p>
+            <p style="font-size: 1rem; color: #666; margin-bottom: 40px;">
+                Sie erhalten in Kürze eine Bestätigungs-E-Mail mit allen Details.
+            </p>
+            <div style="display: flex; gap: 20px; justify-content: center; margin-top: 40px; flex-wrap: wrap;">
+                <a href="/" class="btn btn-next" style="text-decoration: none; display: inline-block;">🏠 Zur Startseite</a>
             </div>
         </div>
     </div>
