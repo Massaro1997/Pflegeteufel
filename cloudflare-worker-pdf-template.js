@@ -251,23 +251,278 @@ async function fillPDFTemplate(formData, env) {
   } else {
     console.log('⚠️ PDF non ha campi form, scrivo testo alle coordinate');
 
-    // Se il PDF non ha campi form, scrivo il testo alle coordinate
+    // Se il PDF non ha campi form, scrivo il testo alle coordinate esatte
     const pages = pdfDoc.getPages();
     const page1 = pages[0] || pdfDoc.addPage([595, 842]); // A4
 
     const v = formData.versicherte;
-    let yPos = 700; // Parti dall'alto
+    const a = formData.angehoerige;
+    const p = formData.pflegebox;
 
-    // Scrivi i dati alle coordinate (devi aggiustare in base al tuo template)
-    page1.drawText(`${v.vorname} ${v.name}`, {
-      x: 150,
-      y: yPos,
-      size: 10,
-      font: helveticaFont
-    });
+    // ========== SEZIONE 1: ANTRAGSTELLER (VERSICHERTE/R) ==========
 
-    // Continua con altri campi...
-    // (Questa parte richiede di conoscere le coordinate esatte del tuo PDF)
+    // Checkbox Frau/Herr
+    if (v.anrede === 'Frau') {
+      page1.drawText('X', { x: 170, y: 730, size: 10, font: helveticaBold });
+    } else if (v.anrede === 'Herr') {
+      page1.drawText('X', { x: 545, y: 730, size: 10, font: helveticaBold });
+    }
+
+    // Vorname e Name
+    page1.drawText(v.vorname || '', { x: 120, y: 705, size: 9, font: helveticaFont });
+    page1.drawText(v.name || '', { x: 470, y: 705, size: 9, font: helveticaFont });
+
+    // Straße/Nr.
+    page1.drawText(v.strasse || '', { x: 120, y: 678, size: 9, font: helveticaFont });
+
+    // PLZ/Ort
+    const plzOrtParts = (v.plzOrt || '').split(' ');
+    const plz = plzOrtParts[0] || '';
+    const ort = plzOrtParts.slice(1).join(' ') || '';
+    page1.drawText(`${plz} ${ort}`, { x: 470, y: 678, size: 9, font: helveticaFont });
+
+    // Telefon
+    page1.drawText(v.telefon || '', { x: 120, y: 651, size: 9, font: helveticaFont });
+
+    // E-Mail
+    page1.drawText(v.email || '', { x: 470, y: 651, size: 9, font: helveticaFont });
+
+    // Pflegegrad (checkbox 1-5)
+    const pflegegradMap = {
+      '1': { x: 329, y: 624 },
+      '2': { x: 371, y: 624 },
+      '3': { x: 413, y: 624 },
+      '4': { x: 455, y: 624 },
+      '5': { x: 497, y: 624 }
+    };
+    if (v.pflegegrad && pflegegradMap[v.pflegegrad]) {
+      const pos = pflegegradMap[v.pflegegrad];
+      page1.drawText('X', { x: pos.x, y: pos.y, size: 10, font: helveticaBold });
+    }
+
+    // Checkbox "Ich habe einen Pflegegrad beantragt" (se pflegegrad non è impostato)
+    if (!v.pflegegrad || v.pflegegrad === 'beantragt') {
+      page1.drawText('X', { x: 539, y: 624, size: 10, font: helveticaBold });
+    }
+
+    // Versicherungstyp (checkbox)
+    const versicherungMap = {
+      'gesetzlich': { x: 201, y: 597 },
+      'privat': { x: 371, y: 597 },
+      'beihilfeberechtigt': { x: 515, y: 597 },
+      'ortsamt': { x: 201, y: 574 }
+    };
+    if (v.versicherteTyp && versicherungMap[v.versicherteTyp]) {
+      const pos = versicherungMap[v.versicherteTyp];
+      page1.drawText('X', { x: pos.x, y: pos.y, size: 10, font: helveticaBold });
+    }
+
+    // ========== SEZIONE 2: ANGEHÖRIGE/PFLEGEPERSON ==========
+
+    if (!a.isSamePerson && a.data) {
+      // Checkbox Frau/Herr Angehörige
+      if (a.data.anrede === 'Frau') {
+        page1.drawText('X', { x: 165, y: 485, size: 10, font: helveticaBold });
+      } else if (a.data.anrede === 'Herr') {
+        page1.drawText('X', { x: 545, y: 485, size: 10, font: helveticaBold });
+      }
+
+      // Vorname e Name Angehörige
+      page1.drawText(a.data.vorname || '', { x: 120, y: 460, size: 9, font: helveticaFont });
+      page1.drawText(a.data.name || '', { x: 470, y: 460, size: 9, font: helveticaFont });
+
+      // Straße/Nr. Angehörige
+      page1.drawText(a.data.strasse || '', { x: 120, y: 433, size: 9, font: helveticaFont });
+
+      // PLZ/Ort Angehörige
+      const plzOrtAngehParts = (a.data.plzOrt || '').split(' ');
+      const plzAng = plzOrtAngehParts[0] || '';
+      const ortAng = plzOrtAngehParts.slice(1).join(' ') || '';
+      page1.drawText(`${plzAng} ${ortAng}`, { x: 470, y: 433, size: 9, font: helveticaFont });
+
+      // Telefon Angehörige
+      page1.drawText(a.data.telefon || '', { x: 120, y: 406, size: 9, font: helveticaFont });
+
+      // E-Mail Angehörige
+      page1.drawText(a.data.email || '', { x: 470, y: 406, size: 9, font: helveticaFont });
+
+      // Pflegeperson ist: (checkbox)
+      const pflegepersonTypMap = {
+        'familienangehoeriger': { x: 216, y: 379 },
+        'private': { x: 360, y: 379 },
+        'betreuer': { x: 512, y: 379 }
+      };
+      if (a.pflegepersonTyp && pflegepersonTypMap[a.pflegepersonTyp]) {
+        const pos = pflegepersonTypMap[a.pflegepersonTyp];
+        page1.drawText('X', { x: pos.x, y: pos.y, size: 10, font: helveticaBold });
+      }
+    }
+
+    // ========== SEZIONE 3: PFLEGEBOX (PRODOTTI - CHECKBOX) ==========
+
+    const produkteMap = {
+      'bettschutzeinlagen': { x: 107, y: 328 },
+      'fingerlinge': { x: 370, y: 328 },
+      'ffp2': { x: 655, y: 328 },
+      'einmalhandschuhe': { x: 107, y: 308 },
+      'mundschutz': { x: 370, y: 308 },
+      'essslaetzchen': { x: 655, y: 308 },
+      'schutzschuerzenEinmal': { x: 107, y: 288 },
+      'schutzschuerzenWieder': { x: 370, y: 288 },
+      'flaechendesinfektionsmittel': { x: 370, y: 268 },
+      'haendedesinfektionsmittel': { x: 107, y: 268 }
+    };
+
+    // Marca i prodotti selezionati
+    if (p.products) {
+      Object.keys(p.products).forEach(productKey => {
+        if (p.products[productKey] && produkteMap[productKey]) {
+          const pos = produkteMap[productKey];
+          page1.drawText('X', { x: pos.x, y: pos.y, size: 10, font: helveticaBold });
+        }
+      });
+    }
+
+    // Handschuhgröße (checkbox S, M, L, XL)
+    const handschuhGroesseMap = {
+      'S': { x: 212, y: 274 },
+      'M': { x: 248, y: 274 },
+      'L': { x: 278, y: 274 },
+      'XL': { x: 308, y: 274 }
+    };
+    if (p.handschuhGroesse && handschuhGroesseMap[p.handschuhGroesse]) {
+      const pos = handschuhGroesseMap[p.handschuhGroesse];
+      page1.drawText('X', { x: pos.x, y: pos.y, size: 10, font: helveticaBold });
+    }
+
+    // Handschuhmaterial (checkbox Nitril, Vinyl, Latex)
+    const handschuhMaterialMap = {
+      'Nitril': { x: 567, y: 274 },
+      'Vinyl': { x: 627, y: 274 },
+      'Latex': { x: 690, y: 274 }
+    };
+    if (p.handschuhMaterial && handschuhMaterialMap[p.handschuhMaterial]) {
+      const pos = handschuhMaterialMap[p.handschuhMaterial];
+      page1.drawText('X', { x: pos.x, y: pos.y, size: 10, font: helveticaBold });
+    }
+
+    // ========== SEZIONE 4: LIEFERADRESSE ==========
+
+    // Checkbox per destinazione consegna
+    if (formData.lieferadresse === 'versicherte') {
+      page1.drawText('X', { x: 100, y: 224, size: 10, font: helveticaBold });
+    } else if (formData.lieferadresse === 'angehoerige') {
+      page1.drawText('X', { x: 383, y: 224, size: 10, font: helveticaBold });
+    }
+
+    // ========== SEZIONE 5: RECHNUNGSEMPFÄNGER ==========
+
+    // Solo per privati/beihilfeberechtigten
+    if (v.versicherteTyp === 'privat' || v.versicherteTyp === 'beihilfeberechtigt') {
+      if (formData.rechnungsempfaenger === 'versicherte') {
+        page1.drawText('X', { x: 100, y: 165, size: 10, font: helveticaBold });
+      } else if (formData.rechnungsempfaenger === 'angehoerige') {
+        page1.drawText('X', { x: 433, y: 165, size: 10, font: helveticaBold });
+      }
+    }
+
+    // ========== SEZIONE 6: AGB CHECKBOX ==========
+
+    // Checkbox accettazione AGB
+    page1.drawText('X', { x: 100, y: 120, size: 10, font: helveticaBold });
+
+    console.log('✅ Tutti i campi scritti alle coordinate esatte sulla Pagina 1');
+
+    // ========== PAGINA 2: ANLAGE 2 - ANTRAG AUF KOSTENÜBERNAHME ==========
+
+    const page2 = pages[1];
+    if (page2) {
+      console.log('📄 Compilazione Pagina 2 - Anlage 2...');
+
+      // Nome, Vorname (riga in alto)
+      page2.drawText(`${v.name}, ${v.vorname}`, { x: 90, y: 765, size: 9, font: helveticaFont });
+
+      // Geburtsdatum (data di nascita)
+      page2.drawText(v.geburtsdatum || '', { x: 310, y: 765, size: 9, font: helveticaFont });
+
+      // Versichertennummer
+      page2.drawText(v.versichertennummer || '', { x: 530, y: 765, size: 9, font: helveticaFont });
+
+      // Anschrift: Straße, PLZ, Wohnort
+      const anschrift = `${v.strasse}, ${plz} ${ort}`;
+      page2.drawText(anschrift, { x: 90, y: 740, size: 9, font: helveticaFont });
+
+      // Pflegekasse
+      page2.drawText(v.pflegekasse || '', { x: 530, y: 740, size: 9, font: helveticaFont });
+
+      // Checkbox "zum Verbrauch bestimmte Pflegehilfsmittel – Produktgruppe (PG 54)"
+      page2.drawText('X', { x: 100, y: 695, size: 10, font: helveticaBold });
+
+      // Nella tabella, marca i prodotti selezionati (colonna "Menge/Faktor")
+      const produktPG54Positions = {
+        'bettschutzeinlagen': { y: 585 },
+        'fingerlinge': { y: 560 },
+        'einmalhandschuhe': { y: 535 },
+        'mundschutz': { y: 510 },
+        'ffp2': { y: 485 },
+        'schutzschuerzenEinmal': { y: 460 },
+        'schutzschuerzenWieder': { y: 435 },
+        'essslaetzchen': { y: 410 }
+      };
+
+      // Aggiungi quantità ai prodotti selezionati
+      if (p.products) {
+        Object.keys(p.products).forEach(productKey => {
+          if (p.products[productKey] && produktPG54Positions[productKey]) {
+            const yPos = produktPG54Positions[productKey].y;
+            // Scrivi una quantità di default (es. "1") nella colonna "Menge/Faktor"
+            page2.drawText('1', { x: 730, y: yPos, size: 9, font: helveticaFont });
+          }
+        });
+      }
+
+      console.log('✅ Pagina 2 (Anlage 2) compilata');
+    }
+
+    // ========== PAGINA 3: BERATUNGSDOKUMENTATION ==========
+
+    const page3 = pages[2];
+    if (page3) {
+      console.log('📄 Compilazione Pagina 3 - Beratungsdokumentation...');
+
+      // Nome del Leistungserbringer (già precompilato nel PDF)
+      // "Agentur Pflege Teufel, Regentenstraße 88, 51063 Köln"
+
+      // Checkbox "Ich wurde vor der Übergabe... beraten"
+      page3.drawText('X', { x: 100, y: 655, size: 10, font: helveticaBold });
+
+      // Form des Beratungsgesprächs: seleziona "Individuelle telefonische oder digitale Beratung"
+      page3.drawText('X', { x: 315, y: 580, size: 10, font: helveticaBold });
+
+      // Der o. g. Leistungserbringer hat: "mich persönlich"
+      page3.drawText('X', { x: 315, y: 550, size: 10, font: helveticaBold });
+
+      // Datum der Beratung (usa data odierna)
+      const heute = new Date().toLocaleDateString('de-DE');
+      page3.drawText(heute, { x: 315, y: 478, size: 9, font: helveticaFont });
+
+      // Beratende/r Mitarbeiter/in
+      page3.drawText('Pflege Teufel Team', { x: 315, y: 453, size: 9, font: helveticaFont });
+
+      // Checkbox conferme
+      page3.drawText('X', { x: 100, y: 400, size: 10, font: helveticaBold });
+      page3.drawText('X', { x: 100, y: 350, size: 10, font: helveticaBold });
+
+      // Datum (firma)
+      page3.drawText(heute, { x: 100, y: 280, size: 9, font: helveticaFont });
+
+      // Genehmigungsvermerk: PG 54
+      page3.drawText('X', { x: 100, y: 180, size: 10, font: helveticaBold });
+
+      console.log('✅ Pagina 3 (Beratungsdokumentation) compilata');
+    }
+
+    console.log('✅ Tutti i campi scritti alle coordinate esatte');
   }
 
   // Aggiungi la firma come immagine
@@ -278,21 +533,57 @@ async function fillPDFTemplate(formData, env) {
 
       const signatureImage = await pdfDoc.embedPng(signatureBytes);
       const pages = pdfDoc.getPages();
+      const page1 = pages[0];
+      const page3 = pages[2];
 
-      // Aggiungi firma alla prima pagina (o alla pagina corretta del tuo template)
-      const signaturePage = pages[0] || pages[pages.length - 1];
-      const signatureDims = signatureImage.scale(0.2);
+      // Posiziona la firma nella sezione "Unterschrift Versicherte(r)" (pagina 1, in basso)
+      const signatureDims = signatureImage.scale(0.15); // Scala la firma
 
-      signaturePage.drawImage(signatureImage, {
-        x: 100, // Aggiusta coordinate in base al tuo template
-        y: 100,
+      page1.drawImage(signatureImage, {
+        x: 100,  // Posizione X della firma (sezione 6)
+        y: 70,   // Posizione Y della firma (sotto al testo "Unterschrift Versicherte(r)")
         width: signatureDims.width,
         height: signatureDims.height
       });
 
-      console.log('✅ Firma aggiunta al PDF');
+      // Aggiungi la firma anche alla pagina 3 (Unterschrift der/des Versicherten)
+      if (page3) {
+        page3.drawImage(signatureImage, {
+          x: 350,  // Posizione X della firma sulla pagina 3
+          y: 270,  // Posizione Y vicino a "Unterschrift der/des Versicherten"
+          width: signatureDims.width,
+          height: signatureDims.height
+        });
+      }
+
+      console.log('✅ Firma aggiunta al PDF (Pagina 1 e Pagina 3)');
     } catch (err) {
       console.error('⚠️ Errore aggiunta firma:', err);
+    }
+  }
+
+  // Aggiungi anche la seconda firma se presente (Bevollmächtigte)
+  if (formData.signatures.bevollmaechtigte) {
+    try {
+      const signatureBase64 = formData.signatures.bevollmaechtigte.split(',')[1];
+      const signatureBytes = Uint8Array.from(atob(signatureBase64), c => c.charCodeAt(0));
+
+      const signatureImage = await pdfDoc.embedPng(signatureBytes);
+      const pages = pdfDoc.getPages();
+      const page1 = pages[0];
+
+      const signatureDims = signatureImage.scale(0.15);
+
+      page1.drawImage(signatureImage, {
+        x: 450,  // Posizione X della seconda firma (und/oder Unterschrift Bevollmächtigte(r))
+        y: 70,   // Stessa altezza della prima firma
+        width: signatureDims.width,
+        height: signatureDims.height
+      });
+
+      console.log('✅ Firma Bevollmächtigte aggiunta al PDF');
+    } catch (err) {
+      console.error('⚠️ Errore aggiunta firma Bevollmächtigte:', err);
     }
   }
 

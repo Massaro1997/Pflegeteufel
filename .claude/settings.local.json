@@ -10,7 +10,12 @@
       "Bash(node -e:*)",
       "Bash(node update-json.js:*)",
       "Bash(node:*)",
-      "Bash(git pull:*)"
+      "Bash(git pull:*)",
+      "Bash(npm install:*)",
+      "Bash(wrangler login:*)",
+      "Bash(npx wrangler deploy:*)",
+      "Bash(curl -X GET https://shopify-backend.massarocalogero1997.workers.dev/health)",
+      "Bash(nslookup:*)"
     ],
     "deny": [],
     "ask": []
