@@ -464,7 +464,8 @@ async function generatePflegeboxPDF(formData, env) {
 
 async function sendPflegeboxEmailWithPDF(env, formData, pdfBytes) {
   const toEmail = 'pflegeteufelagentur@gmail.com';
-  const fromEmail = 'bestellung@send.pflegeteufel.de';
+  // FIX: Use pflegeteufel.de (NOT send.pflegeteufel.de)
+  const fromEmail = 'bestellung@pflegeteufel.de';
   const subject = `📦 Neue Pflegebox Bestellung - ${formData.versicherte.vorname} ${formData.versicherte.name}`;
 
   // Converti PDF in base64 per l'allegato
