@@ -12,12 +12,11 @@
 <style>
     .pflegeteufel-page-wrapper {all: initial;display: block;font-family: 'Inter', sans-serif;isolation: isolate;}
     .pflegeteufel-page-wrapper *, .pflegeteufel-page-wrapper *::before, .pflegeteufel-page-wrapper *::after {box-sizing: border-box;margin: 0;padding: 0;}
-    .pflegeteufel-page-wrapper .pflegebox-page {max-width: 1200px;margin: 0 auto;padding: 40px 20px;background: #fafafa;font-family: 'Inter', sans-serif;}
-    .pflegeteufel-page-wrapper .hero-section {text-align: center;margin-bottom: 30px;padding: 20px;}
-    .pflegeteufel-page-wrapper .hero-title {font-size: 2.5rem;font-weight: 900;margin-bottom: 10px;color: #2c3e50;font-family: 'Arial Black', sans-serif;}
-    .pflegeteufel-page-wrapper .hero-description {font-size: 1.1rem;line-height: 1.6;max-width: 700px;margin: 0 auto;color: #666;}
-    .pflegeteufel-page-wrapper .progress-section {background: white;padding: 30px;border-radius: 12px;margin-bottom: 30px;box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);}
-    .pflegeteufel-page-wrapper .progress-steps {display: flex;justify-content: space-between;position: relative;margin-bottom: 20px;}
+    .pflegeteufel-page-wrapper .pflegebox-page {max-width: 1400px;margin: 0 auto;padding: 60px 40px;background: #fafafa;font-family: 'Inter', sans-serif;}
+    .pflegeteufel-page-wrapper .hero-section {text-align: center;margin-bottom: 0;padding: 20px 20px 40px;}
+    .pflegeteufel-page-wrapper .hero-title {font-size: 2.8rem;font-weight: 900;margin-bottom: 0;color: #2c3e50;font-family: 'Arial Black', sans-serif;}
+    .pflegeteufel-page-wrapper .progress-section {background: white;padding: 35px 50px;border-radius: 16px;margin-bottom: 40px;box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);}
+    .pflegeteufel-page-wrapper .progress-steps {display: flex;justify-content: space-between;position: relative;margin-bottom: 0;}
     .pflegeteufel-page-wrapper .progress-steps::before {content: '';position: absolute;top: 20px;left: 0;right: 0;height: 3px;background: #e9ecef;z-index: 0;}
     .pflegeteufel-page-wrapper .progress-step {flex: 1;text-align: center;position: relative;z-index: 1;}
     .pflegeteufel-page-wrapper .step-circle {width: 40px;height: 40px;border-radius: 50%;background: #e9ecef;color: #6c757d;display: flex;align-items: center;justify-content: center;margin: 0 auto 10px;font-weight: 700;transition: all 0.3s;}
@@ -25,7 +24,7 @@
     .pflegeteufel-page-wrapper .step-circle.completed {background: #28a745;color: white;}
     .pflegeteufel-page-wrapper .step-label {font-size: 0.85rem;color: #6c757d;font-weight: 500;}
     .pflegeteufel-page-wrapper .step-label.active {color: #C12624;font-weight: 700;}
-    .pflegeteufel-page-wrapper .form-container {background: white;border-radius: 16px;padding: 40px;box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);margin-bottom: 30px;position: relative;}
+    .pflegeteufel-page-wrapper .form-container {background: white;border-radius: 20px;padding: 60px 80px;box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);margin-bottom: 40px;position: relative;}
     .pflegeteufel-page-wrapper .form-container::before {content: '';position: absolute;top: 0;left: 0;right: 0;height: 4px;background: linear-gradient(90deg, #C12624, #A01F1D);border-radius: 16px 16px 0 0;}
     .pflegeteufel-page-wrapper .section-title {font-size: 1.6rem;font-weight: 900;color: #2c3e50;margin-bottom: 25px;font-family: 'Arial Black', sans-serif;text-transform: uppercase;border-bottom: 3px solid #C12624;padding-bottom: 10px;overflow-wrap: break-word;word-wrap: break-word;}
     .pflegeteufel-page-wrapper .form-group {margin-bottom: 25px;}
@@ -77,17 +76,16 @@
     .pflegeteufel-page-wrapper .success-title {font-size: 2rem;font-weight: 900;color: #28a745;margin-bottom: 15px;font-family: 'Arial Black', sans-serif;}
 
     @media (max-width: 768px) {
-        .pflegeteufel-page-wrapper .pflegebox-page {padding: 20px 10px;overflow-x: hidden;}
-        .pflegeteufel-page-wrapper .hero-section {padding: 20px 15px;margin-bottom: 20px;}
+        .pflegeteufel-page-wrapper .pflegebox-page {padding: 30px 15px;overflow-x: hidden;}
+        .pflegeteufel-page-wrapper .hero-section {padding: 20px 15px 30px;margin-bottom: 0;}
         .pflegeteufel-page-wrapper .hero-title {font-size: 1.8rem;}
-        .pflegeteufel-page-wrapper .hero-description {font-size: 1rem;}
-        .pflegeteufel-page-wrapper .progress-section {padding: 20px 15px;margin-bottom: 20px;}
+        .pflegeteufel-page-wrapper .progress-section {padding: 25px 20px;margin-bottom: 25px;}
         .pflegeteufel-page-wrapper .progress-steps {flex-wrap: wrap;gap: 10px;}
         .pflegeteufel-page-wrapper .progress-steps::before {display: none;}
         .pflegeteufel-page-wrapper .progress-step {flex: 0 0 calc(33.333% - 10px);min-width: 80px;margin-bottom: 10px;}
         .pflegeteufel-page-wrapper .step-circle {width: 35px;height: 35px;font-size: 0.9rem;}
         .pflegeteufel-page-wrapper .step-label {font-size: 0.75rem;}
-        .pflegeteufel-page-wrapper .form-container {padding: 20px 12px;margin-bottom: 20px;overflow: hidden;}
+        .pflegeteufel-page-wrapper .form-container {padding: 30px 20px;margin-bottom: 25px;overflow: hidden;}
         .pflegeteufel-page-wrapper .section-title {font-size: 1.2rem;word-break: break-word;}
         .pflegeteufel-page-wrapper .form-row {grid-template-columns: 1fr;gap: 15px;}
         .pflegeteufel-page-wrapper .radio-group {flex-direction: column;gap: 10px;}
@@ -102,7 +100,6 @@
 <div class="pflegebox-page">
     <div class="hero-section">
         <h1 class="hero-title">Pflegebox Antragsformular</h1>
-        <p class="hero-description">Füllen Sie das Formular aus, um Ihre monatliche Pflegebox zu beantragen. Alle Angaben werden vertraulich behandelt.</p>
     </div>
 
     <div class="progress-section">
