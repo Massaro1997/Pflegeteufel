@@ -180,7 +180,7 @@ async function generatePflegeboxPDF(formData, env) {
     x: 50,
     y: height - 75,
     size: 14,
-    font: helvetica Font,
+    font: helveticaFont,
     color: rgb(0, 0, 0)
   });
 
@@ -374,7 +374,7 @@ async function generatePflegeboxPDF(formData, env) {
 
   for (const [key, value] of Object.entries(p.products)) {
     if (value && yPosition > 100) {
-      page1.drawText(`✓ ${productNames[key] || key}`, {
+      page1.drawText(`[X] ${productNames[key] || key}`, {
         x: 90,
         y: yPosition,
         size: 10,
