@@ -348,8 +348,15 @@ async function sendPflegeboxEmailWithPDF(env, formData, pdfBytes) {
   const fromEmail = 'bestellung@pflegeteufel.de';
   const subject = `📦 Neue Pflegebox Bestellung - ${formData.versicherte.vorname} ${formData.versicherte.name}`;
 
-  // Converti PDF in base64 per l'allegato
-  const pdfBase64 = btoa(String.fromCharCode(...new Uint8Array(pdfBytes)));
+  // Converti PDF in base64 per l'allegato (metodo sicuro per file grandi)
+  const uint8Array = new Uint8Array(pdfBytes);
+  let binaryString = '';
+  const chunkSize = 8192;
+  for (let i = 0; i < uint8Array.length; i += chunkSize) {
+    const chunk = uint8Array.subarray(i, Math.min(i + chunkSize, uint8Array.length));
+    binaryString += String.fromCharCode(...chunk);
+  }
+  const pdfBase64 = btoa(binaryString);
 
   // Email body
   const emailText = `
