@@ -13,9 +13,9 @@
     .pflegeteufel-page-wrapper {all: initial;display: block;font-family: 'Inter', sans-serif;isolation: isolate;}
     .pflegeteufel-page-wrapper *, .pflegeteufel-page-wrapper *::before, .pflegeteufel-page-wrapper *::after {box-sizing: border-box;margin: 0;padding: 0;}
     .pflegeteufel-page-wrapper .pflegebox-page {max-width: 1800px;margin: 0 auto;padding: 60px 60px;background: #fafafa;font-family: 'Inter', sans-serif;}
-    .pflegeteufel-page-wrapper .hero-section {text-align: center;margin-bottom: 0;padding: 20px 20px 40px;}
+    .pflegeteufel-page-wrapper .hero-section {text-align: center;margin-bottom: 40px;padding: 20px 20px 20px;}
     .pflegeteufel-page-wrapper .hero-title {font-size: 2.8rem;font-weight: 900;margin-bottom: 0;color: #2c3e50;font-family: 'Arial Black', sans-serif;}
-    .pflegeteufel-page-wrapper .progress-section {background: white;padding: 40px 80px;border-radius: 16px;margin-bottom: 40px;box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);}
+    .pflegeteufel-page-wrapper .progress-section {background: white;padding: 40px 80px;border-radius: 16px;margin-top: 40px;box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);}
     .pflegeteufel-page-wrapper .progress-steps {display: flex;justify-content: space-between;position: relative;margin-bottom: 0;}
     .pflegeteufel-page-wrapper .progress-steps::before {content: '';position: absolute;top: 20px;left: 0;right: 0;height: 3px;background: #e9ecef;z-index: 0;}
     .pflegeteufel-page-wrapper .progress-step {flex: 1;text-align: center;position: relative;z-index: 1;}
@@ -77,9 +77,9 @@
 
     @media (max-width: 768px) {
         .pflegeteufel-page-wrapper .pflegebox-page {padding: 30px 15px;overflow-x: hidden;}
-        .pflegeteufel-page-wrapper .hero-section {padding: 20px 15px 30px;margin-bottom: 0;}
+        .pflegeteufel-page-wrapper .hero-section {padding: 20px 15px 20px;margin-bottom: 30px;}
         .pflegeteufel-page-wrapper .hero-title {font-size: 1.8rem;}
-        .pflegeteufel-page-wrapper .progress-section {padding: 25px 20px;margin-bottom: 25px;}
+        .pflegeteufel-page-wrapper .progress-section {padding: 25px 20px;margin-top: 30px;}
         .pflegeteufel-page-wrapper .progress-steps {flex-wrap: wrap;gap: 10px;}
         .pflegeteufel-page-wrapper .progress-steps::before {display: none;}
         .pflegeteufel-page-wrapper .progress-step {flex: 0 0 calc(33.333% - 10px);min-width: 80px;margin-bottom: 10px;}
@@ -99,17 +99,6 @@
 <div class="pflegebox-page">
     <div class="hero-section">
         <h1 class="hero-title">Pflegebox Antragsformular</h1>
-    </div>
-
-    <div class="progress-section">
-        <div class="progress-steps">
-            <div class="progress-step"><div class="step-circle active" id="circle-1">1</div><div class="step-label active" id="label-1">Antragsteller</div></div>
-            <div class="progress-step"><div class="step-circle" id="circle-2">2</div><div class="step-label" id="label-2">Pflegeperson</div></div>
-            <div class="progress-step"><div class="step-circle" id="circle-3">3</div><div class="step-label" id="label-3">Pflegebox</div></div>
-            <div class="progress-step"><div class="step-circle" id="circle-4">4</div><div class="step-label" id="label-4">Lieferadresse</div></div>
-            <div class="progress-step"><div class="step-circle" id="circle-5">5</div><div class="step-label" id="label-5">Rechnung</div></div>
-            <div class="progress-step"><div class="step-circle" id="circle-6">6</div><div class="step-label" id="label-6">Unterschrift</div></div>
-        </div>
     </div>
 
     <form id="pflegeboxForm" class="form-container">
@@ -333,6 +322,17 @@
             <button type="submit" class="btn btn-submit hidden" id="submitBtn">✓ Absenden</button>
         </div>
     </form>
+
+    <div class="progress-section">
+        <div class="progress-steps">
+            <div class="progress-step"><div class="step-circle active" id="circle-1">1</div><div class="step-label active" id="label-1">Antragsteller</div></div>
+            <div class="progress-step"><div class="step-circle" id="circle-2">2</div><div class="step-label" id="label-2">Pflegeperson</div></div>
+            <div class="progress-step"><div class="step-circle" id="circle-3">3</div><div class="step-label" id="label-3">Pflegebox</div></div>
+            <div class="progress-step"><div class="step-circle" id="circle-4">4</div><div class="step-label" id="label-4">Lieferadresse</div></div>
+            <div class="progress-step"><div class="step-circle" id="circle-5">5</div><div class="step-label" id="label-5">Rechnung</div></div>
+            <div class="progress-step"><div class="step-circle" id="circle-6">6</div><div class="step-label" id="label-6">Unterschrift</div></div>
+        </div>
+    </div>
 
     <div id="successPage" class="form-container hidden">
         <div class="success-page">
