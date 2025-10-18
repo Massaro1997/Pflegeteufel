@@ -1,0 +1,202 @@
+import fs from 'fs';
+
+// Leggo le coordinate finali dal JSON
+const coordinates = JSON.parse(fs.readFileSync('./coordinate-finali.json', 'utf8'));
+
+console.log('🎯 Aggiornamento Worker con coordinate dalla griglia visiva\n');
+
+// Genero il codice per Sezione 1
+const section1Code = `    // ========== SEZIONE 1: ANTRAGSTELLER (VERSICHERTE/R) ==========
+
+    // COORDINATE ESTRATTE DA GRIGLIA VISIVA - PDF_CAMPIONE_CON_GRIGLIA.pdf
+    // Settori analizzati manualmente dallo screenshot → conversione automatica a coordinate
+
+    // Checkbox Frau/Herr (settore 611 / 636)
+    if (v.anrede === 'Frau') {
+      page1.drawText('X', { x: 100, y: 732, size: 10, font: helveticaBold });
+    } else if (v.anrede === 'Herr') {
+      page1.drawText('X', { x: 350, y: 732, size: 10, font: helveticaBold });
+    }
+
+    // Vorname / Name (settore 673 / 696)
+    page1.drawText(v.vorname || '', { x: 120, y: 722, size: 10, font: helveticaFont });
+    page1.drawText(v.name || '', { x: 350, y: 722, size: 10, font: helveticaFont });
+
+    // Straße / PLZ Ort (settore 793 / 815)
+    page1.drawText(v.strasse || '', { x: 120, y: 702, size: 10, font: helveticaFont });
+
+    const plzOrtParts = (v.plzOrt || '').split(' ');
+    const plz = plzOrtParts[0] || '';
+    const ort = plzOrtParts.slice(1).join(' ') || '';
+    page1.drawText(\`\${plz} \${ort}\`, { x: 340, y: 702, size: 10, font: helveticaFont });
+
+    // Telefon / Email (settore 910 / 935)
+    page1.drawText(v.telefon || '', { x: 90, y: 682, size: 10, font: helveticaFont });
+    page1.drawText(v.email || '', { x: 340, y: 682, size: 10, font: helveticaFont });
+
+    // Pflegegrad checkbox (settori 1032-1040, 1045)
+    const pflegegradMap = {
+      '1': { x: 110, y: 662 },
+      '2': { x: 130, y: 662 },
+      '3': { x: 150, y: 662 },
+      '4': { x: 170, y: 662 },
+      '5': { x: 190, y: 662 }
+    };
+    if (v.pflegegrad && pflegegradMap[v.pflegegrad]) {
+      const pos = pflegegradMap[v.pflegegrad];
+      page1.drawText('X', { x: pos.x, y: pos.y, size: 10, font: helveticaBold });
+    }
+
+    // Checkbox "Ich habe einen Pflegegrad beantragt" (settore 1045)
+    if (!v.pflegegrad || v.pflegegrad === 'beantragt') {
+      page1.drawText('X', { x: 240, y: 662, size: 10, font: helveticaBold });
+    }
+
+    // Versicherungstyp (settori 1097, 1104, 1113)
+    const versicherungMap = {
+      'gesetzlich': { x: 160, y: 652 },
+      'privat': { x: 230, y: 652 },
+      'beihilfeberechtigt': { x: 320, y: 652 }
+    };
+    if (v.versicherteTyp && versicherungMap[v.versicherteTyp]) {
+      const pos = versicherungMap[v.versicherteTyp];
+      page1.drawText('X', { x: pos.x, y: pos.y, size: 10, font: helveticaBold });
+    }
+
+    // Checkbox "über Ortsamt/Sozialamt versichert" (settore 1217, 1245)
+    if (v.versicherteTyp === 'ortsamt') {
+      page1.drawText('X', { x: 160, y: 632, size: 10, font: helveticaBold });
+      if (v.ortsamtName) {
+        page1.drawText(v.ortsamtName, { x: 440, y: 632, size: 10, font: helveticaFont });
+      }
+    }`;
+
+// Genero il codice per Sezione 2
+const section2Code = `    // ========== SEZIONE 2: ANGEHÖRIGE/PFLEGEPERSON ==========
+
+    if (!a.isSamePerson && a.data) {
+      // COORDINATE DA GRIGLIA VISIVA
+
+      // Checkbox Frau/Herr (settore 1511 / 1536)
+      if (a.data.anrede === 'Frau') {
+        page1.drawText('X', { x: 100, y: 582, size: 10, font: helveticaBold });
+      } else if (a.data.anrede === 'Herr') {
+        page1.drawText('X', { x: 350, y: 582, size: 10, font: helveticaBold });
+      }
+
+      // Vorname / Name (settore 1573 / 1596)
+      page1.drawText(a.data.vorname || '', { x: 120, y: 572, size: 10, font: helveticaFont });
+      page1.drawText(a.data.name || '', { x: 350, y: 572, size: 10, font: helveticaFont });
+
+      // Straße / PLZ Ort (settore 1693 / 1715)
+      page1.drawText(a.data.strasse || '', { x: 120, y: 552, size: 10, font: helveticaFont });
+
+      const plzOrtAngehParts = (a.data.plzOrt || '').split(' ');
+      const plzAng = plzOrtAngehParts[0] || '';
+      const ortAng = plzOrtAngehParts.slice(1).join(' ') || '';
+      page1.drawText(\`\${plzAng} \${ortAng}\`, { x: 340, y: 552, size: 10, font: helveticaFont });
+
+      // Telefon / Email (settore 1810 / 1835)
+      page1.drawText(a.data.telefon || '', { x: 90, y: 532, size: 10, font: helveticaFont });
+      page1.drawText(a.data.email || '', { x: 340, y: 532, size: 10, font: helveticaFont });
+
+      // Pflegeperson ist (settori 1933, 1937, 1972)
+      const pflegepersonTypMap = {
+        'familienangehoeriger': { x: 120, y: 512 },
+        'private': { x: 160, y: 512 },
+        'betreuer': { x: 510, y: 512 }
+      };
+      if (a.pflegepersonTyp && pflegepersonTypMap[a.pflegepersonTyp]) {
+        const pos = pflegepersonTypMap[a.pflegepersonTyp];
+        page1.drawText('X', { x: pos.x, y: pos.y, size: 10, font: helveticaBold });
+      }
+    }`;
+
+// Genero il codice per Sezioni 3-6
+const sections36Code = `    // ========== SEZIONE 3: PFLEGEBOX (PRODOTTI) ==========
+
+    // Checkbox prodotti
+    const produkteMap = {
+      'bettschutzeinlagen': { x: 120, y: 452 },
+      'fingerlinge': { x: 290, y: 452 },
+      'ffp2': { x: 490, y: 452 },
+      'einmalhandschuhe': { x: 120, y: 442 },
+      'mundschutz': { x: 290, y: 442 },
+      'essslaetzchen': { x: 490, y: 442 },
+      'schutzschuerzenEinmal': { x: 120, y: 432 },
+      'schutzschuerzenWieder': { x: 290, y: 432 },
+      'flaechendesinfektionsmittel': { x: 120, y: 412 },
+      'haendedesinfektionsmittel': { x: 140, y: 402 }
+    };
+
+    if (p.products) {
+      Object.keys(p.products).forEach(productKey => {
+        if (p.products[productKey] && produkteMap[productKey]) {
+          const pos = produkteMap[productKey];
+          page1.drawText('X', { x: pos.x, y: pos.y, size: 10, font: helveticaBold });
+        }
+      });
+    }
+
+    // Handschuhgröße
+    const handschuhGroesseMap = {
+      'S': { x: 140, y: 382 },
+      'M': { x: 170, y: 382 },
+      'L': { x: 200, y: 382 },
+      'XL': { x: 230, y: 382 }
+    };
+    if (p.handschuhGroesse && handschuhGroesseMap[p.handschuhGroesse]) {
+      const pos = handschuhGroesseMap[p.handschuhGroesse];
+      page1.drawText('X', { x: pos.x, y: pos.y, size: 10, font: helveticaBold });
+    }
+
+    // Handschuhmaterial
+    const handschuhMaterialMap = {
+      'Nitril': { x: 390, y: 382 },
+      'Vinyl': { x: 430, y: 382 },
+      'Latex': { x: 470, y: 382 }
+    };
+    if (p.handschuhMaterial && handschuhMaterialMap[p.handschuhMaterial]) {
+      const pos = handschuhMaterialMap[p.handschuhMaterial];
+      page1.drawText('X', { x: pos.x, y: pos.y, size: 10, font: helveticaBold });
+    }
+
+    // ========== SEZIONE 4: LIEFERADRESSE ==========
+
+    if (formData.lieferadresse === 'versicherte') {
+      page1.drawText('X', { x: 60, y: 312, size: 10, font: helveticaBold });
+    } else if (formData.lieferadresse === 'angehoerige') {
+      page1.drawText('X', { x: 290, y: 312, size: 10, font: helveticaBold });
+    }
+
+    // ========== SEZIONE 5: RECHNUNGSEMPFÄNGER ==========
+
+    if (v.versicherteTyp === 'privat' || v.versicherteTyp === 'beihilfeberechtigt') {
+      if (formData.rechnungsempfaenger === 'versicherte') {
+        page1.drawText('X', { x: 60, y: 232, size: 10, font: helveticaBold });
+      } else if (formData.rechnungsempfaenger === 'angehoerige') {
+        page1.drawText('X', { x: 290, y: 232, size: 10, font: helveticaBold });
+      }
+    }
+
+    // ========== SEZIONE 6: AGB ==========
+
+    page1.drawText('X', { x: 120, y: 202, size: 10, font: helveticaBold }); // AGB
+    page1.drawText('X', { x: 120, y: 192, size: 10, font: helveticaBold }); // Privacy
+
+    console.log('✅ Tutte le sezioni compilate con coordinate dalla griglia');`;
+
+console.log(section1Code);
+console.log('\n');
+console.log(section2Code);
+console.log('\n');
+console.log(sections36Code);
+
+console.log('\n\n✅ Codice generato! Copialo nel worker per aggiornare le coordinate.');
+console.log('\n📝 Prossimo passo: aggiorno automaticamente il file worker...\n');
+
+// Salvo il codice completo
+const fullCode = section1Code + '\n\n' + section2Code + '\n\n' + sections36Code;
+fs.writeFileSync('./new-coordinates-code.txt', fullCode);
+
+console.log('💾 Codice salvato in: new-coordinates-code.txt');

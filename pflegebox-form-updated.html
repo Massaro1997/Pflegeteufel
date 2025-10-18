@@ -13,10 +13,9 @@
     .pflegeteufel-page-wrapper {all: initial;display: block;font-family: 'Inter', sans-serif;isolation: isolate;}
     .pflegeteufel-page-wrapper *, .pflegeteufel-page-wrapper *::before, .pflegeteufel-page-wrapper *::after {box-sizing: border-box;margin: 0;padding: 0;}
     .pflegeteufel-page-wrapper .pflegebox-page {max-width: 1200px;margin: 0 auto;padding: 40px 20px;background: #fafafa;font-family: 'Inter', sans-serif;}
-    .pflegeteufel-page-wrapper .hero-section {background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%);color: white;padding: 50px 40px;border-radius: 16px;margin-bottom: 40px;text-align: center;box-shadow: 0 10px 30px rgba(193, 38, 36, 0.2);}
-    .pflegeteufel-page-wrapper .hero-icon {background: rgba(255, 255, 255, 0.15);width: 80px;height: 80px;border-radius: 50%;display: flex;align-items: center;justify-content: center;margin: 0 auto 20px;font-size: 40px;}
-    .pflegeteufel-page-wrapper .hero-title {font-size: 2.2rem;font-weight: 900;margin-bottom: 15px;font-family: 'Arial Black', sans-serif;text-transform: uppercase;}
-    .pflegeteufel-page-wrapper .hero-description {font-size: 1.1rem;line-height: 1.6;max-width: 800px;margin: 0 auto;opacity: 0.95;}
+    .pflegeteufel-page-wrapper .hero-section {text-align: center;margin-bottom: 30px;padding: 20px;}
+    .pflegeteufel-page-wrapper .hero-title {font-size: 2.5rem;font-weight: 900;margin-bottom: 10px;color: #2c3e50;font-family: 'Arial Black', sans-serif;}
+    .pflegeteufel-page-wrapper .hero-description {font-size: 1.1rem;line-height: 1.6;max-width: 700px;margin: 0 auto;color: #666;}
     .pflegeteufel-page-wrapper .progress-section {background: white;padding: 30px;border-radius: 12px;margin-bottom: 30px;box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);}
     .pflegeteufel-page-wrapper .progress-steps {display: flex;justify-content: space-between;position: relative;margin-bottom: 20px;}
     .pflegeteufel-page-wrapper .progress-steps::before {content: '';position: absolute;top: 20px;left: 0;right: 0;height: 3px;background: #e9ecef;z-index: 0;}
@@ -79,10 +78,9 @@
 
     @media (max-width: 768px) {
         .pflegeteufel-page-wrapper .pflegebox-page {padding: 20px 10px;overflow-x: hidden;}
-        .pflegeteufel-page-wrapper .hero-section {padding: 30px 20px;margin-bottom: 20px;}
-        .pflegeteufel-page-wrapper .hero-icon {width: 60px;height: 60px;font-size: 30px;}
-        .pflegeteufel-page-wrapper .hero-title {font-size: 1.6rem;}
-        .pflegeteufel-page-wrapper .hero-description {font-size: 0.95rem;}
+        .pflegeteufel-page-wrapper .hero-section {padding: 20px 15px;margin-bottom: 20px;}
+        .pflegeteufel-page-wrapper .hero-title {font-size: 1.8rem;}
+        .pflegeteufel-page-wrapper .hero-description {font-size: 1rem;}
         .pflegeteufel-page-wrapper .progress-section {padding: 20px 15px;margin-bottom: 20px;}
         .pflegeteufel-page-wrapper .progress-steps {flex-wrap: wrap;gap: 10px;}
         .pflegeteufel-page-wrapper .progress-steps::before {display: none;}
@@ -103,9 +101,8 @@
 
 <div class="pflegebox-page">
     <div class="hero-section">
-        <div class="hero-icon">📦</div>
-        <h1 class="hero-title">Bestellformular Pflegebox</h1>
-        <p class="hero-description">Stellen Sie Ihre individuelle Pflegebox zusammen.</p>
+        <h1 class="hero-title">Pflegebox Antragsformular</h1>
+        <p class="hero-description">Füllen Sie das Formular aus, um Ihre monatliche Pflegebox zu beantragen. Alle Angaben werden vertraulich behandelt.</p>
     </div>
 
     <div class="progress-section">
@@ -171,8 +168,8 @@
                 <div class="radio-group">
                     <div class="radio-option"><label class="radio-label"><input type="radio" name="insuranceType" value="gesetzlich" required><span>gesetzlich</ span></label></div>
                     <div class="radio-option"><label class="radio-label"><input type="radio" name="insuranceType" value="privat"><span>privat</span></label></div>
-                    <div class="radio-option"><label class="radio-label"><input type="radio" name="insuranceType" value="beihilfe"><span>beihilfe</span></label></div>
-                    <div class="radio-option"><label class="radio-label"><input type="radio" name="insuranceType" value="sozialamt"><span>sozialamt</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="insuranceType" value="beihilfeberechtigt"><span>beihilfeberechtigt</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="insuranceType" value="sozialamt"><span>über Ortsamt/Sozialamt</span></label></div>
                 </div>
             </div>
 
@@ -313,11 +310,22 @@
             </div>
             <div class="info-box info-box-blue" style="margin-top: 20px;"><strong>Informationen zur Verarbeitung</strong> Ihrer personenbezogenen Daten unter: https://pflegeteufel.de/policies/privacy-policy</div>
             <div class="signature-section" style="margin-top: 30px;">
-                <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 10px;">Unterschrift Versicherte(r) und/oder Bevollmächtigte(r)</h3>
+                <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 10px;">Unterschrift Versicherte(r)</h3>
                 <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Bitte unterschreiben Sie mit der Maus oder dem Finger</p>
                 <canvas id="signatureCanvas" class="signature-canvas" width="800" height="200"></canvas>
                 <div class="signature-actions">
                     <button type="button" class="clear-btn" onclick="clearSignature()">🗑️ Löschen</button>
+                    <span style="font-size: 0.85rem; color: #6c757d;">Im weißen Feld unterschreiben</span>
+                </div>
+            </div>
+
+            <!-- Firma Bevollmächtigte (solo se Betreuer selezionato) -->
+            <div id="bevollmachtigteSignatureSection" class="signature-section" style="margin-top: 30px; display: none;">
+                <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 10px;">Unterschrift Bevollmächtigte(r)</h3>
+                <p style="font-size: 0.9rem; color: #666; margin-bottom: 15px;">Bitte unterschreiben Sie als Betreuer(in)</p>
+                <canvas id="bevollmachtigteSignatureCanvas" class="signature-canvas" width="800" height="200"></canvas>
+                <div class="signature-actions">
+                    <button type="button" class="clear-btn" onclick="clearBevollmachtigteSignature()">🗑️ Löschen</button>
                     <span style="font-size: 0.85rem; color: #6c757d;">Im weißen Feld unterschreiben</span>
                 </div>
             </div>
@@ -361,7 +369,9 @@ const WORKER_KEY = 'felix_backend_2025';
 // State
 let currentStep = 1;
 let canvas, ctx, isDrawing = false, signatureData = '';
+let bevollmachtigteCanvas, bevollmachtigteCtx, isBevollmachtigteDrawing = false, bevollmachtigteSignatureData = '';
 let angehoerigeSameAsPerson = false;
+let isBevollmachtigte = false;
 
 // Init
 document.addEventListener('DOMContentLoaded', function() {
@@ -371,6 +381,19 @@ document.addEventListener('DOMContentLoaded', function() {
     document.querySelectorAll('input[name="insuranceType"]').forEach(function(radio) {
         radio.addEventListener('change', function() {
             document.getElementById('sozialamtField').style.display = (this.value === 'sozialamt') ? 'block' : 'none';
+        });
+    });
+
+    // Listener per mostrare firma Bevollmächtigte
+    document.querySelectorAll('input[name="caregiverType"]').forEach(function(radio) {
+        radio.addEventListener('change', function() {
+            isBevollmachtigte = (this.value === 'Betreuer');
+            console.log('🔍 CaregiverType changed:', this.value, 'isBevollmachtigte:', isBevollmachtigte);
+
+            // Mostra/nascondi sezione firma bevollmächtigte se siamo già allo step 6
+            if (currentStep === 6) {
+                initBevollmachtigteCanvas();
+            }
         });
     });
 });
@@ -408,59 +431,122 @@ function toggleAngehoerige() {
 
 // Signature Canvas
 function initCanvas() {
+    // Canvas versicherte
     canvas = document.getElementById('signatureCanvas');
-    if (!canvas) return;
-    ctx = canvas.getContext('2d');
-    canvas.addEventListener('mousedown', startDrawing);
-    canvas.addEventListener('mousemove', draw);
-    canvas.addEventListener('mouseup', stopDrawing);
-    canvas.addEventListener('mouseleave', stopDrawing);
-    canvas.addEventListener('touchstart', handleTouchStart);
-    canvas.addEventListener('touchmove', handleTouchMove);
-    canvas.addEventListener('touchend', stopDrawing);
+    if (canvas) {
+        ctx = canvas.getContext('2d');
+        canvas.addEventListener('mousedown', (e) => startDrawing(e, 'versicherte'));
+        canvas.addEventListener('mousemove', (e) => draw(e, 'versicherte'));
+        canvas.addEventListener('mouseup', () => stopDrawing('versicherte'));
+        canvas.addEventListener('mouseleave', () => stopDrawing('versicherte'));
+        canvas.addEventListener('touchstart', (e) => handleTouchStart(e, 'versicherte'));
+        canvas.addEventListener('touchmove', (e) => handleTouchMove(e, 'versicherte'));
+        canvas.addEventListener('touchend', () => stopDrawing('versicherte'));
+    }
+
+    // Init canvas bevollmächtigte se necessario
+    initBevollmachtigteCanvas();
 }
 
-function handleTouchStart(e) {
+function initBevollmachtigteCanvas() {
+    const bevollSection = document.getElementById('bevollmachtigteSignatureSection');
+    if (!bevollSection) return;
+
+    if (isBevollmachtigte) {
+        bevollSection.style.display = 'block';
+        // Init canvas solo se non già fatto
+        if (!bevollmachtigteCanvas) {
+            bevollmachtigteCanvas = document.getElementById('bevollmachtigteSignatureCanvas');
+            if (bevollmachtigteCanvas) {
+                bevollmachtigteCtx = bevollmachtigteCanvas.getContext('2d');
+                bevollmachtigteCanvas.addEventListener('mousedown', (e) => startDrawing(e, 'bevollmachtigte'));
+                bevollmachtigteCanvas.addEventListener('mousemove', (e) => draw(e, 'bevollmachtigte'));
+                bevollmachtigteCanvas.addEventListener('mouseup', () => stopDrawing('bevollmachtigte'));
+                bevollmachtigteCanvas.addEventListener('mouseleave', () => stopDrawing('bevollmachtigte'));
+                bevollmachtigteCanvas.addEventListener('touchstart', (e) => handleTouchStart(e, 'bevollmachtigte'));
+                bevollmachtigteCanvas.addEventListener('touchmove', (e) => handleTouchMove(e, 'bevollmachtigte'));
+                bevollmachtigteCanvas.addEventListener('touchend', () => stopDrawing('bevollmachtigte'));
+            }
+        }
+    } else {
+        bevollSection.style.display = 'none';
+        bevollmachtigteSignatureData = ''; // Reset firma quando nascosto
+    }
+}
+
+function handleTouchStart(e, type) {
     e.preventDefault();
     const touch = e.touches[0];
     const mouseEvent = new MouseEvent('mousedown', {clientX: touch.clientX, clientY: touch.clientY});
-    canvas.dispatchEvent(mouseEvent);
+    if (type === 'bevollmachtigte') {
+        bevollmachtigteCanvas.dispatchEvent(mouseEvent);
+    } else {
+        canvas.dispatchEvent(mouseEvent);
+    }
 }
 
-function handleTouchMove(e) {
+function handleTouchMove(e, type) {
     e.preventDefault();
     const touch = e.touches[0];
     const mouseEvent = new MouseEvent('mousemove', {clientX: touch.clientX, clientY: touch.clientY});
-    canvas.dispatchEvent(mouseEvent);
+    if (type === 'bevollmachtigte') {
+        bevollmachtigteCanvas.dispatchEvent(mouseEvent);
+    } else {
+        canvas.dispatchEvent(mouseEvent);
+    }
 }
 
-function startDrawing(e) {
-    isDrawing = true;
-    const rect = canvas.getBoundingClientRect();
-    ctx.beginPath();
-    ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+function startDrawing(e, type) {
+    const currentCanvas = type === 'bevollmachtigte' ? bevollmachtigteCanvas : canvas;
+    const currentCtx = type === 'bevollmachtigte' ? bevollmachtigteCtx : ctx;
+
+    if (type === 'bevollmachtigte') {
+        isBevollmachtigteDrawing = true;
+    } else {
+        isDrawing = true;
+    }
+
+    const rect = currentCanvas.getBoundingClientRect();
+    currentCtx.beginPath();
+    currentCtx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
 }
 
-function draw(e) {
-    if (!isDrawing) return;
-    const rect = canvas.getBoundingClientRect();
-    ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
-    ctx.strokeStyle = '#2c3e50';
-    ctx.lineWidth = 2;
-    ctx.lineCap = 'round';
-    ctx.stroke();
+function draw(e, type) {
+    const currentCanvas = type === 'bevollmachtigte' ? bevollmachtigteCanvas : canvas;
+    const currentCtx = type === 'bevollmachtigte' ? bevollmachtigteCtx : ctx;
+    const currentIsDrawing = type === 'bevollmachtigte' ? isBevollmachtigteDrawing : isDrawing;
+
+    if (!currentIsDrawing) return;
+    const rect = currentCanvas.getBoundingClientRect();
+    currentCtx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+    currentCtx.strokeStyle = '#2c3e50';
+    currentCtx.lineWidth = 2;
+    currentCtx.lineCap = 'round';
+    currentCtx.stroke();
 }
 
-function stopDrawing() {
-    if (isDrawing) {
-        isDrawing = false;
-        signatureData = canvas.toDataURL();
+function stopDrawing(type) {
+    if (type === 'bevollmachtigte') {
+        if (isBevollmachtigteDrawing) {
+            isBevollmachtigteDrawing = false;
+            bevollmachtigteSignatureData = bevollmachtigteCanvas.toDataURL();
+        }
+    } else {
+        if (isDrawing) {
+            isDrawing = false;
+            signatureData = canvas.toDataURL();
+        }
     }
 }
 
 function clearSignature() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     signatureData = '';
+}
+
+function clearBevollmachtigteSignature() {
+    bevollmachtigteCtx.clearRect(0, 0, bevollmachtigteCanvas.width, bevollmachtigteCanvas.height);
+    bevollmachtigteSignatureData = '';
 }
 
 // Checkbox toggle
@@ -495,8 +581,41 @@ function updateProgress() {
 
 // Navigation
 function nextStep() {
+    // Valida i campi obbligatori dello step corrente prima di procedere
+    const currentStepElement = document.getElementById('step-' + currentStep);
+    const requiredInputs = currentStepElement.querySelectorAll('input[required], select[required]');
+
+    let allValid = true;
+    let firstInvalid = null;
+
+    requiredInputs.forEach(input => {
+        // Per i radio button, controlla se almeno uno nel gruppo è selezionato
+        if (input.type === 'radio') {
+            const radioGroup = document.querySelectorAll(`input[name="${input.name}"]`);
+            const isChecked = Array.from(radioGroup).some(radio => radio.checked);
+            if (!isChecked && !firstInvalid) {
+                firstInvalid = input;
+                allValid = false;
+            }
+        } else if (!input.value.trim()) {
+            // Per altri input, controlla che abbiano un valore
+            if (!firstInvalid) firstInvalid = input;
+            allValid = false;
+        }
+    });
+
+    if (!allValid) {
+        alert('⚠️ Bitte füllen Sie alle Pflichtfelder (*) aus, bevor Sie fortfahren.');
+        if (firstInvalid) {
+            firstInvalid.focus();
+            firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        return;
+    }
+
+    // Se tutto valido, procedi allo step successivo
     if (currentStep < 6) {
-        document.getElementById('step-' + currentStep).classList.add('hidden');
+        currentStepElement.classList.add('hidden');
         currentStep++;
         document.getElementById('step-' + currentStep).classList.remove('hidden');
         updateProgress();
@@ -553,7 +672,7 @@ function collectFormData() {
         versichertennummer: formData.get('versichertennummer'),
         pflegegrad: getRadio('pflegegrad'),
         versicherteTyp: getRadio('insuranceType'),
-        sozialamt: formData.get('socialOffice') || '',
+        sozialamtName: formData.get('socialOffice') || '',
         pflegekasse: formData.get('pflegekasse')
     };
 
@@ -607,7 +726,8 @@ function collectFormData() {
             an: getRadio('invoiceTo')
         },
         signatures: {
-            versicherte: signatureData
+            versicherte: signatureData,
+            bevollmachtigte: isBevollmachtigte ? bevollmachtigteSignatureData : null
         },
         consents: {
             agb: getCheck('agb'),
@@ -624,7 +744,12 @@ document.getElementById('pflegeboxForm').addEventListener('submit', async functi
     e.preventDefault();
 
     if (!signatureData) {
-        alert('⚠️ Bitte unterschreiben Sie das Formular');
+        alert('⚠️ Bitte unterschreiben Sie das Formular (Versicherte)');
+        return;
+    }
+
+    if (isBevollmachtigte && !bevollmachtigteSignatureData) {
+        alert('⚠️ Bitte unterschreiben Sie als Bevollmächtigte(r)');
         return;
     }
 

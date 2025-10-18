@@ -15,7 +15,9 @@
       "Bash(wrangler login:*)",
       "Bash(npx wrangler deploy:*)",
       "Bash(curl -X GET https://shopify-backend.massarocalogero1997.workers.dev/health)",
-      "Bash(nslookup:*)"
+      "Bash(nslookup:*)",
+      "Bash(npx wrangler deployments:*)",
+      "Bash(shopify theme push:*)"
     ],
     "deny": [],
     "ask": []

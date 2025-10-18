@@ -1,4 +1,4 @@
-const fs = require('fs');
+import fs from 'fs';
 
 // Read HTML
 const html = fs.readFileSync('pflegebox-form-updated.html', 'utf8');
