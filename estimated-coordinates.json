@@ -1,0 +1,60 @@
+{
+  "pageHeight": 841.89,
+  "pageWidth": 595.276,
+  "topMargin": 110,
+  "rowHeight": 23,
+  "section1": {
+    "start": 110,
+    "rows": {
+      "1": {
+        "y": 726.89,
+        "type": "checkbox"
+      },
+      "2": {
+        "y": 700.89,
+        "type": "text"
+      },
+      "3": {
+        "y": 677.89,
+        "type": "text"
+      },
+      "4": {
+        "y": 654.89,
+        "type": "text"
+      },
+      "5": {
+        "y": 634.89,
+        "type": "checkbox"
+      },
+      "6": {
+        "y": 611.89,
+        "type": "checkbox"
+      }
+    }
+  },
+  "section2": {
+    "start": 271,
+    "rows": {
+      "1": {
+        "y": 565.89,
+        "type": "checkbox"
+      },
+      "2": {
+        "y": 539.89,
+        "type": "text"
+      },
+      "3": {
+        "y": 516.89,
+        "type": "text"
+      },
+      "4": {
+        "y": 493.89,
+        "type": "text"
+      },
+      "5": {
+        "y": 473.89,
+        "type": "checkbox"
+      }
+    }
+  }
+}
