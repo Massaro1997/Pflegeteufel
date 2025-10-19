@@ -264,6 +264,131 @@ export default {
       }
     }
 
+    // ========== SHOPIFY API PROXY ENDPOINTS ==========
+    // Helper function to call Shopify Admin API
+    async function callShopifyAPI(endpoint, env) {
+      const { SHOPIFY_SHOP, SHOPIFY_ADMIN_TOKEN, SHOPIFY_API_VERSION } = env;
+
+      if (!SHOPIFY_SHOP || !SHOPIFY_ADMIN_TOKEN) {
+        throw new Error('Shopify credentials not configured');
+      }
+
+      const apiUrl = `https://${SHOPIFY_SHOP}/admin/api/${SHOPIFY_API_VERSION}${endpoint}`;
+      console.log('📞 Calling Shopify API:', apiUrl);
+
+      const response = await fetch(apiUrl, {
+        headers: {
+          'X-Shopify-Access-Token': SHOPIFY_ADMIN_TOKEN,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Shopify API error:', response.status, errorText);
+        throw new Error(`Shopify API error: ${response.status}`);
+      }
+
+      return await response.json();
+    }
+
+    // GET /orders - Proxy to Shopify Orders API
+    if (path === "/orders" && request.method === "GET") {
+      try {
+        const params = new URLSearchParams(url.search);
+        const queryParams = params.toString();
+        const endpoint = `/orders.json${queryParams ? '?' + queryParams : ''}`;
+
+        const data = await callShopifyAPI(endpoint, env);
+
+        return new Response(JSON.stringify({ page: data }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      } catch (error) {
+        console.error('❌ Error proxying orders:', error);
+        return new Response(JSON.stringify({
+          error: error.message
+        }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
+    // GET /customers - Proxy to Shopify Customers API
+    if (path === "/customers" && request.method === "GET") {
+      try {
+        const params = new URLSearchParams(url.search);
+        const queryParams = params.toString();
+        const endpoint = `/customers.json${queryParams ? '?' + queryParams : ''}`;
+
+        const data = await callShopifyAPI(endpoint, env);
+
+        return new Response(JSON.stringify({ page: data }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      } catch (error) {
+        console.error('❌ Error proxying customers:', error);
+        return new Response(JSON.stringify({
+          error: error.message
+        }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
+    // GET /products - Proxy to Shopify Products API
+    if (path === "/products" && request.method === "GET") {
+      try {
+        const params = new URLSearchParams(url.search);
+        const queryParams = params.toString();
+        const endpoint = `/products.json${queryParams ? '?' + queryParams : ''}`;
+
+        const data = await callShopifyAPI(endpoint, env);
+
+        return new Response(JSON.stringify({ page: data }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      } catch (error) {
+        console.error('❌ Error proxying products:', error);
+        return new Response(JSON.stringify({
+          error: error.message
+        }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
+    // GET /customers/:id/orders - Get orders for specific customer
+    if (path.match(/^\/customers\/\d+\/orders$/) && request.method === "GET") {
+      try {
+        const customerId = path.split('/')[2];
+        const params = new URLSearchParams(url.search);
+        const queryParams = params.toString();
+        const endpoint = `/customers/${customerId}/orders.json${queryParams ? '?' + queryParams : ''}`;
+
+        const data = await callShopifyAPI(endpoint, env);
+
+        return new Response(JSON.stringify({ page: data }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      } catch (error) {
+        console.error('❌ Error proxying customer orders:', error);
+        return new Response(JSON.stringify({
+          error: error.message
+        }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
     // ========== BACKEND: DELETE PFLEGEBOX SUBMISSION ==========
     if (path.startsWith("/api/pflegebox/submission/") && request.method === "DELETE") {
       try {
@@ -322,7 +447,17 @@ export default {
     // Default 404
     return new Response(JSON.stringify({
       error: "Not found",
-      availableEndpoints: ["/health", "/api/pflegebox/submit (POST)", "/api/pflegebox/submissions (GET)", "/api/pflegebox/pdf/{id} (GET)", "/api/pflegebox/submission/{id} (DELETE)"]
+      availableEndpoints: [
+        "/health",
+        "/api/pflegebox/submit (POST)",
+        "/api/pflegebox/submissions (GET)",
+        "/api/pflegebox/pdf/{id} (GET)",
+        "/api/pflegebox/submission/{id} (DELETE)",
+        "/orders (GET)",
+        "/customers (GET)",
+        "/products (GET)",
+        "/customers/{id}/orders (GET)"
+      ]
     }), {
       status: 404,
       headers: { ...corsHeaders, "Content-Type": "application/json" }
