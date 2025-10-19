@@ -73,7 +73,7 @@ Autore: Calogero Massaro
       <div class="pf-tab" data-tab="customers">👥 Clienti</div>
       <div class="pf-tab" data-tab="products">📱 Prodotti</div>
       <div class="pf-tab" data-tab="inventory">📊 Inventario</div>
-      <div class="pf-tab" data-tab="pflegebox">📋 Pflegebox</div>
+      <div class="pf-tab" data-tab="pflegebox">📋 Formulare</div>
     </div>
 
     <!-- TAB: ORDINI -->
@@ -231,9 +231,9 @@ Autore: Calogero Massaro
       </div>
     </div>
 
-    <!-- TAB: PFLEGEBOX -->
+    <!-- TAB: FORMULARE -->
     <div id="tab-pflegebox" class="pf-tab-content hidden">
-      <!-- Toolbar Pflegebox -->
+      <!-- Toolbar Formulare -->
       <div class="pf-card pf-row" style="justify-content:space-between">
         <div class="pf-row">
           <label class="muted">Filtri:</label>
@@ -250,7 +250,7 @@ Autore: Calogero Massaro
         </div>
       </div>
 
-      <!-- Tabella Pflegebox -->
+      <!-- Tabella Formulare -->
       <div class="pf-card">
         <div style="overflow:auto">
           <table class="pf-table" id="pflegeboxTable">
@@ -1507,8 +1507,8 @@ Digitare "ELIMINA" per confermare:`;
 
         if (!submissions.length) {
           tb.innerHTML = `<tr><td colspan="7" class="muted">
-            ℹ️ Nessuna richiesta Pflegebox trovata.<br>
-            <small class="text-sm">Le richieste appariranno qui quando i clienti inviano il formulario.</small>
+            ℹ️ Kein Formular gefunden.<br>
+            <small class="text-sm">Formulare erscheinen hier, wenn Kunden Anfragen senden.</small>
           </td></tr>`;
           return;
         }
@@ -1571,7 +1571,7 @@ Digitare "ELIMINA" per confermare:`;
 
     // ========== DELETE PFLEGEBOX SUBMISSION ==========
     async function deletePflegeboxSubmission(submissionId) {
-      if (!confirm('⚠️ Sei sicuro di voler eliminare questa richiesta Pflegebox?\n\nQuesta azione è irreversibile.')) {
+      if (!confirm('⚠️ Möchten Sie dieses Formular wirklich löschen?\n\nDiese Aktion ist unwiderruflich.')) {
         return;
       }
 
@@ -1593,7 +1593,7 @@ Digitare "ELIMINA" per confermare:`;
         const result = await response.json();
         console.log('✅ Submission deleted:', result);
 
-        alert('✅ Richiesta Pflegebox eliminata con successo!');
+        alert('✅ Formular erfolgreich gelöscht!');
 
         // Reload the table
         loadPflegebox();

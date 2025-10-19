@@ -119,6 +119,58 @@ export default {
           console.log(`💾 Dati salvati nel KV storage: ${submissionId}`);
         }
 
+        // 👤 CREA CLIENTE SU SHOPIFY AUTOMATICAMENTE
+        try {
+          const { SHOPIFY_SHOP, SHOPIFY_ADMIN_TOKEN, SHOPIFY_API_VERSION } = env;
+
+          if (SHOPIFY_SHOP && SHOPIFY_ADMIN_TOKEN) {
+            // Prepara i dati del cliente
+            const customerData = {
+              customer: {
+                first_name: formData.versicherte.vorname,
+                last_name: formData.versicherte.name,
+                email: formData.versicherte.email,
+                phone: formData.versicherte.telefon,
+                addresses: [{
+                  address1: `${formData.versicherte.strasse} ${formData.versicherte.hausnummer || ''}`.trim(),
+                  city: formData.versicherte.plzOrt ? formData.versicherte.plzOrt.split(' ').slice(1).join(' ') : '',
+                  zip: formData.versicherte.plzOrt ? formData.versicherte.plzOrt.split(' ')[0] : '',
+                  country: 'DE'
+                }],
+                tags: 'Pflegebox',
+                note: `Pflegegrad: ${formData.versicherte.pflegegrad}\nPflegekasse: ${formData.versicherte.pflegekasse}\nVersichertennummer: ${formData.versicherte.versichertennummer || ''}`
+              }
+            };
+
+            const shopifyApiUrl = `https://${SHOPIFY_SHOP}/admin/api/${SHOPIFY_API_VERSION}/customers.json`;
+
+            console.log('👤 Creating customer in Shopify...');
+
+            const response = await fetch(shopifyApiUrl, {
+              method: 'POST',
+              headers: {
+                'X-Shopify-Access-Token': SHOPIFY_ADMIN_TOKEN,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(customerData)
+            });
+
+            if (response.ok) {
+              const result = await response.json();
+              console.log(`✅ Cliente Shopify creato con ID: ${result.customer.id}`);
+            } else {
+              const errorText = await response.text();
+              console.error('⚠️ Errore creazione cliente Shopify:', response.status, errorText);
+              // Non blocchiamo l'intero processo se la creazione del cliente fallisce
+            }
+          } else {
+            console.log('⚠️ Shopify credentials non configurati - cliente non creato');
+          }
+        } catch (customerError) {
+          console.error('⚠️ Errore durante creazione cliente:', customerError);
+          // Non blocchiamo l'intero processo se la creazione del cliente fallisce
+        }
+
         console.log('✅ PDF template compilato e inviato con successo');
 
         return new Response(JSON.stringify({
