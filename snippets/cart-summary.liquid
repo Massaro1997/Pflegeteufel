@@ -95,12 +95,42 @@
 </div>
 
 <div class="cart__ctas">
-  <!-- AGB Expandable Card -->
+  <!-- Checkbox AGB obbligatorio -->
+  <div class="agb-checkbox-wrapper">
+    <label class="agb-accept-label">
+      <input
+        type="checkbox"
+        id="agb-checkbox"
+        class="agb-checkbox-input"
+        onchange="toggleCheckoutButton()"
+      >
+      <span class="agb-checkbox-text">
+        Ich habe die <a href="/policies/terms-of-service" target="_blank">AGB</a>,
+        <a href="/policies/privacy-policy" target="_blank">Datenschutzerklärung</a> und
+        <a href="/policies/refund-policy" target="_blank">Widerrufsbelehrung</a> gelesen und akzeptiere diese.
+      </span>
+    </label>
+  </div>
+
+  <button
+    type="button"
+    id="checkout-button"
+    class="cart__checkout-button button"
+    {% if cart == empty %}
+      disabled
+    {% endif %}
+    disabled
+    onclick="proceedToCheckout()"
+  >
+    {{ 'content.checkout' | t }}
+  </button>
+
+  <!-- AGB Expandable Card (opzionale) -->
   <div class="agb-card" id="agb-card">
     <div class="agb-card-header" onclick="toggleAGBCard()">
       <div class="agb-card-title">
         <span class="agb-icon">📋</span>
-        <span>Allgemeine Geschäftsbedingungen</span>
+        <span>AGB lesen (optional)</span>
       </div>
       <span class="agb-toggle-icon" id="agb-toggle-icon">▼</span>
     </div>
@@ -128,37 +158,8 @@
           <p>(2) <strong>Kosten, die über den Betrag von 42 Euro hinausgehen, werden dem Kunden privat in Rechnung gestellt.</strong></p>
         </div>
       </div>
-
-      <div class="agb-checkbox-wrapper">
-        <label class="agb-accept-label">
-          <input
-            type="checkbox"
-            id="agb-checkbox"
-            class="agb-checkbox-input"
-            onchange="toggleCheckoutButton()"
-          >
-          <span class="agb-checkbox-text">
-            Ich habe die <a href="/policies/terms-of-service" target="_blank">AGB</a>,
-            <a href="/policies/privacy-policy" target="_blank">Datenschutzerklärung</a> und
-            <a href="/policies/refund-policy" target="_blank">Widerrufsbelehrung</a> gelesen und akzeptiere diese.
-          </span>
-        </label>
-      </div>
     </div>
   </div>
-
-  <button
-    type="button"
-    id="checkout-button"
-    class="cart__checkout-button button"
-    {% if cart == empty %}
-      disabled
-    {% endif %}
-    disabled
-    onclick="proceedToCheckout()"
-  >
-    {{ 'content.checkout' | t }}
-  </button>
 
   {% if additional_checkout_buttons and settings.show_accelerated_checkout_buttons %}
     <div class="additional-checkout-buttons additional-checkout-buttons--vertical">
@@ -271,16 +272,19 @@
 }
 
 .agb-checkbox-wrapper {
-  background: #f8f9fa;
-  border-radius: 8px;
-  padding: 12px;
-  border: 2px solid #e9ecef;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 16px;
+  border: 2px solid #dee2e6;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   transition: all 0.3s ease;
 }
 
 .agb-checkbox-wrapper:has(.agb-checkbox-input:checked) {
   background: #d4edda;
   border-color: #28a745;
+  box-shadow: 0 4px 8px rgba(40,167,69,0.15);
 }
 
 .agb-accept-label {
