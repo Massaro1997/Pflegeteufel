@@ -71,6 +71,7 @@ Autore: Calogero Massaro
     <div class="pf-tabs">
       <div class="pf-tab active" data-tab="orders">📦 Ordini</div>
       <div class="pf-tab" data-tab="customers">👥 Clienti</div>
+      <div class="pf-tab" data-tab="pflegebox">📋 Pflegebox Formulari</div>
       <div class="pf-tab" data-tab="products">📱 Prodotti</div>
       <div class="pf-tab" data-tab="inventory">📊 Inventario</div>
     </div>
@@ -153,6 +154,51 @@ Autore: Calogero Massaro
               </tr>
             </thead>
             <tbody><tr><td colspan="6" class="muted">Caricamento…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: PFLEGEBOX FORMULARI -->
+    <div id="tab-pflegebox" class="pf-tab-content hidden">
+      <!-- Toolbar Pflegebox -->
+      <div class="pf-card pf-row" style="justify-content:space-between">
+        <div class="pf-row">
+          <input id="pflegeboxSearch" class="pf-input" type="text" placeholder="Cerca per nome o email...">
+          <button id="searchPflegebox" class="pf-btn">🔍 Cerca</button>
+        </div>
+        <div class="pf-row">
+          <select id="pflegeboxPflegegrad" class="pf-select">
+            <option value="">Tutti i Pflegegrad</option>
+            <option value="1">Pflegegrad 1</option>
+            <option value="2">Pflegegrad 2</option>
+            <option value="3">Pflegegrad 3</option>
+            <option value="4">Pflegegrad 4</option>
+            <option value="5">Pflegegrad 5</option>
+            <option value="beantragt">Beantragt</option>
+          </select>
+          <button id="refreshPflegebox" class="pf-btn ghost">🔄 Aggiorna</button>
+          <button id="exportPflegeboxCsv" class="pf-btn ghost">📥 CSV</button>
+        </div>
+      </div>
+
+      <!-- Tabella Pflegebox -->
+      <div class="pf-card">
+        <div style="overflow:auto">
+          <table class="pf-table" id="pflegeboxTable">
+            <thead>
+              <tr>
+                <th>Data</th>
+                <th>Cliente (Versicherte)</th>
+                <th>Email</th>
+                <th>Telefono</th>
+                <th>Pflegegrad</th>
+                <th>Pflegekasse</th>
+                <th>Prodotti Scelti</th>
+                <th>Azioni</th>
+              </tr>
+            </thead>
+            <tbody><tr><td colspan="8" class="muted">Caricamento…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -348,6 +394,17 @@ Autore: Calogero Massaro
     </div>
   </div>
 
+  <!-- Modal Dettaglio Pflegebox -->
+  <div id="pflegeboxModal" class="pf-modal">
+    <div class="pf-modal-content" style="max-width:900px">
+      <div class="pf-modal-header">
+        <h3 class="pf-modal-title">Dettaglio Formulario Pflegebox</h3>
+        <button class="pf-modal-close" onclick="closeModal('pflegeboxModal')">&times;</button>
+      </div>
+      <div id="pflegeboxModalContent"></div>
+    </div>
+  </div>
+
   <script>
     // ========== CONFIG ==========
     const workerBaseUrl = "https://shopify-backend.massarocalogero1997.workers.dev/"; 
@@ -358,16 +415,20 @@ Autore: Calogero Massaro
       currentCustomerId: null,
       currentProductId: null,
       currentInventoryId: null,
-      orders: { 
-        filters: { 
-          limit: 25, 
-          status: 'any', 
-          from: null, 
-          to: null 
-        } 
+      orders: {
+        filters: {
+          limit: 25,
+          status: 'any',
+          from: null,
+          to: null
+        }
       },
       customers: {
         search: ''
+      },
+      pflegebox: {
+        search: '',
+        pflegegrad: ''
       },
       products: {
         search: ''
@@ -537,6 +598,9 @@ Autore: Calogero Massaro
           break;
         case 'customers':
           loadCustomers();
+          break;
+        case 'pflegebox':
+          loadPflegebox();
           break;
         case 'products':
           loadProducts();
@@ -1164,24 +1228,353 @@ Questa azione:
 Digitare "ELIMINA" per confermare:`;
 
       const userConfirmation = prompt(confirmMessage);
-      
+
       if (userConfirmation !== 'ELIMINA') {
         alert('Eliminazione annullata.');
         return;
       }
-      
+
       try {
         console.log('🗑️ Deleting customer with confirmation:', customerId);
-        
+
         await deleteJSON(`customers/${customerId}`);
-        
+
         console.log('✅ Customer deleted successfully');
         alert('✅ Cliente eliminato con successo!');
         loadCustomers(); // Ricarica la tabella
-        
+
       } catch (err) {
         console.error('❌ Error deleting customer:', err);
         alert('❌ Errore nell\'eliminazione del cliente: ' + err.message);
+      }
+    }
+
+    // ========== PFLEGEBOX FUNCTIONS ==========
+    async function loadPflegebox() {
+      try {
+        const params = {
+          limit: 250,
+          order: 'created_at desc'
+        };
+
+        if (state.pflegebox.search) {
+          params.search = state.pflegebox.search;
+        }
+        if (state.pflegebox.pflegegrad) {
+          params.pflegegrad = state.pflegebox.pflegegrad;
+        }
+
+        console.log('📋 Loading pflegebox submissions with params:', params);
+
+        const tb = document.querySelector("#pflegeboxTable tbody");
+        tb.innerHTML = `<tr><td colspan="8" class="muted">⏳ Caricamento in corso...</td></tr>`;
+
+        const response = await fetchJSON("api/pflegebox/submissions", params);
+        const submissions = response.submissions || [];
+
+        console.log(`📋 Loaded ${submissions.length} pflegebox submissions`);
+
+        if (!submissions.length) {
+          tb.innerHTML = `<tr><td colspan="8" class="muted">
+            ℹ️ Nessun formulario trovato.<br>
+            <small class="text-sm">I formulari compilati dai clienti appariranno qui.</small>
+          </td></tr>`;
+          return;
+        }
+
+        tb.innerHTML = "";
+
+        for (const submission of submissions) {
+          const tr = document.createElement("tr");
+
+          const versicherte = submission.versicherte || {};
+          const angehoerige = submission.angehoerige || {};
+          const pflegebox = submission.pflegebox || {};
+
+          // Nome completo
+          const fullName = `${versicherte.vorname || ''} ${versicherte.name || ''}`.trim() || 'N/A';
+
+          // Data formattata
+          const date = submission.timestamp ? formatDate(submission.timestamp) : '—';
+
+          // Email e telefono
+          const email = versicherte.email || '—';
+          const phone = versicherte.telefon || '—';
+
+          // Pflegegrad
+          const pflegegrad = versicherte.pflegegrad || '—';
+
+          // Pflegekasse
+          const pflegekasse = versicherte.pflegekasse || '—';
+
+          // Prodotti scelti - conta quanti prodotti sono stati selezionati
+          const products = pflegebox.products || {};
+          const selectedProducts = Object.entries(products).filter(([key, value]) => value === true).length;
+          const productsBadge = selectedProducts > 0
+            ? `<span class="pf-badge success">${selectedProducts} prodotti</span>`
+            : '<span class="pf-badge info">Nessuno</span>';
+
+          tr.innerHTML = `
+            <td class="text-sm">${date}</td>
+            <td>
+              <strong>${fullName}</strong>
+              ${versicherte.anrede ? `<div class="text-sm muted">${versicherte.anrede}</div>` : ''}
+            </td>
+            <td>
+              ${email}
+              ${versicherte.geburtsdatum ? `<div class="text-sm muted">🎂 ${versicherte.geburtsdatum}</div>` : ''}
+            </td>
+            <td>${phone}</td>
+            <td><span class="pf-badge ${pflegegrad === 'beantragt' ? 'warning' : 'info'}">${pflegegrad}</span></td>
+            <td class="text-sm">${pflegekasse}</td>
+            <td>${productsBadge}</td>
+            <td>
+              <button class="pf-btn ghost" style="padding:6px 10px;font-size:12px" onclick='viewPflegeboxSubmission(${JSON.stringify(submission).replace(/'/g, "&apos;")})'>👁️ Dettagli</button>
+            </td>`;
+          tb.appendChild(tr);
+        }
+
+        console.log('✅ Pflegebox table populated successfully');
+
+      } catch (err) {
+        console.error('❌ Error loading pflegebox submissions:', err);
+
+        const tb = document.querySelector("#pflegeboxTable tbody");
+        tb.innerHTML = `<tr><td colspan="8" style="color:red;padding:20px">
+          ⚠️ <strong>Errore:</strong> ${err.message}<br>
+          <small class="text-sm muted">Controlla la console (F12) per dettagli</small><br><br>
+          <button class="pf-btn ghost" onclick="loadPflegebox()" style="font-size:12px">🔄 Riprova</button>
+        </td></tr>`;
+      }
+    }
+
+    function viewPflegeboxSubmission(submission) {
+      try {
+        console.log('👁️ Viewing pflegebox submission:', submission);
+
+        const versicherte = submission.versicherte || {};
+        const angehoerige = submission.angehoerige || {};
+        const pflegebox = submission.pflegebox || {};
+        const lieferung = submission.lieferung || {};
+        const rechnung = submission.rechnung || {};
+        const consents = submission.consents || {};
+
+        let html = `
+          <div style="max-height:600px;overflow-y:auto">
+            <h4 style="color:#C12624;margin-bottom:20px;font-size:18px">📋 Formulario Pflegebox Completo</h4>
+
+            <!-- Dati Versicherte -->
+            <div style="background:#f9f9f9;padding:16px;border-radius:8px;margin-bottom:16px">
+              <h5 style="margin:0 0 12px 0;color:#2c3e50">👤 Dati Versicherte (Assicurato)</h5>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div><strong>Anrede:</strong> ${versicherte.anrede || '—'}</div>
+                <div><strong>Nome Completo:</strong> ${versicherte.vorname || ''} ${versicherte.name || ''}</div>
+                <div><strong>Indirizzo:</strong> ${versicherte.strasse || '—'}</div>
+                <div><strong>PLZ/Ort:</strong> ${versicherte.plzOrt || '—'}</div>
+                <div><strong>Telefono:</strong> ${versicherte.telefon || '—'}</div>
+                <div><strong>Email:</strong> ${versicherte.email || '—'}</div>
+                <div><strong>Data di nascita:</strong> ${versicherte.geburtsdatum || '—'}</div>
+                <div><strong>N. Assicurato:</strong> ${versicherte.versichertennummer || '—'}</div>
+                <div><strong>Pflegegrad:</strong> <span class="pf-badge ${versicherte.pflegegrad === 'beantragt' ? 'warning' : 'info'}">${versicherte.pflegegrad || '—'}</span></div>
+                <div><strong>Tipo Assicurato:</strong> ${versicherte.versicherteTyp || '—'}</div>
+                <div><strong>Pflegekasse:</strong> ${versicherte.pflegekasse || '—'}</div>
+                ${versicherte.sozialamtName ? `<div><strong>Sozialamt:</strong> ${versicherte.sozialamtName}</div>` : ''}
+              </div>
+            </div>`;
+
+        // Dati Angehörige
+        if (angehoerige.data) {
+          const isSame = angehoerige.isSamePerson === true;
+          html += `
+            <div style="background:#e7f3ff;padding:16px;border-radius:8px;margin-bottom:16px">
+              <h5 style="margin:0 0 12px 0;color:#2c3e50">👥 Dati Pflegeperson (Persona di cura)</h5>
+              ${isSame ? '<div style="background:#fff;padding:8px;border-radius:4px;margin-bottom:8px"><strong>✓ Stessa persona del Versicherte</strong></div>' : ''}
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div><strong>Anrede:</strong> ${angehoerige.data.anrede || '—'}</div>
+                <div><strong>Nome Completo:</strong> ${angehoerige.data.vorname || ''} ${angehoerige.data.name || ''}</div>
+                <div><strong>Indirizzo:</strong> ${angehoerige.data.strasse || '—'}</div>
+                <div><strong>PLZ/Ort:</strong> ${angehoerige.data.plzOrt || '—'}</div>
+                <div><strong>Telefono:</strong> ${angehoerige.data.telefon || '—'}</div>
+                <div><strong>Email:</strong> ${angehoerige.data.email || '—'}</div>
+                ${!isSame && angehoerige.data.typ ? `<div><strong>Tipo:</strong> ${angehoerige.data.typ}</div>` : ''}
+              </div>
+            </div>`;
+        }
+
+        // Prodotti Pflegebox
+        if (pflegebox.products) {
+          const products = pflegebox.products;
+          const selectedProducts = Object.entries(products).filter(([key, value]) => value === true);
+
+          html += `
+            <div style="background:#e7f5e7;padding:16px;border-radius:8px;margin-bottom:16px">
+              <h5 style="margin:0 0 12px 0;color:#2c3e50">📦 Prodotti Pflegebox Selezionati (${selectedProducts.length})</h5>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">`;
+
+          if (selectedProducts.length > 0) {
+            selectedProducts.forEach(([key, value]) => {
+              const productNames = {
+                bettschutzeinlagen: 'Bettschutzeinlagen',
+                fingerlinge: 'Fingerlinge',
+                ffp2: 'FFP2 Masken',
+                einmalhandschuhe: 'Einmalhandschuhe',
+                mundschutz: 'Mundschutz',
+                essslaetzchen: 'Esslätzchen',
+                schutzschuerzenEinmal: 'Schutzschürzen lang (einmal)',
+                schutzschuerzenWieder: 'Schutzschürzen lang (wieder)',
+                flaechendesinfektion: 'Flächendesinfektionsmittel',
+                flaechendesinfektionstuecher: 'Flächendesinfektionstücher',
+                haendedesinfektion: 'Händedesinfektionsmittel'
+              };
+              html += `<div>✓ ${productNames[key] || key}</div>`;
+            });
+          } else {
+            html += `<div class="muted">Nessun prodotto selezionato</div>`;
+          }
+
+          html += `
+              </div>
+              <div style="margin-top:12px;padding-top:12px;border-top:1px solid #ddd">
+                <strong>Taglia Guanti:</strong> ${pflegebox.handschuhGroesse || '—'} |
+                <strong>Materiale:</strong> ${pflegebox.handschuhMaterial || '—'}
+              </div>
+            </div>`;
+        }
+
+        // Lieferung & Rechnung
+        html += `
+          <div style="background:#fff8e1;padding:16px;border-radius:8px;margin-bottom:16px">
+            <h5 style="margin:0 0 12px 0;color:#2c3e50">🚚 Consegna e Fatturazione</h5>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div><strong>Consegna a:</strong> ${lieferung.an || '—'}</div>
+              <div><strong>Fattura a:</strong> ${rechnung.an || '—'}</div>
+            </div>
+          </div>`;
+
+        // Consensi
+        html += `
+          <div style="background:#fee2e2;padding:16px;border-radius:8px;margin-bottom:16px">
+            <h5 style="margin:0 0 12px 0;color:#2c3e50">✓ Consensi</h5>
+            <div>
+              ${consents.agb ? '✅' : '❌'} AGB accettati<br>
+              ${consents.privacy ? '✅' : '❌'} Privacy accettata
+            </div>
+          </div>`;
+
+        // Firma
+        if (submission.signatures) {
+          html += `
+            <div style="background:#f5f5f5;padding:16px;border-radius:8px">
+              <h5 style="margin:0 0 12px 0;color:#2c3e50">✍️ Firma</h5>`;
+
+          if (submission.signatures.versicherte) {
+            html += `
+              <div style="margin-bottom:12px">
+                <strong>Firma Versicherte:</strong><br>
+                <img src="${submission.signatures.versicherte}" style="max-width:100%;height:auto;border:1px solid #ddd;border-radius:4px;margin-top:8px">
+              </div>`;
+          }
+
+          if (submission.signatures.bevollmachtigte) {
+            html += `
+              <div>
+                <strong>Firma Bevollmächtigte:</strong><br>
+                <img src="${submission.signatures.bevollmachtigte}" style="max-width:100%;height:auto;border:1px solid #ddd;border-radius:4px;margin-top:8px">
+              </div>`;
+          }
+
+          html += `</div>`;
+        }
+
+        // Timestamp
+        if (submission.timestamp) {
+          html += `
+            <div style="margin-top:16px;padding:12px;background:#f9f9f9;border-radius:6px;text-align:center;color:#666;font-size:13px">
+              📅 Data invio: ${formatDate(submission.timestamp)}
+              ${submission.bestelldatum ? ` | ${submission.bestelldatum}` : ''}
+              ${submission.bestellzeit ? ` alle ${submission.bestellzeit}` : ''}
+            </div>`;
+        }
+
+        html += `</div>`;
+
+        document.getElementById('pflegeboxModalContent').innerHTML = html;
+        openModal('pflegeboxModal');
+
+      } catch (err) {
+        console.error('❌ Error viewing pflegebox submission:', err);
+        alert('Errore nel caricamento dei dettagli: ' + err.message);
+      }
+    }
+
+    async function exportPflegeboxCsv() {
+      try {
+        console.log('📥 Exporting Pflegebox CSV...');
+
+        const params = {
+          limit: 1000,
+          order: 'created_at desc'
+        };
+
+        if (state.pflegebox.search) {
+          params.search = state.pflegebox.search;
+        }
+        if (state.pflegebox.pflegegrad) {
+          params.pflegegrad = state.pflegebox.pflegegrad;
+        }
+
+        const response = await fetchJSON("api/pflegebox/submissions", params);
+        const submissions = response.submissions || [];
+
+        console.log('📥 Exporting', submissions.length, 'pflegebox submissions');
+
+        const header = [
+          "Data", "Nome", "Cognome", "Email", "Telefono", "Geburtsdatum",
+          "Versichertennummer", "Pflegegrad", "Pflegekasse", "Versicherungstyp",
+          "Indirizzo", "PLZ/Ort", "Prodotti Selezionati", "Taglia Guanti", "Materiale Guanti"
+        ];
+        const rows = [header];
+
+        for (const s of submissions) {
+          const v = s.versicherte || {};
+          const p = s.pflegebox || {};
+          const products = p.products || {};
+          const selectedProducts = Object.entries(products)
+            .filter(([k, val]) => val === true)
+            .map(([k]) => k)
+            .join('; ');
+
+          rows.push([
+            s.timestamp ? new Date(s.timestamp).toLocaleString('it-IT') : "",
+            v.vorname || "",
+            v.name || "",
+            v.email || "",
+            v.telefon || "",
+            v.geburtsdatum || "",
+            v.versichertennummer || "",
+            v.pflegegrad || "",
+            v.pflegekasse || "",
+            v.versicherteTyp || "",
+            v.strasse || "",
+            v.plzOrt || "",
+            selectedProducts || "",
+            p.handschuhGroesse || "",
+            p.handschuhMaterial || ""
+          ]);
+        }
+
+        const csvContent = rows.map(r => r.map(c => `"${c}"`).join(",")).join("\n");
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(blob);
+        a.download = `pflegebox_submissions_${new Date().toISOString().slice(0,10)}.csv`;
+        a.click();
+
+        console.log('✅ Pflegebox CSV exported successfully');
+        alert('CSV esportato con successo!');
+      } catch (err) {
+        console.error('❌ Error exporting Pflegebox CSV:', err);
+        alert('Errore durante l\'export: ' + err.message);
       }
     }
 
@@ -1494,6 +1887,36 @@ Digitare "ELIMINA" per confermare:`;
 
     document.getElementById('createCustomer').addEventListener('click', createCustomer);
     document.getElementById('customerForm').addEventListener('submit', saveCustomer);
+
+    // Pflegebox search
+    document.getElementById('pflegeboxSearch').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        document.getElementById('searchPflegebox').click();
+      }
+    });
+
+    document.getElementById('searchPflegebox').addEventListener('click', function() {
+      console.log('🔍 Searching pflegebox...');
+      state.pflegebox.search = document.getElementById('pflegeboxSearch').value;
+      loadPflegebox();
+    });
+
+    document.getElementById('pflegeboxPflegegrad').addEventListener('change', function() {
+      console.log('🔍 Filtering by pflegegrad...');
+      state.pflegebox.pflegegrad = this.value;
+      loadPflegebox();
+    });
+
+    document.getElementById('refreshPflegebox').addEventListener('click', function() {
+      console.log('🔄 Refreshing pflegebox...');
+      state.pflegebox.search = '';
+      state.pflegebox.pflegegrad = '';
+      document.getElementById('pflegeboxSearch').value = '';
+      document.getElementById('pflegeboxPflegegrad').value = '';
+      loadPflegebox();
+    });
+
+    document.getElementById('exportPflegeboxCsv').addEventListener('click', exportPflegeboxCsv);
 
     // Products search
     document.getElementById('productSearch').addEventListener('keypress', function(e) {
