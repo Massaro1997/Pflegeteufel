@@ -112,25 +112,12 @@
     </label>
   </div>
 
-  <button
-    type="button"
-    id="checkout-button"
-    class="cart__checkout-button button"
-    {% if cart == empty %}
-      disabled
-    {% endif %}
-    disabled
-    onclick="proceedToCheckout()"
-  >
-    {{ 'content.checkout' | t }}
-  </button>
-
   <!-- AGB Expandable Card (opzionale) -->
   <div class="agb-card" id="agb-card">
     <div class="agb-card-header" onclick="toggleAGBCard()">
       <div class="agb-card-title">
         <span class="agb-icon">📋</span>
-        <span>AGB lesen (optional)</span>
+        <span>AGB lesen</span>
       </div>
       <span class="agb-toggle-icon" id="agb-toggle-icon">▼</span>
     </div>
@@ -160,6 +147,19 @@
       </div>
     </div>
   </div>
+
+  <button
+    type="button"
+    id="checkout-button"
+    class="cart__checkout-button button"
+    {% if cart == empty %}
+      disabled
+    {% endif %}
+    disabled
+    onclick="proceedToCheckout()"
+  >
+    {{ 'content.checkout' | t }}
+  </button>
 
   {% if additional_checkout_buttons and settings.show_accelerated_checkout_buttons %}
     <div class="additional-checkout-buttons additional-checkout-buttons--vertical">
