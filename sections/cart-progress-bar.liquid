@@ -326,26 +326,42 @@
   }
 
   .cpb-header {
-    gap: 6px;
+    gap: 8px;
     margin-bottom: 15px;
   }
 
   .cpb-title {
     font-size: 18px;
+    font-weight: 800;
+    color: #1a1a1a;
+    line-height: 1.3;
   }
 
   .cpb-subtitle {
-    font-size: 13px;
+    font-size: 14px;
+    color: #495057;
+    font-weight: 500;
+    line-height: 1.4;
   }
 
   .cpb-message {
-    padding: 12px 14px;
-    font-size: 13px;
+    padding: 14px 16px;
+    font-size: 14px;
     margin-bottom: 15px;
+    line-height: 1.5;
+    color: #2c3e50;
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    border: 1px solid #90caf9;
+  }
+
+  .cpb-message.success {
+    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+    color: #155724;
+    border-color: #c3e6cb;
   }
 
   .cpb-message-icon {
-    font-size: 16px;
+    font-size: 18px;
   }
 
   .cpb-progress-wrapper {
@@ -353,12 +369,73 @@
   }
 
   .cpb-progress-bg {
-    height: 14px;
+    height: 16px;
   }
 
   .cpb-percentage {
-    font-size: 10px;
-    padding: 1px 4px;
+    font-size: 11px;
+    padding: 2px 5px;
+    font-weight: 700;
+  }
+
+  .cpb-goal-badge {
+    font-size: 13px;
+    padding: 10px 16px;
+    font-weight: 600;
+  }
+
+  .cpb-badge-icon {
+    font-size: 15px;
+  }
+
+  .cpb-warning {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .cpb-warning-icon {
+    font-size: 22px;
+  }
+
+  .cpb-warning-title {
+    font-size: 15px;
+    font-weight: 700;
+  }
+
+  .cpb-warning-text {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  .cpb-warning-suggestion {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+}
+
+@media (max-width: 480px) {
+  .cpb-wrapper {
+    padding: 12px;
+  }
+
+  .cpb-section {
+    padding: 18px 14px;
+  }
+
+  .cpb-header {
+    gap: 6px;
+  }
+
+  .cpb-title {
+    font-size: 17px;
+    font-weight: 800;
+    color: #1a1a1a;
+  }
+
+  .cpb-subtitle {
+    font-size: 13px;
+    color: #495057;
+    font-weight: 500;
   }
 
   .cpb-goal-badge {
@@ -366,61 +443,10 @@
     padding: 8px 14px;
   }
 
-  .cpb-badge-icon {
-    font-size: 14px;
-  }
-
-  .cpb-warning {
-    padding: 12px;
-    gap: 10px;
-  }
-
-  .cpb-warning-icon {
-    font-size: 20px;
-  }
-
-  .cpb-warning-title {
-    font-size: 14px;
-  }
-
-  .cpb-warning-text {
-    font-size: 13px;
-  }
-
-  .cpb-warning-suggestion {
-    font-size: 12px;
-  }
-}
-
-@media (max-width: 480px) {
-  .cpb-wrapper {
-    padding: 10px;
-  }
-
-  .cpb-section {
-    padding: 16px 12px;
-  }
-
-  .cpb-header {
-    gap: 5px;
-  }
-
-  .cpb-title {
-    font-size: 16px;
-  }
-
-  .cpb-subtitle {
-    font-size: 12px;
-  }
-
-  .cpb-goal-badge {
-    font-size: 11px;
-    padding: 6px 12px;
-  }
-
   .cpb-message {
-    font-size: 12px;
-    padding: 10px 12px;
+    font-size: 13px;
+    padding: 12px 14px;
+    line-height: 1.5;
   }
 }
 </style>
