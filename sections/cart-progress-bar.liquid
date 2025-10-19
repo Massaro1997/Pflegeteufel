@@ -3,12 +3,13 @@
   Versione semplificata e più compatibile
 {% endcomment %}
 
-<div id="cart-progress-bar" class="cpb-section" 
-  data-goal="3700"
-  data-shipping="500"
-  data-animate="true">
-  
-  <div class="cpb-container">
+<div class="cpb-wrapper">
+  <div id="cart-progress-bar" class="cpb-section"
+    data-goal="3700"
+    data-shipping="500"
+    data-animate="true">
+
+    <div class="cpb-container">
     <!-- Header con icona -->
     <div class="cpb-header">
       <div class="cpb-icon-wrapper">
@@ -58,15 +59,22 @@
     <div class="cpb-debug" id="cpb-debug" style="display: none;">
       <small>Debug: Warenkorb = <span id="debug-cart">0€</span> | Fortschritt = <span id="debug-progress">0%</span></small>
     </div>
+    </div>
   </div>
 </div>
 
 <style>
+.cpb-wrapper {
+  background-color: #F8F8F8;
+  padding: 20px;
+}
+
 .cpb-section {
   background: linear-gradient(135deg, #ffffff 0%, #fafbfc 100%);
   border-radius: 16px;
   padding: 25px;
-  margin: 0 0 25px 0;
+  margin: 0 auto;
+  max-width: 1200px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   border: 1px solid #e9ecef;
