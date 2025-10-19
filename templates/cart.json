@@ -81,7 +81,7 @@
         "subtitle": "Kunden kauften auch diese Produkte",
         "collection": "",
         "products_limit": 12,
-        "show_vendor": false,
+        "show_vendor": true,
         "show_rating": true,
         "show_add_button": true
       }
