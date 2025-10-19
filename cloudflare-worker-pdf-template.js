@@ -146,9 +146,9 @@ async function handlePflegeboxSubmit(request, env) {
         }
       });
 
-      console.log(`✅ Pflegebox submission saved: ${submissionId}`);
+      console.log(` Pflegebox submission saved: ${submissionId}`);
     } else {
-      console.warn('⚠️ PFLEGEBOX_SUBMISSIONS KV namespace not bound - data not persisted');
+      console.warn('� PFLEGEBOX_SUBMISSIONS KV namespace not bound - data not persisted');
     }
 
     // TODO: Send email notification with Resend/SendGrid
@@ -231,7 +231,7 @@ async function handlePflegeboxList(request, env) {
     // Limit results
     const limited = filtered.slice(0, limit);
 
-    console.log(`📋 Fetched ${limited.length} pflegebox submissions (total: ${submissions.length})`);
+    console.log(`=� Fetched ${limited.length} pflegebox submissions (total: ${submissions.length})`);
 
     return jsonResponse({
       submissions: limited,
@@ -272,7 +272,7 @@ async function proxyShopifyRequest(request, env, endpoint, params = null, method
       }
     }
 
-    console.log(`🔄 Proxying to Shopify: ${method} ${apiUrl}`);
+    console.log(`= Proxying to Shopify: ${method} ${apiUrl}`);
 
     // Make request to Shopify
     const options = {
@@ -332,5 +332,5 @@ function jsonResponse(data, status = 200) {
 async function sendEmailNotification(data, env) {
   // Placeholder for email functionality
   // Use env.RESEND_API_KEY or env.SENDGRID_API_KEY
-  console.log('📧 Email notification not yet implemented');
+  console.log('=� Email notification not yet implemented');
 }
