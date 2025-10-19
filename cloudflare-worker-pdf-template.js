@@ -99,6 +99,26 @@ export default {
         // 📧 INVIA EMAIL CON PDF ALLEGATO
         await sendPflegeboxEmailWithPDF(env, formData, pdfBytes);
 
+        // 💾 SALVA NEL KV STORAGE PER BACKEND DASHBOARD
+        if (env.PFLEGEBOX_SUBMISSIONS) {
+          const submissionId = `pflegebox_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+          const submission = {
+            id: submissionId,
+            ...formData,
+            created_at: new Date().toISOString(),
+            status: 'pending'
+          };
+          await env.PFLEGEBOX_SUBMISSIONS.put(submissionId, JSON.stringify(submission), {
+            metadata: {
+              email: formData.versicherte?.email || '',
+              name: `${formData.versicherte?.vorname || ''} ${formData.versicherte?.name || ''}`.trim(),
+              pflegegrad: formData.versicherte?.pflegegrad || '',
+              created_at: submission.created_at
+            }
+          });
+          console.log(`💾 Dati salvati nel KV storage: ${submissionId}`);
+        }
+
         console.log('✅ PDF template compilato e inviato con successo');
 
         return new Response(JSON.stringify({
@@ -132,10 +152,122 @@ export default {
       }
     }
 
+    // ========== BACKEND: GET PFLEGEBOX SUBMISSIONS ==========
+    if (path === "/api/pflegebox/submissions" && request.method === "GET") {
+      try {
+        if (!env.PFLEGEBOX_SUBMISSIONS) {
+          return new Response(JSON.stringify({
+            submissions: [],
+            total: 0,
+            message: 'KV namespace not configured'
+          }), {
+            status: 200,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // List all keys with metadata
+        const list = await env.PFLEGEBOX_SUBMISSIONS.list({ limit: 1000 });
+
+        // Fetch all submissions
+        const submissions = [];
+        for (const key of list.keys) {
+          const value = await env.PFLEGEBOX_SUBMISSIONS.get(key.name);
+          if (value) {
+            const submission = JSON.parse(value);
+            submissions.push(submission);
+          }
+        }
+
+        // Sort by created_at (newest first)
+        submissions.sort((a, b) => {
+          const dateA = new Date(a.created_at || a.timestamp || 0);
+          const dateB = new Date(b.created_at || b.timestamp || 0);
+          return dateB - dateA;
+        });
+
+        console.log(`📋 Backend: fetched ${submissions.length} pflegebox submissions`);
+
+        return new Response(JSON.stringify({
+          submissions: submissions,
+          total: submissions.length
+        }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+
+      } catch (error) {
+        console.error('❌ Error fetching pflegebox submissions:', error);
+        return new Response(JSON.stringify({
+          submissions: [],
+          error: error.message
+        }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
+    // ========== BACKEND: GET PFLEGEBOX PDF ==========
+    if (path.startsWith("/api/pflegebox/pdf/") && request.method === "GET") {
+      try {
+        const submissionId = path.replace("/api/pflegebox/pdf/", "");
+
+        if (!env.PFLEGEBOX_SUBMISSIONS) {
+          return new Response(JSON.stringify({
+            error: 'KV namespace not configured'
+          }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Get submission data from KV
+        const submissionData = await env.PFLEGEBOX_SUBMISSIONS.get(submissionId);
+
+        if (!submissionData) {
+          return new Response(JSON.stringify({
+            error: 'Submission not found',
+            submissionId: submissionId
+          }), {
+            status: 404,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        const formData = JSON.parse(submissionData);
+        console.log(`📄 Generating PDF for submission: ${submissionId}`);
+
+        // Generate PDF
+        const pdfBytes = await fillPDFTemplate(formData, env);
+
+        console.log(`✅ PDF generated successfully: ${pdfBytes.length} bytes`);
+
+        // Return PDF
+        return new Response(pdfBytes, {
+          status: 200,
+          headers: {
+            ...corsHeaders,
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': `inline; filename="pflegebox_${submissionId}.pdf"`
+          }
+        });
+
+      } catch (error) {
+        console.error('❌ Error generating PDF:', error);
+        return new Response(JSON.stringify({
+          error: error.message
+        }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
     // Default 404
     return new Response(JSON.stringify({
       error: "Not found",
-      availableEndpoints: ["/health", "/api/pflegebox/submit (POST)"]
+      availableEndpoints: ["/health", "/api/pflegebox/submit (POST)", "/api/pflegebox/submissions (GET)", "/api/pflegebox/pdf/{id} (GET)"]
     }), {
       status: 404,
       headers: { ...corsHeaders, "Content-Type": "application/json" }
