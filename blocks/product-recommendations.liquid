@@ -11,12 +11,19 @@
 ></script>
 
 {% stylesheet %}
+  .product-recommendations {
+    position: relative;
+    z-index: 1 !important;
+  }
+
   .block-resource-list {
     display: flex;
     flex-direction: column;
     row-gap: var(--gap);
     min-width: 0;
     min-height: 0;
+    position: relative;
+    z-index: 1;
   }
 
   .resource-list--carousel-mobile {

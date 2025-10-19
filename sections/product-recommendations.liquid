@@ -4,8 +4,15 @@
 ></script>
 
 {% stylesheet %}
+  .product-recommendations {
+    position: relative;
+    z-index: 1 !important;
+  }
+
   .section-resource-list {
     row-gap: var(--gap);
+    position: relative;
+    z-index: 1;
   }
 
   .section-resource-list.section--full-width product-card .group-block {

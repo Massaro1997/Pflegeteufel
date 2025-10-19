@@ -621,20 +621,20 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Aggiorna messaggio e gestisci warning per eccesso
     if (cartCents >= GOAL_CENTS) {
-      messageElement.innerHTML = `✅ <strong>Ziel erreicht!</strong> Sie haben ${formatMoney(cartCents)} im Warenkorb.`;
+      messageElement.innerHTML = `✅ <strong>Ziel erreicht!</strong>`;
       messageElement.classList.add('success');
       badgeElement.classList.add('reached');
-      
+
       // Mostra warning solo se c'è un eccesso significativo (più di 1€)
       if (excess > 100 && warningElement) { // 100 centesimi = 1€
         warningElement.style.display = 'flex';
-        
+
         const excessEuros = Math.round(excess / 100 * 100) / 100; // Arrotonda a 2 decimali
         const optimalAmount = formatMoney(GOAL_CENTS);
         const excessAmount = formatMoney(excess);
-        
+
         warningTextElement.innerHTML = `Sie haben <strong>${excessAmount}</strong> mehr als nötig im Warenkorb. Das optimale Ziel wären <strong>${optimalAmount}</strong> gewesen.`;
-        
+
         // Suggerimenti dinamici basati sull'eccesso
         let suggestion = '';
         if (excess <= 200) { // Fino a 2€
@@ -646,11 +646,11 @@ document.addEventListener('DOMContentLoaded', function() {
         } else { // Oltre 10€
           suggestion = '💡 Tipp: Teilen Sie diesen Einkauf in mehrere Bestellungen auf - so können Sie mehrfach die Krankenkasse-Erstattung von 37€ erhalten!';
         }
-        
+
         warningSuggestionElement.textContent = suggestion;
       }
     } else {
-      messageElement.innerHTML = `Fügen Sie noch <strong>${formatMoney(remaining)}</strong> hinzu, um die Krankenkasse-Erstattungsschwelle von <strong>${formatMoney(GOAL_CENTS)}</strong> zu erreichen.`;
+      messageElement.innerHTML = `Noch <strong>${formatMoney(remaining)}</strong> hinzufügen`;
       messageElement.classList.remove('success');
       badgeElement.classList.remove('reached');
     }
