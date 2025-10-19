@@ -95,39 +95,18 @@
 </div>
 
 <div class="cart__ctas">
-  <button
-    type="button"
-    id="checkout-trigger"
-    class="cart__checkout-button button"
-    {% if cart == empty %}
-      disabled
-    {% endif %}
-    onclick="openAGBPopup(event)"
-  >
-    {{ 'content.checkout' | t }}
-  </button>
-
-  {% if additional_checkout_buttons and settings.show_accelerated_checkout_buttons %}
-    <div class="additional-checkout-buttons additional-checkout-buttons--vertical">
-      {{ content_for_additional_checkout_buttons }}
-    </div>
-  {% endif %}
-</div>
-
-<!-- AGB Popup Modal -->
-<div id="agb-popup-modal" class="agb-modal" style="display: none;">
-  <div class="agb-modal-overlay" onclick="closeAGBPopup()"></div>
-  <div class="agb-modal-content">
-    <button class="agb-modal-close" onclick="closeAGBPopup()">&times;</button>
-
-    <div class="agb-modal-header">
-      <h2 class="agb-modal-title">Allgemeine Geschäftsbedingungen</h2>
-      <p class="agb-modal-subtitle">Bitte lesen und akzeptieren Sie unsere AGB um fortzufahren</p>
+  <!-- AGB Expandable Card -->
+  <div class="agb-card" id="agb-card">
+    <div class="agb-card-header" onclick="toggleAGBCard()">
+      <div class="agb-card-title">
+        <span class="agb-icon">📋</span>
+        <span>Allgemeine Geschäftsbedingungen</span>
+      </div>
+      <span class="agb-toggle-icon" id="agb-toggle-icon">▼</span>
     </div>
 
-    <div class="agb-modal-body-wrapper">
-      <div class="agb-modal-body">
-        <div class="agb-content-scrollable">
+    <div class="agb-card-content" id="agb-card-content" style="display: none;">
+      <div class="agb-scrollable">
         <h3>Allgemeine Geschäftsbedingungen (AGB) – Pflegebox</h3>
         <p class="agb-company-info"><strong>Agentur Pflegeteufel</strong>, Regentenstraße 88, 51063 Köln-Mülheim</p>
 
@@ -144,236 +123,133 @@
         </div>
 
         <div class="agb-section">
-          <h4>3. Vertragsabschluss</h4>
-          <p>(1) Der Vertrag kommt durch die schriftliche Bestellung des Kunden und deren Bestätigung durch den Anbieter zustande.</p>
-          <p>(2) Voraussetzung ist ein gültiger Leistungsanspruch nach § 40 Abs. 2 SGB XI. Der Kunde ermächtigt den Anbieter, die Abrechnung direkt mit der Pflegekasse vorzunehmen.</p>
-          <p>(3) Der Kunde kann die Pflegebox auch unabhängig von einem Anspruch gegenüber der Pflegekasse im Rahmen eines normalen Einkaufs privat erwerben.</p>
-        </div>
-
-        <div class="agb-section">
-          <h4>4. Lieferung</h4>
-          <p>(1) Die Lieferung erfolgt monatlich frei Haus an die vom Kunden angegebene Adresse.</p>
-          <p>(2) Lieferverzögerungen aufgrund von höherer Gewalt, behördlichen Maßnahmen oder Lieferengpässen führen nicht zu Schadensersatzansprüchen des Kunden.</p>
-        </div>
-
-        <div class="agb-section">
-          <h4>5. Pflichten des Kunden</h4>
-          <p>(1) Der Kunde ist verpflichtet, Änderungen seines Pflegegrades, seiner Krankenkasse oder seines Wohnsitzes unverzüglich mitzuteilen.</p>
-          <p>(2) Der Kunde hat sicherzustellen, dass die gelieferten Produkte ausschließlich zum eigenen Verbrauch im Rahmen der Pflege verwendet werden.</p>
-        </div>
-
-        <div class="agb-section agb-highlight">
           <h4>6. Abrechnung und Kosten</h4>
           <p>(1) Die Abrechnung erfolgt direkt mit der zuständigen Pflegekasse bis zum gesetzlichen Höchstbetrag von derzeit <strong>42 Euro pro Monat</strong>.</p>
           <p>(2) <strong>Kosten, die über den Betrag von 42 Euro hinausgehen, werden dem Kunden privat in Rechnung gestellt.</strong></p>
-          <p>(3) Der Kunde hat auch die Möglichkeit, die Pflegebox unabhängig von der Pflegekasse privat zu erwerben.</p>
-        </div>
-
-        <div class="agb-section">
-          <h4>7. Eigentumsvorbehalt</h4>
-          <p>Die gelieferten Produkte bleiben bis zur vollständigen Bezahlung durch die Pflegekasse oder den Kunden Eigentum des Anbieters.</p>
-        </div>
-
-        <div class="agb-section">
-          <h4>8. Haftung</h4>
-          <p>(1) Der Anbieter haftet nur für Vorsatz und grobe Fahrlässigkeit.</p>
-          <p>(2) Für leichte Fahrlässigkeit haftet der Anbieter nur bei Verletzung wesentlicher Vertragspflichten (Kardinalpflichten), jedoch begrenzt auf den vorhersehbaren, vertragstypischen Schaden.</p>
-          <p>(3) Eine Haftung für unsachgemäße Verwendung der Pflegehilfsmittel ist ausgeschlossen.</p>
-        </div>
-
-        <div class="agb-section">
-          <h4>9. Laufzeit und Kündigung</h4>
-          <p>(1) Der Vertrag läuft auf unbestimmte Zeit.</p>
-          <p>(2) Beide Parteien können den Vertrag jederzeit mit einer Frist von <strong>14 Tagen zum Monatsende</strong> kündigen.</p>
-          <p>(3) Das Recht zur außerordentlichen Kündigung aus wichtigem Grund bleibt unberührt.</p>
-        </div>
-
-        <div class="agb-section">
-          <h4>10. Datenschutz</h4>
-          <p>(1) Personenbezogene Daten werden ausschließlich zur Vertragsabwicklung, Abrechnung mit der Pflegekasse und Lieferung verwendet.</p>
-          <p>(2) Eine Weitergabe erfolgt nur im Rahmen der gesetzlichen Bestimmungen. Weitere Hinweise finden sich in der Datenschutzerklärung des Anbieters.</p>
-        </div>
-
-        <div class="agb-section">
-          <h4>11. Schlussbestimmungen</h4>
-          <p>(1) Es gilt deutsches Recht.</p>
-          <p>(2) Gerichtsstand ist – soweit zulässig – Köln.</p>
-          <p>(3) Sollten einzelne Bestimmungen dieser AGB unwirksam sein oder werden, bleibt die Wirksamkeit der übrigen Bestimmungen unberührt.</p>
-        </div>
-
-        <div class="agb-section agb-contact">
-          <h4>Kontakt</h4>
-          <p>Sollten Sie Fragen zu unseren Datenschutzverfahren oder dieser Datenschutzerklärung haben, wenden Sie sich bitte an:</p>
-          <p class="agb-contact-box">
-            <strong>Agentur Pflegeteufel</strong><br>
-            Regentenstraße 88<br>
-            51063 Köln-Mülheim<br>
-            E-Mail: info@pflegeteufel.de
-          </p>
-        </div>
         </div>
       </div>
 
-      <div class="agb-checkbox-container">
-        <label class="agb-checkbox-label">
+      <div class="agb-checkbox-wrapper">
+        <label class="agb-accept-label">
           <input
             type="checkbox"
-            id="agb-accept-checkbox"
-            class="agb-checkbox"
+            id="agb-checkbox"
+            class="agb-checkbox-input"
             onchange="toggleCheckoutButton()"
           >
           <span class="agb-checkbox-text">
-            Ich habe die <a href="/policies/terms-of-service" target="_blank" class="agb-inline-link">Allgemeinen Geschäftsbedingungen</a>,
-            die <a href="/policies/privacy-policy" target="_blank" class="agb-inline-link">Datenschutzerklärung</a> und
-            die <a href="/policies/refund-policy" target="_blank" class="agb-inline-link">Widerrufsbelehrung</a>
-            gelesen und akzeptiere diese.
+            Ich habe die <a href="/policies/terms-of-service" target="_blank">AGB</a>,
+            <a href="/policies/privacy-policy" target="_blank">Datenschutzerklärung</a> und
+            <a href="/policies/refund-policy" target="_blank">Widerrufsbelehrung</a> gelesen und akzeptiere diese.
           </span>
         </label>
       </div>
     </div>
-
-    <div class="agb-modal-footer">
-      <button type="button" class="agb-btn agb-btn-secondary" onclick="closeAGBPopup()">
-        Abbrechen
-      </button>
-      <button
-        type="button"
-        id="agb-confirm-checkout"
-        class="agb-btn agb-btn-primary"
-        disabled
-        onclick="proceedToCheckout()"
-      >
-        Weiter zum Checkout →
-      </button>
-    </div>
   </div>
+
+  <button
+    type="button"
+    id="checkout-button"
+    class="cart__checkout-button button"
+    {% if cart == empty %}
+      disabled
+    {% endif %}
+    disabled
+    onclick="proceedToCheckout()"
+  >
+    {{ 'content.checkout' | t }}
+  </button>
+
+  {% if additional_checkout_buttons and settings.show_accelerated_checkout_buttons %}
+    <div class="additional-checkout-buttons additional-checkout-buttons--vertical">
+      {{ content_for_additional_checkout_buttons }}
+    </div>
+  {% endif %}
 </div>
 
 <style>
-/* AGB Modal Styles */
-.agb-modal {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  z-index: 2147483647 !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-}
-
-.agb-modal-overlay {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  background: rgba(0, 0, 0, 0.75) !important;
-  backdrop-filter: blur(4px);
-  z-index: 2147483646 !important;
-  animation: fadeIn 0.3s ease;
-}
-
-.agb-modal-content {
-  position: relative !important;
-  z-index: 2147483647 !important;
+/* AGB Expandable Card */
+.agb-card {
   background: white;
-  border-radius: 16px;
-  max-width: 550px;
-  width: 90%;
-  max-height: 75vh;
-  overflow-y: auto;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 2px solid #e9ecef;
+  border-radius: 12px;
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
 }
 
-.agb-modal-close {
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  background: #f8f9fa;
-  border: none;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  font-size: 24px;
+.agb-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  user-select: none;
+  transition: background 0.2s ease;
+}
+
+.agb-card-header:hover {
+  background: #f8f9fa;
+}
+
+.agb-card-title {
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: #666;
-  z-index: 1;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #2c3e50;
 }
 
-.agb-modal-close:hover {
-  background: #e9ecef;
-  transform: rotate(90deg);
-  color: #C12624;
+.agb-icon {
+  font-size: 1.3rem;
 }
 
-.agb-modal-header {
-  text-align: center;
-  padding: 20px 25px 15px;
-  border-bottom: 2px solid #f1f3f5;
+.agb-toggle-icon {
+  font-size: 1.2rem;
+  transition: transform 0.3s ease;
+  color: #6c757d;
 }
 
-.agb-modal-title {
-  font-size: 1.5rem;
-  font-weight: 800;
+.agb-toggle-icon.open {
+  transform: rotate(180deg);
+}
+
+.agb-card-content {
+  padding: 0 20px 20px;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+
+.agb-card-content.open {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.agb-scrollable {
+  max-height: 350px;
+  overflow-y: auto;
+  padding-right: 10px;
+  margin-bottom: 16px;
+}
+
+.agb-scrollable h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
   color: #2c3e50;
   margin-bottom: 8px;
-  line-height: 1.2;
-}
-
-.agb-modal-subtitle {
-  font-size: 0.9rem;
-  color: #6c757d;
-  margin: 0;
-}
-
-.agb-modal-body-wrapper {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 15px 20px;
-}
-
-.agb-modal-body {
-  padding: 0;
-  max-height: 35vh;
-  overflow-y: auto;
-  border: 1px solid #e9ecef;
-  border-radius: 8px;
-}
-
-.agb-content-scrollable {
-  padding: 15px;
-}
-
-.agb-content-scrollable h3 {
-  font-size: 1.1rem;
-  font-weight: 800;
-  color: #C12624;
-  margin-bottom: 3px;
-  text-align: center;
 }
 
 .agb-company-info {
-  text-align: center;
-  font-size: 0.85rem;
   color: #6c757d;
-  margin-bottom: 15px;
-  padding-bottom: 10px;
-  border-bottom: 2px solid #f1f3f5;
+  font-size: 0.9rem;
+  margin-bottom: 16px;
 }
 
 .agb-section {
-  margin-bottom: 12px;
-  padding-bottom: 10px;
-  border-bottom: 1px solid #f1f3f5;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
 .agb-section:last-child {
@@ -394,420 +270,106 @@
   margin-bottom: 5px;
 }
 
-.agb-section p:last-child {
-  margin-bottom: 0;
-}
-
-.agb-highlight {
-  background: #fff8e1;
-  padding: 15px;
+.agb-checkbox-wrapper {
+  background: #f8f9fa;
   border-radius: 8px;
-  border-left: 4px solid #ffc107;
-}
-
-.agb-contact {
-  background: #e8f5e9;
-  padding: 15px;
-  border-radius: 8px;
-  border-left: 4px solid #28a745;
-}
-
-.agb-contact-box {
-  background: white;
-  padding: 15px;
-  border-radius: 6px;
-  margin-top: 10px;
-  border: 1px solid #e9ecef;
-  line-height: 1.8;
-}
-
-/* Scrollbar styling */
-.agb-modal-body::-webkit-scrollbar {
-  width: 8px;
-}
-
-.agb-modal-body::-webkit-scrollbar-track {
-  background: #f1f3f5;
-}
-
-.agb-modal-body::-webkit-scrollbar-thumb {
-  background: #C12624;
-  border-radius: 4px;
-}
-
-.agb-modal-body::-webkit-scrollbar-thumb:hover {
-  background: #A01F1D;
-}
-
-.agb-checkbox-container {
-  background: white;
-  border: 2px solid #e9ecef;
-  border-radius: 12px;
   padding: 12px;
+  border: 2px solid #e9ecef;
   transition: all 0.3s ease;
 }
 
-.agb-checkbox-container:has(.agb-checkbox:checked) {
+.agb-checkbox-wrapper:has(.agb-checkbox-input:checked) {
+  background: #d4edda;
   border-color: #28a745;
-  background: #f0fff4;
 }
 
-.agb-checkbox-label {
+.agb-accept-label {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   cursor: pointer;
   align-items: start;
 }
 
-.agb-checkbox {
-  min-width: 20px;
-  width: 20px;
-  height: 20px;
+.agb-checkbox-input {
+  min-width: 18px;
+  width: 18px;
+  height: 18px;
   cursor: pointer;
   margin-top: 2px;
 }
 
 .agb-checkbox-text {
+  font-size: 0.9rem;
+  line-height: 1.5;
   color: #2c3e50;
-  font-size: 0.95rem;
-  line-height: 1.6;
 }
 
-.agb-inline-link {
+.agb-checkbox-text a {
   color: #C12624;
   text-decoration: underline;
   font-weight: 600;
 }
 
-.agb-inline-link:hover {
+.agb-checkbox-text a:hover {
   color: #A01F1D;
 }
 
-.agb-modal-footer {
-  display: flex;
-  gap: 12px;
-  padding: 15px 20px;
-  border-top: 2px solid #f1f3f5;
-  background: #f8f9fa;
-  border-bottom-left-radius: 16px;
-  border-bottom-right-radius: 16px;
+/* Scrollbar */
+.agb-scrollable::-webkit-scrollbar {
+  width: 6px;
 }
 
-.agb-btn {
-  flex: 1;
-  padding: 12px 20px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  border-radius: 8px;
-  border: none;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  font-family: inherit;
+.agb-scrollable::-webkit-scrollbar-track {
+  background: #f1f1f1;
 }
 
-.agb-btn-secondary {
-  background: #e9ecef;
-  color: #495057;
+.agb-scrollable::-webkit-scrollbar-thumb {
+  background: #C12624;
+  border-radius: 3px;
 }
 
-.agb-btn-secondary:hover {
-  background: #dee2e6;
-  transform: translateY(-2px);
-}
-
-.agb-btn-primary {
-  background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%);
-  color: white;
-  box-shadow: 0 4px 15px rgba(193, 38, 36, 0.3);
-}
-
-.agb-btn-primary:not(:disabled):hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(193, 38, 36, 0.4);
-}
-
-.agb-btn-primary:disabled {
-  background: #dee2e6;
-  color: #adb5bd;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from {
-    opacity: 0;
-    transform: translateY(50px) scale(0.95);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-/* Mobile Responsive */
-@media (max-width: 768px) {
-  .agb-modal-content {
-    width: 85%;
-    max-width: 85vw;
-    max-height: 70vh;
-    margin: 20px auto;
-  }
-
-  .agb-modal-header {
-    padding: 12px 10px 10px;
-  }
-
-  .agb-modal-title {
-    font-size: 1rem;
-    line-height: 1.2;
-  }
-
-  .agb-modal-subtitle {
-    font-size: 0.75rem;
-    line-height: 1.2;
-  }
-
-  .agb-modal-body-wrapper {
-    padding: 10px;
-  }
-
-  .agb-modal-body {
-    max-height: 30vh;
-    font-size: 0.8rem;
-    line-height: 1.4;
-  }
-
-  .agb-content-scrollable {
-    padding: 10px;
-  }
-
-  .agb-section {
-    margin-bottom: 0.8rem;
-  }
-
-  .agb-section-title {
-    font-size: 0.9rem;
-    margin-bottom: 0.4rem;
-  }
-
-  .agb-checkbox-container {
-    padding: 10px;
-    margin-top: 10px;
-  }
-
-  .agb-checkbox-label {
-    font-size: 0.8rem;
-    line-height: 1.3;
-  }
-
-  .agb-modal-footer {
-    flex-direction: column;
-    padding: 10px;
-    gap: 6px;
-  }
-
-  .agb-btn {
-    width: 100%;
-    padding: 10px;
-    font-size: 0.85rem;
-  }
-
-  .agb-btn-accept {
-    order: 1;
-  }
-
-  .agb-btn-cancel {
-    order: 2;
-  }
-}
-
-@media (max-width: 480px) {
-  .agb-modal-content {
-    width: 90%;
-    max-width: 90vw;
-    max-height: 75vh;
-    margin: 8px auto;
-    border-radius: 12px;
-  }
-
-  .agb-modal-header {
-    padding: 10px 8px 8px;
-  }
-
-  .agb-modal-title {
-    font-size: 0.95rem;
-    line-height: 1.2;
-  }
-
-  .agb-modal-subtitle {
-    font-size: 0.7rem;
-    line-height: 1.2;
-  }
-
-  .agb-modal-body {
-    max-height: 35vh;
-    font-size: 0.75rem;
-    line-height: 1.4;
-  }
-
-  .agb-modal-body-wrapper {
-    padding: 8px;
-  }
-
-  .agb-content-scrollable {
-    padding: 8px;
-  }
-
-  .agb-section {
-    margin-bottom: 0.7rem;
-  }
-
-  .agb-section-title {
-    font-size: 0.85rem;
-    margin-bottom: 0.3rem;
-  }
-
-  .agb-checkbox-container {
-    padding: 8px;
-    margin-top: 8px;
-  }
-
-  .agb-checkbox-label {
-    font-size: 0.75rem;
-    line-height: 1.3;
-  }
-
-  .agb-modal-footer {
-    padding: 8px;
-    gap: 6px;
-  }
-
-  .agb-btn {
-    padding: 10px;
-    font-size: 0.8rem;
-  }
-}
-
-/* Modern Cart Checkout Button */
-.cart__ctas {
-  width: 100%;
-}
-
-.cart__checkout-button {
-  width: 100%;
-  background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%) !important;
-  color: white !important;
-  font-weight: 700 !important;
-  font-size: 1.1rem !important;
-  padding: 16px 32px !important;
-  border-radius: 12px !important;
-  border: none !important;
-  box-shadow: 0 4px 20px rgba(193, 38, 36, 0.3) !important;
-  transition: all 0.3s ease !important;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
-}
-
-.cart__checkout-button:not(:disabled):hover {
-  transform: translateY(-2px) !important;
-  box-shadow: 0 6px 25px rgba(193, 38, 36, 0.4) !important;
-  background: linear-gradient(135deg, #A01F1D 0%, #8B1A1A 100%) !important;
-}
-
-.cart__checkout-button:disabled {
-  background: #dee2e6 !important;
-  color: #adb5bd !important;
-  box-shadow: none !important;
-  cursor: not-allowed !important;
-}
-
-/* Cart Total Styling */
-.cart__total-label {
-  font-size: 1.1rem !important;
-  font-weight: 700 !important;
-  color: #2c3e50 !important;
-}
-
-.cart__total-value {
-  font-size: 1.5rem !important;
-  font-weight: 800 !important;
-  color: #C12624 !important;
+.agb-scrollable::-webkit-scrollbar-thumb:hover {
+  background: #A01F1D;
 }
 </style>
 
 <script>
-function openAGBPopup(event) {
-  event.preventDefault();
-  event.stopPropagation();
+function toggleAGBCard() {
+  const content = document.getElementById('agb-card-content');
+  const icon = document.getElementById('agb-toggle-icon');
 
-  const modal = document.getElementById('agb-popup-modal');
-  if (modal) {
-    modal.style.display = 'flex';
-    document.body.style.overflow = 'hidden';
-
-    // Reset checkbox
-    const checkbox = document.getElementById('agb-accept-checkbox');
-    if (checkbox) {
-      checkbox.checked = false;
-      toggleCheckoutButton();
-    }
-  }
-}
-
-function closeAGBPopup() {
-  const modal = document.getElementById('agb-popup-modal');
-  if (modal) {
-    modal.style.display = 'none';
-    document.body.style.overflow = '';
+  if (content.style.display === 'none') {
+    content.style.display = 'block';
+    setTimeout(() => {
+      content.classList.add('open');
+      icon.classList.add('open');
+    }, 10);
+  } else {
+    content.classList.remove('open');
+    icon.classList.remove('open');
+    setTimeout(() => {
+      content.style.display = 'none';
+    }, 300);
   }
 }
 
 function toggleCheckoutButton() {
-  const checkbox = document.getElementById('agb-accept-checkbox');
-  const button = document.getElementById('agb-confirm-checkout');
+  const checkbox = document.getElementById('agb-checkbox');
+  const button = document.getElementById('checkout-button');
 
-  if (checkbox && button) {
-    button.disabled = !checkbox.checked;
+  if (checkbox.checked) {
+    button.disabled = false;
+  } else {
+    button.disabled = true;
   }
 }
 
 function proceedToCheckout() {
-  const checkbox = document.getElementById('agb-accept-checkbox');
-
-  if (!checkbox || !checkbox.checked) {
-    alert('Bitte akzeptieren Sie die AGB um fortzufahren.');
-    return;
-  }
-
-  // Submit cart form
-  const cartForm = document.getElementById('cart-form');
-  if (cartForm) {
-    // Create hidden input to trigger checkout
-    const input = document.createElement('input');
-    input.type = 'hidden';
-    input.name = 'checkout';
-    input.value = '1';
-    cartForm.appendChild(input);
-
-    // Submit the form
-    cartForm.submit();
+  const form = document.querySelector('form[action="/checkout"]');
+  if (form) {
+    form.submit();
   } else {
-    // Fallback: direct navigation
     window.location.href = '/checkout';
   }
 }
-
-// Close modal with ESC key
-document.addEventListener('keydown', function(event) {
-  if (event.key === 'Escape') {
-    closeAGBPopup();
-  }
-});
 </script>
