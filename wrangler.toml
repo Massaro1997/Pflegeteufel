@@ -7,6 +7,12 @@ compatibility_date = "2024-01-01"
 SHOPIFY_API_VERSION = "2024-01"
 ALLOWED_ORIGIN = "*"
 
+# KV Namespace Bindings
+[[kv_namespaces]]
+binding = "PFLEGEBOX_SUBMISSIONS"
+id = "YOUR_KV_NAMESPACE_ID"
+# Run: wrangler kv:namespace create "PFLEGEBOX_SUBMISSIONS" to get the ID
+
 # R2 Bucket Bindings
 [[r2_buckets]]
 binding = "PDF_TEMPLATE"
