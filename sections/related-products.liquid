@@ -484,16 +484,23 @@ document.addEventListener('DOMContentLoaded', function() {
         // Successo - mostra "Hinzugefügt" in tedesco
         button.textContent = 'Hinzugefügt';
         button.style.background = '#28a745';
-        
+
         // Trigger di eventi per aggiornare eventuali contatori carrello
         document.dispatchEvent(new CustomEvent('cart:item-added'));
-        
-        // Ripristina il bottone dopo 2.5 secondi
-        setTimeout(function() {
-          button.textContent = originalText;
-          button.style.background = '';
-          button.disabled = false;
-        }, 2500);
+
+        // Se siamo sulla pagina del carrello, ricarica la pagina dopo un breve delay
+        if (window.location.pathname.includes('/cart')) {
+          setTimeout(function() {
+            window.location.reload();
+          }, 400);
+        } else {
+          // Ripristina il bottone dopo 2.5 secondi solo se NON siamo sul carrello
+          setTimeout(function() {
+            button.textContent = originalText;
+            button.style.background = '';
+            button.disabled = false;
+          }, 2500);
+        }
       })
       .catch(function(error) {
         console.error('Errore add to cart:', error);
