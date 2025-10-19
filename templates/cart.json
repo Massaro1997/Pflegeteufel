@@ -72,10 +72,24 @@
         "padding-block-start": 0,
         "padding-block-end": 0
       }
+    },
+    "related_products_KkfH6p": {
+      "type": "related-products",
+      "name": "Empfohlene Produkte",
+      "settings": {
+        "title": "Empfohlene Produkte",
+        "subtitle": "Kunden kauften auch diese Produkte",
+        "collection": "",
+        "products_limit": 12,
+        "show_vendor": false,
+        "show_rating": true,
+        "show_add_button": true
+      }
     }
   },
   "order": [
     "cart_progress_bar_biNMDp",
-    "cart-section"
+    "cart-section",
+    "related_products_KkfH6p"
   ]
 }
