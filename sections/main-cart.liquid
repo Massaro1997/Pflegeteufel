@@ -130,35 +130,50 @@
 
 <script>
 // Reload cart page when products are added from recommended products section
-document.addEventListener('DOMContentLoaded', function() {
+(function() {
   // Only run on cart page
   if (!window.location.pathname.includes('/cart')) return;
 
   let reloadTimeout;
-  const RELOAD_DELAY = 500; // Wait 500ms before reloading to ensure cart API is updated
+  const RELOAD_DELAY = 300; // Wait 300ms before reloading
 
-  document.addEventListener('cart:update', function(event) {
-    console.log('[Cart Page] Cart update event detected:', event.detail);
+  // Listen to multiple cart events to ensure we catch all adds
+  function handleCartUpdate(event) {
+    console.log('[Cart Page] Cart event detected:', event.type, event.detail);
 
     // Check if the update came from a product form (recommended products)
     const source = event.detail?.data?.source;
 
-    // If it's from a product form and we're on the cart page, reload
+    // If it's from a product form, reload the page
     if (source === 'product-form-component') {
-      console.log('[Cart Page] Product added from recommended section, reloading page...');
+      console.log('[Cart Page] Product added from recommended section, reloading...');
 
       // Clear any existing timeout
       if (reloadTimeout) clearTimeout(reloadTimeout);
 
-      // Reload after a short delay to ensure the cart API has been updated
+      // Reload after a short delay
       reloadTimeout = setTimeout(function() {
         window.location.reload();
       }, RELOAD_DELAY);
     }
+  }
+
+  // Listen to both cart:update and cart:add events
+  document.addEventListener('cart:update', handleCartUpdate);
+  document.addEventListener('cart:add', handleCartUpdate);
+
+  // Also listen to the Shopify cart updated event
+  document.addEventListener('shopify:cart:updated', function(event) {
+    console.log('[Cart Page] Shopify cart updated event detected');
+    // Reload for any cart update when on cart page
+    if (reloadTimeout) clearTimeout(reloadTimeout);
+    reloadTimeout = setTimeout(function() {
+      window.location.reload();
+    }, RELOAD_DELAY);
   });
 
-  console.log('[Cart Page] Auto-reload listener initialized');
-});
+  console.log('[Cart Page] Auto-reload listeners initialized');
+})();
 </script>
 
 {% schema %}
