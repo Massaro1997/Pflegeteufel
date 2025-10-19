@@ -10,15 +10,10 @@
     data-animate="true">
 
     <div class="cpb-container">
-    <!-- Header con icona -->
+    <!-- Header -->
     <div class="cpb-header">
-      <div class="cpb-icon-wrapper">
-        <div class="cpb-icon">💶</div>
-      </div>
-      <div class="cpb-content">
-        <h3 class="cpb-title">Krankenkasse Erstattung</h3>
-        <p class="cpb-subtitle">Erreichen Sie 37€ für kostenlose Erstattung</p>
-      </div>
+      <h3 class="cpb-title">Krankenkasse Erstattung</h3>
+      <p class="cpb-subtitle">Erreichen Sie 37€ für kostenlose Erstattung</p>
     </div>
 
     <!-- Status Message -->
@@ -88,35 +83,9 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
+  gap: 8px;
   margin-bottom: 20px;
   text-align: center;
-}
-
-.cpb-icon-wrapper {
-  flex-shrink: 0;
-}
-
-.cpb-icon {
-  font-size: 32px;
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
-  width: 60px;
-  height: 60px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.25);
-  animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.05); }
-}
-
-.cpb-content {
-  flex: 1;
 }
 
 .cpb-title {
