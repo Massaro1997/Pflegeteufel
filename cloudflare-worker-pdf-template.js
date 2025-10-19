@@ -264,10 +264,65 @@ export default {
       }
     }
 
+    // ========== BACKEND: DELETE PFLEGEBOX SUBMISSION ==========
+    if (path.startsWith("/api/pflegebox/submission/") && request.method === "DELETE") {
+      try {
+        const submissionId = path.replace("/api/pflegebox/submission/", "");
+
+        if (!env.PFLEGEBOX_SUBMISSIONS) {
+          return new Response(JSON.stringify({
+            error: 'KV namespace not configured'
+          }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Check if submission exists
+        const submissionData = await env.PFLEGEBOX_SUBMISSIONS.get(submissionId);
+
+        if (!submissionData) {
+          return new Response(JSON.stringify({
+            error: 'Submission not found',
+            submissionId: submissionId
+          }), {
+            status: 404,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        console.log(`🗑️ Deleting submission: ${submissionId}`);
+
+        // Delete from KV
+        await env.PFLEGEBOX_SUBMISSIONS.delete(submissionId);
+
+        console.log(`✅ Submission deleted successfully: ${submissionId}`);
+
+        // Return success
+        return new Response(JSON.stringify({
+          success: true,
+          message: 'Submission deleted successfully',
+          submissionId: submissionId
+        }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+
+      } catch (error) {
+        console.error('❌ Error deleting submission:', error);
+        return new Response(JSON.stringify({
+          error: error.message
+        }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
     // Default 404
     return new Response(JSON.stringify({
       error: "Not found",
-      availableEndpoints: ["/health", "/api/pflegebox/submit (POST)", "/api/pflegebox/submissions (GET)", "/api/pflegebox/pdf/{id} (GET)"]
+      availableEndpoints: ["/health", "/api/pflegebox/submit (POST)", "/api/pflegebox/submissions (GET)", "/api/pflegebox/pdf/{id} (GET)", "/api/pflegebox/submission/{id} (DELETE)"]
     }), {
       status: 404,
       headers: { ...corsHeaders, "Content-Type": "application/json" }

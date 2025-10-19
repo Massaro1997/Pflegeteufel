@@ -1548,7 +1548,10 @@ Digitare "ELIMINA" per confermare:`;
             <td><span class="pf-badge info">${pflegegrad}</span></td>
             <td>${getStatusBadge(status)}</td>
             <td>
-              <button class="pf-btn success" style="padding:6px 12px;font-size:12px" onclick="window.open('${workerBaseUrl}api/pflegebox/pdf/${submission.id}', '_blank')">📄 Apri PDF</button>
+              <div style="display:flex;gap:4px;flex-wrap:wrap">
+                <button class="pf-btn success" style="padding:6px 12px;font-size:12px" onclick="window.open('${workerBaseUrl}api/pflegebox/pdf/${submission.id}', '_blank')" title="Apri PDF">📄 PDF</button>
+                <button class="pf-btn danger" style="padding:6px 10px;font-size:12px" onclick="deletePflegeboxSubmission('${submission.id}')" title="Elimina submission">🗑️</button>
+              </div>
             </td>`;
           tb.appendChild(tr);
         }
@@ -1563,6 +1566,41 @@ Digitare "ELIMINA" per confermare:`;
           ⚠️ <strong>Errore:</strong> ${err.message}<br>
           <small class="text-sm muted">Controlla la console (F12) per dettagli</small>
         </td></tr>`;
+      }
+    }
+
+    // ========== DELETE PFLEGEBOX SUBMISSION ==========
+    async function deletePflegeboxSubmission(submissionId) {
+      if (!confirm('⚠️ Sei sicuro di voler eliminare questa richiesta Pflegebox?\n\nQuesta azione è irreversibile.')) {
+        return;
+      }
+
+      try {
+        console.log('🗑️ Deleting pflegebox submission:', submissionId);
+
+        const response = await fetch(`${workerBaseUrl}api/pflegebox/submission/${submissionId}`, {
+          method: 'DELETE',
+          headers: {
+            'X-Worker-Key': sharedKey
+          }
+        });
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Errore ${response.status}: ${errorText}`);
+        }
+
+        const result = await response.json();
+        console.log('✅ Submission deleted:', result);
+
+        alert('✅ Richiesta Pflegebox eliminata con successo!');
+
+        // Reload the table
+        loadPflegebox();
+
+      } catch (err) {
+        console.error('❌ Error deleting submission:', err);
+        alert('❌ Errore durante l\'eliminazione: ' + err.message);
       }
     }
 
