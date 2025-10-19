@@ -51,15 +51,9 @@
     {%- endif -%}
   </div>
 
-  {% if settings.show_cart_note or settings.show_add_discount_code %}
+  {% if settings.show_cart_note %}
     <div class="cart-actions">
-      {% if settings.show_cart_note %}
-        {% render 'cart-note' %}
-      {% endif %}
-
-      {% if settings.show_add_discount_code %}
-        {% render 'cart-discount' %}
-      {% endif %}
+      {% render 'cart-note' %}
     </div>
   {% endif %}
 
@@ -95,7 +89,7 @@
       </span>
     {% endif %}
     <div class="cart__summary-item tax-note cart-primary-typography">
-      {% render 'tax-info', has_discounts_enabled: settings.show_add_discount_code %}
+      {% render 'tax-info', has_discounts_enabled: false %}
     </div>
   </div>
 </div>
