@@ -46,6 +46,11 @@ export default {
         return await handlePflegeboxList(request, env);
       }
 
+      if (path.match(/^\/api\/pflegebox\/pdf\/(.+)$/)) {
+        const submissionId = path.split('/')[4];
+        return await handlePflegeboxPDF(submissionId, env);
+      }
+
       // ========== SHOPIFY ADMIN API PROXY ROUTES ==========
       if (path.startsWith('/orders')) {
         return await proxyShopifyRequest(request, env, 'orders.json', url.searchParams);
@@ -151,10 +156,16 @@ async function handlePflegeboxSubmit(request, env) {
       console.warn('⚠️ PFLEGEBOX_SUBMISSIONS KV namespace not bound - data not persisted');
     }
 
-    // TODO: Send email notification with Resend/SendGrid
-    // if (env.RESEND_API_KEY) {
-    //   await sendEmailNotification(data, env);
-    // }
+    // Send email notification with Resend
+    if (env.RESEND_API_KEY) {
+      try {
+        await sendEmailNotification(submission, env);
+        console.log(`📧 Email notification sent for ${submissionId}`);
+      } catch (emailError) {
+        console.error('⚠️ Email sending failed:', emailError);
+        // Don't fail the whole submission if email fails
+      }
+    }
 
     return jsonResponse({
       success: true,
@@ -327,10 +338,239 @@ function jsonResponse(data, status = 200) {
 }
 
 /**
- * Send email notification (TODO: implement with Resend or SendGrid)
+ * Send email notification via Resend
  */
-async function sendEmailNotification(data, env) {
-  // Placeholder for email functionality
-  // Use env.RESEND_API_KEY or env.SENDGRID_API_KEY
-  console.log('📧 Email notification not yet implemented');
+async function sendEmailNotification(submission, env) {
+  const v = submission.versicherte || {};
+  const a = submission.angehoerige || {};
+  const products = submission.pflegeboxProducts || [];
+
+  // Build email HTML
+  const emailHTML = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+    .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+    .header { background: #4CAF50; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
+    .content { background: #f9f9f9; padding: 20px; border: 1px solid #ddd; }
+    .section { margin-bottom: 20px; background: white; padding: 15px; border-radius: 5px; }
+    .section-title { font-weight: bold; color: #4CAF50; margin-bottom: 10px; border-bottom: 2px solid #4CAF50; padding-bottom: 5px; }
+    .field { margin: 8px 0; }
+    .label { font-weight: bold; color: #555; }
+    .value { color: #000; }
+    .products { margin-top: 10px; }
+    .product-item { background: #f0f0f0; padding: 8px; margin: 5px 0; border-left: 3px solid #4CAF50; }
+    .footer { text-align: center; margin-top: 20px; color: #888; font-size: 12px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h2>📋 Nuovo Formulario Pflegebox</h2>
+      <p>Ricevuto: ${new Date(submission.created_at).toLocaleString('de-DE')}</p>
+    </div>
+
+    <div class="content">
+      <!-- Versicherte Person -->
+      <div class="section">
+        <div class="section-title">👤 Versicherte Person</div>
+        <div class="field"><span class="label">Nome:</span> <span class="value">${v.vorname || ''} ${v.name || ''}</span></div>
+        <div class="field"><span class="label">Data di nascita:</span> <span class="value">${v.geburtsdatum || '-'}</span></div>
+        <div class="field"><span class="label">Email:</span> <span class="value">${v.email || '-'}</span></div>
+        <div class="field"><span class="label">Telefono:</span> <span class="value">${v.telefon || '-'}</span></div>
+        <div class="field"><span class="label">Indirizzo:</span> <span class="value">${v.strasse || ''} ${v.hausnummer || ''}, ${v.plz || ''} ${v.ort || ''}</span></div>
+        <div class="field"><span class="label">Pflegegrad:</span> <span class="value">${v.pflegegrad || '-'}</span></div>
+        <div class="field"><span class="label">Pflegekasse:</span> <span class="value">${v.pflegekasse || '-'}</span></div>
+        <div class="field"><span class="label">Versichertennummer:</span> <span class="value">${v.versichertennummer || '-'}</span></div>
+      </div>
+
+      <!-- Angehörige -->
+      ${a.vorname || a.name ? `
+      <div class="section">
+        <div class="section-title">👥 Angehörige/Bevollmächtigte</div>
+        <div class="field"><span class="label">Nome:</span> <span class="value">${a.vorname || ''} ${a.name || ''}</span></div>
+        <div class="field"><span class="label">Email:</span> <span class="value">${a.email || '-'}</span></div>
+        <div class="field"><span class="label">Telefono:</span> <span class="value">${a.telefon || '-'}</span></div>
+        <div class="field"><span class="label">Indirizzo:</span> <span class="value">${a.strasse || ''} ${a.hausnummer || ''}, ${a.plz || ''} ${a.ort || ''}</span></div>
+      </div>
+      ` : ''}
+
+      <!-- Pflegebox Products -->
+      ${products.length > 0 ? `
+      <div class="section">
+        <div class="section-title">📦 Prodotti Pflegebox Scelti</div>
+        <div class="products">
+          ${products.map(p => `<div class="product-item">✓ ${p}</div>`).join('')}
+        </div>
+      </div>
+      ` : ''}
+
+      <!-- Info Aggiuntive -->
+      <div class="section">
+        <div class="section-title">ℹ️ Informazioni Aggiuntive</div>
+        <div class="field"><span class="label">Submission ID:</span> <span class="value">${submission.id}</span></div>
+        <div class="field"><span class="label">Status:</span> <span class="value">${submission.status}</span></div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>Questo è un messaggio automatico da Pflegeteufel.de</p>
+      <p>🤖 Generated with Claude Code</p>
+    </div>
+  </div>
+</body>
+</html>
+  `;
+
+  // Send via Resend API
+  const resendResponse = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: 'Pflegebox Form <onboarding@resend.dev>',
+      to: ['pflegeteufelagentur@gmail.com'],
+      subject: `📋 Nuovo Formulario Pflegebox - ${v.vorname || ''} ${v.name || ''} (Pflegegrad ${v.pflegegrad || '-'})`,
+      html: emailHTML,
+    }),
+  });
+
+  if (!resendResponse.ok) {
+    const errorData = await resendResponse.text();
+    throw new Error(`Resend API error: ${errorData}`);
+  }
+
+  return await resendResponse.json();
+}
+
+/**
+ * Generate PDF for a pflegebox submission
+ */
+async function handlePflegeboxPDF(submissionId, env) {
+  try {
+    if (!env.PFLEGEBOX_SUBMISSIONS) {
+      return jsonResponse({ error: 'KV namespace not configured' }, 500);
+    }
+
+    // Get submission data
+    const submissionData = await env.PFLEGEBOX_SUBMISSIONS.get(submissionId);
+    if (!submissionData) {
+      return jsonResponse({ error: 'Submission not found' }, 404);
+    }
+
+    const submission = JSON.parse(submissionData);
+    const v = submission.versicherte || {};
+    const a = submission.angehoerige || {};
+    const products = submission.pflegeboxProducts || [];
+
+    // Generate simple HTML for PDF (can be converted to PDF with browser rendering)
+    const pdfHTML = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Pflegebox Formular - ${v.vorname} ${v.name}</title>
+  <style>
+    @page { size: A4; margin: 2cm; }
+    body { font-family: Arial, sans-serif; font-size: 12pt; line-height: 1.4; }
+    .header { text-align: center; border-bottom: 3px solid #4CAF50; padding-bottom: 10px; margin-bottom: 20px; }
+    .header h1 { color: #4CAF50; margin: 0; }
+    .section { margin-bottom: 20px; page-break-inside: avoid; }
+    .section-title { background: #4CAF50; color: white; padding: 8px; font-weight: bold; margin-bottom: 10px; }
+    .field { margin: 5px 0; }
+    .label { font-weight: bold; display: inline-block; width: 180px; }
+    .value { display: inline-block; }
+    .products { margin-top: 10px; }
+    .product-item { padding: 5px; margin: 3px 0; background: #f0f0f0; }
+    .footer { text-align: center; margin-top: 30px; font-size: 10pt; color: #888; border-top: 1px solid #ddd; padding-top: 10px; }
+    .signature { margin-top: 20px; }
+    .signature img { max-width: 200px; border: 1px solid #ddd; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📋 Pflegebox Formulario</h1>
+    <p>Pflegeteufel.de</p>
+    <p><small>Erstellt: ${new Date(submission.created_at).toLocaleString('de-DE')}</small></p>
+  </div>
+
+  <div class="section">
+    <div class="section-title">VERSICHERTE PERSON</div>
+    <div class="field"><span class="label">Name:</span> <span class="value">${v.vorname || ''} ${v.name || ''}</span></div>
+    <div class="field"><span class="label">Geburtsdatum:</span> <span class="value">${v.geburtsdatum || '-'}</span></div>
+    <div class="field"><span class="label">E-Mail:</span> <span class="value">${v.email || '-'}</span></div>
+    <div class="field"><span class="label">Telefon:</span> <span class="value">${v.telefon || '-'}</span></div>
+    <div class="field"><span class="label">Straße / Hausnummer:</span> <span class="value">${v.strasse || ''} ${v.hausnummer || ''}</span></div>
+    <div class="field"><span class="label">PLZ / Ort:</span> <span class="value">${v.plz || ''} ${v.ort || ''}</span></div>
+    <div class="field"><span class="label">Pflegegrad:</span> <span class="value">${v.pflegegrad || '-'}</span></div>
+    <div class="field"><span class="label">Pflegekasse:</span> <span class="value">${v.pflegekasse || '-'}</span></div>
+    <div class="field"><span class="label">Versichertennummer:</span> <span class="value">${v.versichertennummer || '-'}</span></div>
+  </div>
+
+  ${a.vorname || a.name ? `
+  <div class="section">
+    <div class="section-title">ANGEHÖRIGE / BEVOLLMÄCHTIGTE</div>
+    <div class="field"><span class="label">Name:</span> <span class="value">${a.vorname || ''} ${a.name || ''}</span></div>
+    <div class="field"><span class="label">E-Mail:</span> <span class="value">${a.email || '-'}</span></div>
+    <div class="field"><span class="label">Telefon:</span> <span class="value">${a.telefon || '-'}</span></div>
+    <div class="field"><span class="label">Straße / Hausnummer:</span> <span class="value">${a.strasse || ''} ${a.hausnummer || ''}</span></div>
+    <div class="field"><span class="label">PLZ / Ort:</span> <span class="value">${a.plz || ''} ${a.ort || ''}</span></div>
+  </div>
+  ` : ''}
+
+  ${products.length > 0 ? `
+  <div class="section">
+    <div class="section-title">GEWÄHLTE PFLEGEBOX PRODUKTE</div>
+    <div class="products">
+      ${products.map(p => `<div class="product-item">✓ ${p}</div>`).join('')}
+    </div>
+  </div>
+  ` : ''}
+
+  ${submission.versicherteSignature || submission.angehoerigeSignature ? `
+  <div class="section">
+    <div class="section-title">UNTERSCHRIFTEN</div>
+    ${submission.versicherteSignature ? `
+    <div class="signature">
+      <p><strong>Versicherte Person:</strong></p>
+      <img src="${submission.versicherteSignature}" alt="Unterschrift Versicherte">
+    </div>
+    ` : ''}
+    ${submission.angehoerigeSignature ? `
+    <div class="signature">
+      <p><strong>Angehörige/Bevollmächtigte:</strong></p>
+      <img src="${submission.angehoerigeSignature}" alt="Unterschrift Angehörige">
+    </div>
+    ` : ''}
+  </div>
+  ` : ''}
+
+  <div class="footer">
+    <p>Submission ID: ${submission.id}</p>
+    <p>Status: ${submission.status}</p>
+    <p>Pflegeteufel.de - 🤖 Generated with Claude Code</p>
+  </div>
+</body>
+</html>
+    `;
+
+    // Return HTML (can be printed as PDF from browser)
+    return new Response(pdfHTML, {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Content-Disposition': `inline; filename="pflegebox_${submissionId}.html"`,
+        ...corsHeaders
+      }
+    });
+
+  } catch (error) {
+    console.error('Error generating PDF:', error);
+    return jsonResponse({ error: error.message }, 500);
+  }
 }

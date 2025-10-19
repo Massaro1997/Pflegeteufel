@@ -1330,6 +1330,7 @@ Digitare "ELIMINA" per confermare:`;
             <td>${productsBadge}</td>
             <td>
               <button class="pf-btn ghost" style="padding:6px 10px;font-size:12px" onclick='viewPflegeboxSubmission(${JSON.stringify(submission).replace(/'/g, "&apos;")})'>👁️ Dettagli</button>
+              <button class="pf-btn ghost" style="padding:6px 10px;font-size:12px" onclick='downloadPflegeboxPDF("${submission.id}")'>📄 PDF</button>
             </td>`;
           tb.appendChild(tr);
         }
@@ -1575,6 +1576,22 @@ Digitare "ELIMINA" per confermare:`;
       } catch (err) {
         console.error('❌ Error exporting Pflegebox CSV:', err);
         alert('Errore durante l\'export: ' + err.message);
+      }
+    }
+
+    function downloadPflegeboxPDF(submissionId) {
+      try {
+        console.log('📄 Downloading PDF for submission:', submissionId);
+
+        const pdfUrl = `https://shopify-backend.massarocalogero1997.workers.dev/api/pflegebox/pdf/${submissionId}`;
+
+        // Open in new tab (browser will allow to save/print as PDF)
+        window.open(pdfUrl, '_blank');
+
+        console.log('✅ PDF opened in new tab');
+      } catch (err) {
+        console.error('❌ Error downloading PDF:', err);
+        alert('Errore nel download del PDF: ' + err.message);
       }
     }
 
