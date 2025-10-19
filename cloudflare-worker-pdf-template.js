@@ -433,7 +433,7 @@ async function sendEmailNotification(submission, env) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      from: 'Pflegebox Form <onboarding@resend.dev>',
+      from: 'Pflegebox Formular <formular@pflegeteufel.de>',
       to: ['pflegeteufelagentur@gmail.com'],
       subject: `📋 Nuovo Formulario Pflegebox - ${v.vorname || ''} ${v.name || ''} (Pflegegrad ${v.pflegegrad || '-'})`,
       html: emailHTML,
