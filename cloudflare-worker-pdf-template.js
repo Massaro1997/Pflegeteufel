@@ -354,15 +354,15 @@ async function sendEmailNotification(submission, env) {
   <style>
     body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-    .header { background: #4CAF50; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
+    .header { background: #DC143C; color: white; padding: 20px; text-align: center; border-radius: 5px 5px 0 0; }
     .content { background: #f9f9f9; padding: 20px; border: 1px solid #ddd; }
     .section { margin-bottom: 20px; background: white; padding: 15px; border-radius: 5px; }
-    .section-title { font-weight: bold; color: #4CAF50; margin-bottom: 10px; border-bottom: 2px solid #4CAF50; padding-bottom: 5px; }
+    .section-title { font-weight: bold; color: #DC143C; margin-bottom: 10px; border-bottom: 2px solid #DC143C; padding-bottom: 5px; }
     .field { margin: 8px 0; }
     .label { font-weight: bold; color: #555; }
     .value { color: #000; }
     .products { margin-top: 10px; }
-    .product-item { background: #f0f0f0; padding: 8px; margin: 5px 0; border-left: 3px solid #4CAF50; }
+    .product-item { background: #f0f0f0; padding: 8px; margin: 5px 0; border-left: 3px solid #DC143C; }
     .footer { text-align: center; margin-top: 20px; color: #888; font-size: 12px; }
   </style>
 </head>
@@ -425,7 +425,13 @@ async function sendEmailNotification(submission, env) {
 </html>
   `;
 
-  // Send via Resend API
+  // Generate PDF HTML
+  const pdfHTML = generatePDFHTML(submission);
+
+  // Convert PDF HTML to base64 for attachment
+  const pdfBase64 = btoa(unescape(encodeURIComponent(pdfHTML)));
+
+  // Send via Resend API with PDF attachment
   const resendResponse = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: {
@@ -437,6 +443,12 @@ async function sendEmailNotification(submission, env) {
       to: ['pflegeteufelagentur@gmail.com'],
       subject: `📋 Nuovo Formulario Pflegebox - ${v.vorname || ''} ${v.name || ''} (Pflegegrad ${v.pflegegrad || '-'})`,
       html: emailHTML,
+      attachments: [
+        {
+          filename: `pflegebox_${v.vorname}_${v.name}_${new Date().toISOString().slice(0,10)}.html`,
+          content: pdfBase64
+        }
+      ]
     }),
   });
 
@@ -449,27 +461,14 @@ async function sendEmailNotification(submission, env) {
 }
 
 /**
- * Generate PDF for a pflegebox submission
+ * Generate PDF HTML content from submission data
  */
-async function handlePflegeboxPDF(submissionId, env) {
-  try {
-    if (!env.PFLEGEBOX_SUBMISSIONS) {
-      return jsonResponse({ error: 'KV namespace not configured' }, 500);
-    }
+function generatePDFHTML(submission) {
+  const v = submission.versicherte || {};
+  const a = submission.angehoerige || {};
+  const products = submission.pflegeboxProducts || [];
 
-    // Get submission data
-    const submissionData = await env.PFLEGEBOX_SUBMISSIONS.get(submissionId);
-    if (!submissionData) {
-      return jsonResponse({ error: 'Submission not found' }, 404);
-    }
-
-    const submission = JSON.parse(submissionData);
-    const v = submission.versicherte || {};
-    const a = submission.angehoerige || {};
-    const products = submission.pflegeboxProducts || [];
-
-    // Generate simple HTML for PDF (can be converted to PDF with browser rendering)
-    const pdfHTML = `
+  return `
 <!DOCTYPE html>
 <html>
 <head>
@@ -478,10 +477,10 @@ async function handlePflegeboxPDF(submissionId, env) {
   <style>
     @page { size: A4; margin: 2cm; }
     body { font-family: Arial, sans-serif; font-size: 12pt; line-height: 1.4; }
-    .header { text-align: center; border-bottom: 3px solid #4CAF50; padding-bottom: 10px; margin-bottom: 20px; }
-    .header h1 { color: #4CAF50; margin: 0; }
+    .header { text-align: center; border-bottom: 3px solid #DC143C; padding-bottom: 10px; margin-bottom: 20px; }
+    .header h1 { color: #DC143C; margin: 0; }
     .section { margin-bottom: 20px; page-break-inside: avoid; }
-    .section-title { background: #4CAF50; color: white; padding: 8px; font-weight: bold; margin-bottom: 10px; }
+    .section-title { background: #DC143C; color: white; padding: 8px; font-weight: bold; margin-bottom: 10px; }
     .field { margin: 5px 0; }
     .label { font-weight: bold; display: inline-block; width: 180px; }
     .value { display: inline-block; }
@@ -557,7 +556,28 @@ async function handlePflegeboxPDF(submissionId, env) {
   </div>
 </body>
 </html>
-    `;
+  `;
+}
+
+/**
+ * Generate PDF for a pflegebox submission
+ */
+async function handlePflegeboxPDF(submissionId, env) {
+  try {
+    if (!env.PFLEGEBOX_SUBMISSIONS) {
+      return jsonResponse({ error: 'KV namespace not configured' }, 500);
+    }
+
+    // Get submission data
+    const submissionData = await env.PFLEGEBOX_SUBMISSIONS.get(submissionId);
+    if (!submissionData) {
+      return jsonResponse({ error: 'Submission not found' }, 404);
+    }
+
+    const submission = JSON.parse(submissionData);
+
+    // Generate PDF HTML using helper function
+    const pdfHTML = generatePDFHTML(submission);
 
     // Return HTML (can be printed as PDF from browser)
     return new Response(pdfHTML, {
