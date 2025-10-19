@@ -131,9 +131,51 @@
 
   .cart-items__quantity .quantity-selector {
     display: inline-flex;
-    flex: 0 1 var(--quantity-selector-width);
-    font-size: var(--cart-font-size--sm);
-    height: auto;
+    flex: 0 1 140px;
+    font-size: 15px;
+    height: 44px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+
+  .cart-items__quantity .quantity-selector:hover {
+    border-color: #C12624;
+    box-shadow: 0 4px 12px rgba(193, 38, 36, 0.15);
+    background: #ffffff;
+  }
+
+  .cart-items__quantity .quantity-selector :is(.quantity-minus, .quantity-plus) {
+    width: 44px;
+    height: 44px;
+    color: #2c3e50;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+  }
+
+  .cart-items__quantity .quantity-selector :is(.quantity-minus, .quantity-plus):hover {
+    background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%);
+    color: white;
+    transform: scale(1.05);
+  }
+
+  .cart-items__quantity .quantity-selector :is(.quantity-minus, .quantity-plus):active {
+    transform: scale(0.95);
+  }
+
+  .cart-items__quantity .quantity-selector svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .cart-items__quantity .quantity-selector input[type='number'] {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+    min-width: 40px;
   }
 
   .cart-items__remove {
