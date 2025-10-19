@@ -693,40 +693,32 @@ function collectFormData() {
         };
     }
 
+    // Collect selected products as array of names
+    const selectedProducts = [];
+    if (getCheck('bettschutzeinlagen')) selectedProducts.push('Bettschutzeinlagen');
+    if (getCheck('fingerlinge')) selectedProducts.push('Fingerlinge');
+    if (getCheck('ffp2')) selectedProducts.push('FFP2 Masken');
+    if (getCheck('einmalhandschuhe')) selectedProducts.push('Einmalhandschuhe');
+    if (getCheck('mundschutz')) selectedProducts.push('Mundschutz');
+    if (getCheck('essslaetzchen')) selectedProducts.push('Esslätzchen');
+    if (getCheck('schutzschuerzenEinmal')) selectedProducts.push('Schutzschürzen (Einmal)');
+    if (getCheck('schutzschuerzenWieder')) selectedProducts.push('Schutzschürzen (Wieder)');
+    if (getCheck('flaechendesinfektion')) selectedProducts.push('Flächendesinfektion');
+    if (getCheck('flaechendesinfektionstuecher')) selectedProducts.push('Flächendesinfektionstücher');
+    if (getCheck('haendedesinfektion')) selectedProducts.push('Händedesinfektion');
+
     return {
         versicherte,
         angehoerige,
-        pflegebox: {
-            products: {
-                bettschutzeinlagen: getCheck('bettschutzeinlagen'),
-                fingerlinge: getCheck('fingerlinge'),
-                ffp2: getCheck('ffp2'),
-                einmalhandschuhe: getCheck('einmalhandschuhe'),
-                mundschutz: getCheck('mundschutz'),
-                essslaetzchen: getCheck('essslaetzchen'),
-                schutzschuerzenEinmal: getCheck('schutzschuerzenEinmal'),
-                schutzschuerzenWieder: getCheck('schutzschuerzenWieder'),
-                flaechendesinfektion: getCheck('flaechendesinfektion'),
-                flaechendesinfektionstuecher: getCheck('flaechendesinfektionstuecher'),
-                haendedesinfektion: getCheck('haendedesinfektion')
-            },
-            handschuhGroesse: getRadio('gloveSize'),
-            handschuhMaterial: getRadio('gloveMaterial')
-        },
-        lieferung: {
-            an: getRadio('deliveryTo')
-        },
-        rechnung: {
-            an: getRadio('invoiceTo')
-        },
-        signatures: {
-            versicherte: signatureData,
-            bevollmachtigte: isBevollmachtigte ? bevollmachtigteSignatureData : null
-        },
-        consents: {
-            agb: getCheck('agb'),
-            privacy: getCheck('privacy')
-        },
+        pflegeboxProducts: selectedProducts,
+        handschuhGroesse: getRadio('gloveSize'),
+        handschuhMaterial: getRadio('gloveMaterial'),
+        lieferungAn: getRadio('deliveryTo'),
+        rechnungAn: getRadio('invoiceTo'),
+        firma: signatureData,
+        firmaBevollmachtigte: isBevollmachtigte ? bevollmachtigteSignatureData : null,
+        agb: getCheck('agb'),
+        privacy: getCheck('privacy'),
         timestamp: new Date().toISOString(),
         bestelldatum: new Date().toLocaleDateString('de-DE'),
         bestellzeit: new Date().toLocaleTimeString('de-DE')
