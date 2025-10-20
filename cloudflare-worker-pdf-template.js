@@ -1091,6 +1091,76 @@ export default {
       }
     }
 
+    // ========== ADMIN: GET ALL REGISTERED CUSTOMERS (D1) ==========
+    if (path === "/api/admin/customers/registered" && request.method === "GET") {
+      try {
+        // Verifica chiave admin
+        const workerKey = request.headers.get('X-Worker-Key');
+        if (workerKey !== env.WORKER_SHARED_KEY) {
+          return new Response(JSON.stringify({
+            success: false,
+            error: 'Non autorizzato'
+          }), {
+            status: 403,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Query tutti i clienti registrati con statistiche
+        const customers = await env.CUSTOMERS_DB.prepare(`
+          SELECT
+            c.id,
+            c.email,
+            c.anrede,
+            c.vorname,
+            c.nachname,
+            c.telefon,
+            c.geburtsdatum,
+            c.strasse,
+            c.hausnummer,
+            c.plz,
+            c.ort,
+            c.land,
+            c.pflegegrad,
+            c.pflegekasse,
+            c.versichertennummer,
+            c.shopify_customer_id,
+            c.newsletter,
+            c.email_verified,
+            c.account_status,
+            c.created_at,
+            c.updated_at,
+            c.last_login_at,
+            COUNT(DISTINCT s.id) as active_sessions
+          FROM customers c
+          LEFT JOIN sessions s ON c.id = s.customer_id AND s.expires_at > CURRENT_TIMESTAMP
+          GROUP BY c.id
+          ORDER BY c.created_at DESC
+        `).all();
+
+        console.log(`👥 Retrieved ${customers.results?.length || 0} registered customers`);
+
+        return new Response(JSON.stringify({
+          success: true,
+          customers: customers.results || [],
+          total: customers.results?.length || 0
+        }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+
+      } catch (error) {
+        console.error('❌ Errore get registered customers:', error);
+        return new Response(JSON.stringify({
+          success: false,
+          error: error.message
+        }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
     // Default 404
     return new Response(JSON.stringify({
       error: "Not found",
@@ -1109,7 +1179,8 @@ export default {
         "/api/customers/me (GET, PUT)",
         "/api/customers/logout (POST)",
         "/api/customers/me/orders (GET)",
-        "/api/customers/me/pflegebox (GET)"
+        "/api/customers/me/pflegebox (GET)",
+        "/api/admin/customers/registered (GET)"
       ]
     }), {
       status: 404,

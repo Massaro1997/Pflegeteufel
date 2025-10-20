@@ -74,6 +74,7 @@ Autore: Calogero Massaro
       <div class="pf-tab" data-tab="products">📱 Prodotti</div>
       <div class="pf-tab" data-tab="inventory">📊 Inventario</div>
       <div class="pf-tab" data-tab="pflegebox">📋 Formulare</div>
+      <div class="pf-tab" data-tab="registered">👤 Registrati</div>
     </div>
 
     <!-- TAB: ORDINI -->
@@ -266,6 +267,44 @@ Autore: Calogero Massaro
               </tr>
             </thead>
             <tbody><tr><td colspan="7" class="muted">Caricamento…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: CLIENTI REGISTRATI (D1) -->
+    <div id="tab-registered" class="pf-tab-content hidden">
+      <!-- Toolbar Registrati -->
+      <div class="pf-card pf-row" style="justify-content:space-between">
+        <div class="pf-row">
+          <label class="muted">Cerca:</label>
+          <input id="registeredSearch" class="pf-input" type="text" placeholder="Nome, email, città...">
+          <button id="applyRegisteredSearch" class="pf-btn">Cerca</button>
+        </div>
+        <div class="pf-row">
+          <button id="refreshRegistered" class="pf-btn ghost">🔄 Aggiorna</button>
+          <span class="muted" id="registeredCount">0 clienti</span>
+        </div>
+      </div>
+
+      <!-- Tabella Clienti Registrati -->
+      <div class="pf-card">
+        <div style="overflow:auto">
+          <table class="pf-table" id="registeredTable">
+            <thead>
+              <tr>
+                <th>Email</th>
+                <th>Nome Completo</th>
+                <th>Telefono</th>
+                <th>Città (PLZ)</th>
+                <th>Pflegegrad</th>
+                <th>Registrato</th>
+                <th>Ultimo Login</th>
+                <th>Stato</th>
+                <th>Sessioni</th>
+              </tr>
+            </thead>
+            <tbody><tr><td colspan="9" class="muted">Caricamento…</td></tr></tbody>
           </table>
         </div>
       </div>
@@ -590,6 +629,9 @@ Autore: Calogero Massaro
           break;
         case 'pflegebox':
           loadPflegebox();
+          break;
+        case 'registered':
+          loadRegisteredCustomers();
           break;
       }
     }
@@ -1604,6 +1646,126 @@ Digitare "ELIMINA" per confermare:`;
       }
     }
 
+    // ========== REGISTERED CUSTOMERS FUNCTIONS (D1) ==========
+    let allRegisteredCustomers = [];
+
+    async function loadRegisteredCustomers() {
+      try {
+        console.log('👤 Loading registered customers from D1...');
+
+        const tb = document.querySelector("#registeredTable tbody");
+        tb.innerHTML = `<tr><td colspan="9" class="muted">⏳ Caricamento in corso...</td></tr>`;
+
+        const response = await fetch(`${workerBaseUrl}api/admin/customers/registered`, {
+          method: 'GET',
+          headers: {
+            'X-Worker-Key': sharedKey
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error(`Errore ${response.status}: ${await response.text()}`);
+        }
+
+        const data = await response.json();
+        allRegisteredCustomers = data.customers || [];
+
+        console.log(`✅ Loaded ${allRegisteredCustomers.length} registered customers`);
+
+        // Update count
+        document.getElementById('registeredCount').textContent = `${allRegisteredCustomers.length} clienti`;
+
+        if (!allRegisteredCustomers.length) {
+          tb.innerHTML = `<tr><td colspan="9" class="muted">
+            ℹ️ Nessun cliente registrato.<br>
+            <small class="text-sm">I clienti che si registrano tramite la pagina "Mein Konto" appariranno qui.</small>
+          </td></tr>`;
+          return;
+        }
+
+        renderRegisteredCustomers(allRegisteredCustomers);
+
+      } catch (err) {
+        console.error('❌ Error loading registered customers:', err);
+
+        const tb = document.querySelector("#registeredTable tbody");
+        tb.innerHTML = `<tr><td colspan="9" style="color:red;padding:20px">
+          ⚠️ <strong>Errore:</strong> ${err.message}<br>
+          <small class="text-sm muted">Controlla la console (F12) per dettagli</small>
+        </td></tr>`;
+      }
+    }
+
+    function renderRegisteredCustomers(customers) {
+      const tb = document.querySelector("#registeredTable tbody");
+      tb.innerHTML = "";
+
+      for (const customer of customers) {
+        const tr = document.createElement("tr");
+
+        const fullName = `${customer.anrede || ''} ${customer.vorname || ''} ${customer.nachname || ''}`.trim() || '—';
+        const telefon = customer.telefon || '—';
+        const cityPlz = customer.ort && customer.plz ? `${customer.ort} (${customer.plz})` : (customer.ort || customer.plz || '—');
+        const pflegegrad = customer.pflegegrad ? `<span class="pf-badge info">${customer.pflegegrad}</span>` : '—';
+        const registeredDate = customer.created_at ? formatDate(customer.created_at) : '—';
+        const lastLogin = customer.last_login_at ? formatDate(customer.last_login_at) : '<span class="muted text-sm">Mai</span>';
+
+        // Status badge
+        let statusBadge = '';
+        if (customer.account_status === 'active') {
+          statusBadge = '<span class="pf-badge success">Attivo</span>';
+        } else if (customer.account_status === 'suspended') {
+          statusBadge = '<span class="pf-badge warning">Sospeso</span>';
+        } else {
+          statusBadge = '<span class="pf-badge danger">Cancellato</span>';
+        }
+
+        // Active sessions
+        const sessions = customer.active_sessions > 0
+          ? `<span class="pf-badge success">${customer.active_sessions}</span>`
+          : '<span class="muted text-sm">0</span>';
+
+        tr.innerHTML = `
+          <td class="text-sm">${customer.email}</td>
+          <td><strong>${fullName}</strong></td>
+          <td class="text-sm">${telefon}</td>
+          <td class="text-sm">${cityPlz}</td>
+          <td>${pflegegrad}</td>
+          <td class="text-sm">${registeredDate}</td>
+          <td class="text-sm">${lastLogin}</td>
+          <td>${statusBadge}</td>
+          <td>${sessions}</td>`;
+
+        tb.appendChild(tr);
+      }
+
+      console.log('✅ Registered customers table populated successfully');
+    }
+
+    function searchRegisteredCustomers() {
+      const searchTerm = document.getElementById('registeredSearch').value.toLowerCase().trim();
+
+      if (!searchTerm) {
+        renderRegisteredCustomers(allRegisteredCustomers);
+        return;
+      }
+
+      const filtered = allRegisteredCustomers.filter(c => {
+        const fullName = `${c.vorname || ''} ${c.nachname || ''}`.toLowerCase();
+        const email = (c.email || '').toLowerCase();
+        const city = (c.ort || '').toLowerCase();
+        const plz = (c.plz || '').toLowerCase();
+
+        return fullName.includes(searchTerm) ||
+               email.includes(searchTerm) ||
+               city.includes(searchTerm) ||
+               plz.includes(searchTerm);
+      });
+
+      console.log(`🔍 Search "${searchTerm}" found ${filtered.length} customers`);
+      renderRegisteredCustomers(filtered);
+    }
+
 
     // ========== EVENT LISTENERS ==========
 
@@ -1700,6 +1862,24 @@ Digitare "ELIMINA" per confermare:`;
     document.getElementById('refreshPflegebox').addEventListener('click', function() {
       console.log('🔄 Refreshing pflegebox...');
       loadPflegebox();
+    });
+
+    // Registered customers filters
+    document.getElementById('applyRegisteredSearch').addEventListener('click', function() {
+      console.log('🔍 Applying registered customers search...');
+      searchRegisteredCustomers();
+    });
+
+    document.getElementById('registeredSearch').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        console.log('🔍 Search on Enter key...');
+        searchRegisteredCustomers();
+      }
+    });
+
+    document.getElementById('refreshRegistered').addEventListener('click', function() {
+      console.log('🔄 Refreshing registered customers...');
+      loadRegisteredCustomers();
     });
 
     // ========== INIT ==========
