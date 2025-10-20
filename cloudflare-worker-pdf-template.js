@@ -496,6 +496,601 @@ export default {
       }
     }
 
+    // ========== CUSTOMER AREA: REGISTER ==========
+    if (path === "/api/customers/register" && request.method === "POST") {
+      try {
+        const { email, password, vorname, nachname, telefon, anrede, geburtsdatum, strasse, hausnummer, plz, ort, pflegegrad, pflegekasse, newsletter } = body;
+
+        // Validazione
+        if (!email || !password || !vorname || !nachname) {
+          return new Response(JSON.stringify({
+            success: false,
+            error: 'Email, password, vorname e nachname sono obbligatori'
+          }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Verifica se email già esiste
+        const existingCustomer = await env.CUSTOMERS_DB.prepare(
+          'SELECT id FROM customers WHERE email = ?'
+        ).bind(email).first();
+
+        if (existingCustomer) {
+          return new Response(JSON.stringify({
+            success: false,
+            error: 'Email già registrata'
+          }), {
+            status: 409,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Hash password
+        const passwordHash = await hashPassword(password);
+
+        // Inserisci cliente
+        const result = await env.CUSTOMERS_DB.prepare(`
+          INSERT INTO customers (
+            email, password_hash, anrede, vorname, nachname, telefon, geburtsdatum,
+            strasse, hausnummer, plz, ort, pflegegrad, pflegekasse, newsletter
+          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `).bind(
+          email, passwordHash, anrede || null, vorname, nachname, telefon || null, geburtsdatum || null,
+          strasse || null, hausnummer || null, plz || null, ort || null, pflegegrad || null, pflegekasse || null, newsletter ? 1 : 0
+        ).run();
+
+        const customerId = result.meta.last_row_id;
+
+        // Crea sessione
+        const sessionToken = await generateSessionToken();
+        const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // 30 giorni
+
+        await env.CUSTOMERS_DB.prepare(`
+          INSERT INTO sessions (id, customer_id, ip_address, user_agent, expires_at)
+          VALUES (?, ?, ?, ?, ?)
+        `).bind(
+          sessionToken,
+          customerId,
+          request.headers.get('CF-Connecting-IP') || 'unknown',
+          request.headers.get('User-Agent') || 'unknown',
+          expiresAt
+        ).run();
+
+        // Log attività
+        await env.CUSTOMERS_DB.prepare(`
+          INSERT INTO activity_logs (customer_id, action_type, ip_address, user_agent)
+          VALUES (?, ?, ?, ?)
+        `).bind(
+          customerId,
+          'register',
+          request.headers.get('CF-Connecting-IP') || 'unknown',
+          request.headers.get('User-Agent') || 'unknown'
+        ).run();
+
+        console.log(`✅ Cliente registrato: ${email} (ID: ${customerId})`);
+
+        return new Response(JSON.stringify({
+          success: true,
+          customer: {
+            id: customerId,
+            email,
+            vorname,
+            nachname
+          },
+          sessionToken,
+          expiresAt
+        }), {
+          status: 201,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+
+      } catch (error) {
+        console.error('❌ Errore registrazione:', error);
+        return new Response(JSON.stringify({
+          success: false,
+          error: error.message
+        }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
+    // ========== CUSTOMER AREA: LOGIN ==========
+    if (path === "/api/customers/login" && request.method === "POST") {
+      try {
+        const { email, password } = body;
+
+        if (!email || !password) {
+          return new Response(JSON.stringify({
+            success: false,
+            error: 'Email e password sono obbligatori'
+          }), {
+            status: 400,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Cerca cliente
+        const customer = await env.CUSTOMERS_DB.prepare(
+          'SELECT id, email, password_hash, vorname, nachname, account_status FROM customers WHERE email = ?'
+        ).bind(email).first();
+
+        if (!customer) {
+          return new Response(JSON.stringify({
+            success: false,
+            error: 'Email o password non corretti'
+          }), {
+            status: 401,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Verifica account status
+        if (customer.account_status !== 'active') {
+          return new Response(JSON.stringify({
+            success: false,
+            error: 'Account sospeso o eliminato'
+          }), {
+            status: 403,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Verifica password
+        const isValid = await verifyPassword(password, customer.password_hash);
+
+        if (!isValid) {
+          return new Response(JSON.stringify({
+            success: false,
+            error: 'Email o password non corretti'
+          }), {
+            status: 401,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Crea sessione
+        const sessionToken = await generateSessionToken();
+        const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
+
+        await env.CUSTOMERS_DB.prepare(`
+          INSERT INTO sessions (id, customer_id, ip_address, user_agent, expires_at)
+          VALUES (?, ?, ?, ?, ?)
+        `).bind(
+          sessionToken,
+          customer.id,
+          request.headers.get('CF-Connecting-IP') || 'unknown',
+          request.headers.get('User-Agent') || 'unknown',
+          expiresAt
+        ).run();
+
+        // Aggiorna last_login_at
+        await env.CUSTOMERS_DB.prepare(
+          'UPDATE customers SET last_login_at = CURRENT_TIMESTAMP WHERE id = ?'
+        ).bind(customer.id).run();
+
+        // Log attività
+        await env.CUSTOMERS_DB.prepare(`
+          INSERT INTO activity_logs (customer_id, action_type, ip_address, user_agent)
+          VALUES (?, ?, ?, ?)
+        `).bind(
+          customer.id,
+          'login',
+          request.headers.get('CF-Connecting-IP') || 'unknown',
+          request.headers.get('User-Agent') || 'unknown'
+        ).run();
+
+        console.log(`✅ Login effettuato: ${email}`);
+
+        return new Response(JSON.stringify({
+          success: true,
+          customer: {
+            id: customer.id,
+            email: customer.email,
+            vorname: customer.vorname,
+            nachname: customer.nachname
+          },
+          sessionToken,
+          expiresAt
+        }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+
+      } catch (error) {
+        console.error('❌ Errore login:', error);
+        return new Response(JSON.stringify({
+          success: false,
+          error: error.message
+        }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
+    // ========== CUSTOMER AREA: GET PROFILE ==========
+    if (path === "/api/customers/me" && request.method === "GET") {
+      try {
+        const sessionToken = request.headers.get('Authorization')?.replace('Bearer ', '');
+
+        if (!sessionToken) {
+          return new Response(JSON.stringify({
+            success: false,
+            error: 'Non autenticato'
+          }), {
+            status: 401,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Valida sessione
+        const session = await env.CUSTOMERS_DB.prepare(`
+          SELECT customer_id FROM sessions
+          WHERE id = ? AND expires_at > CURRENT_TIMESTAMP
+        `).bind(sessionToken).first();
+
+        if (!session) {
+          return new Response(JSON.stringify({
+            success: false,
+            error: 'Sessione non valida o scaduta'
+          }), {
+            status: 401,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Recupera dati cliente
+        const customer = await env.CUSTOMERS_DB.prepare(`
+          SELECT id, email, anrede, vorname, nachname, telefon, geburtsdatum,
+                 strasse, hausnummer, plz, ort, land, pflegegrad, pflegekasse,
+                 versichertennummer, shopify_customer_id, newsletter, email_verified,
+                 account_status, created_at, last_login_at
+          FROM customers WHERE id = ?
+        `).bind(session.customer_id).first();
+
+        return new Response(JSON.stringify({
+          success: true,
+          customer
+        }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+
+      } catch (error) {
+        console.error('❌ Errore get profile:', error);
+        return new Response(JSON.stringify({
+          success: false,
+          error: error.message
+        }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
+    // ========== CUSTOMER AREA: UPDATE PROFILE ==========
+    if (path === "/api/customers/me" && request.method === "PUT") {
+      try {
+        const sessionToken = request.headers.get('Authorization')?.replace('Bearer ', '');
+
+        if (!sessionToken) {
+          return new Response(JSON.stringify({
+            success: false,
+            error: 'Non autenticato'
+          }), {
+            status: 401,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Valida sessione
+        const session = await env.CUSTOMERS_DB.prepare(`
+          SELECT customer_id FROM sessions
+          WHERE id = ? AND expires_at > CURRENT_TIMESTAMP
+        `).bind(sessionToken).first();
+
+        if (!session) {
+          return new Response(JSON.stringify({
+            success: false,
+            error: 'Sessione non valida'
+          }), {
+            status: 401,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        const { anrede, vorname, nachname, telefon, geburtsdatum, strasse, hausnummer, plz, ort, pflegegrad, pflegekasse, versichertennummer, newsletter } = body;
+
+        // Aggiorna dati
+        await env.CUSTOMERS_DB.prepare(`
+          UPDATE customers SET
+            anrede = COALESCE(?, anrede),
+            vorname = COALESCE(?, vorname),
+            nachname = COALESCE(?, nachname),
+            telefon = COALESCE(?, telefon),
+            geburtsdatum = COALESCE(?, geburtsdatum),
+            strasse = COALESCE(?, strasse),
+            hausnummer = COALESCE(?, hausnummer),
+            plz = COALESCE(?, plz),
+            ort = COALESCE(?, ort),
+            pflegegrad = COALESCE(?, pflegegrad),
+            pflegekasse = COALESCE(?, pflegekasse),
+            versichertennummer = COALESCE(?, versichertennummer),
+            newsletter = COALESCE(?, newsletter),
+            updated_at = CURRENT_TIMESTAMP
+          WHERE id = ?
+        `).bind(
+          anrede, vorname, nachname, telefon, geburtsdatum, strasse, hausnummer, plz, ort,
+          pflegegrad, pflegekasse, versichertennummer, newsletter ? 1 : 0, session.customer_id
+        ).run();
+
+        // Log attività
+        await env.CUSTOMERS_DB.prepare(`
+          INSERT INTO activity_logs (customer_id, action_type, ip_address, user_agent, details)
+          VALUES (?, ?, ?, ?, ?)
+        `).bind(
+          session.customer_id,
+          'update_profile',
+          request.headers.get('CF-Connecting-IP') || 'unknown',
+          request.headers.get('User-Agent') || 'unknown',
+          JSON.stringify(body)
+        ).run();
+
+        console.log(`✅ Profilo aggiornato: customer_id ${session.customer_id}`);
+
+        return new Response(JSON.stringify({
+          success: true,
+          message: 'Profilo aggiornato con successo'
+        }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+
+      } catch (error) {
+        console.error('❌ Errore update profile:', error);
+        return new Response(JSON.stringify({
+          success: false,
+          error: error.message
+        }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
+    // ========== CUSTOMER AREA: LOGOUT ==========
+    if (path === "/api/customers/logout" && request.method === "POST") {
+      try {
+        const sessionToken = request.headers.get('Authorization')?.replace('Bearer ', '');
+
+        if (!sessionToken) {
+          return new Response(JSON.stringify({
+            success: false,
+            error: 'Non autenticato'
+          }), {
+            status: 401,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Elimina sessione
+        await env.CUSTOMERS_DB.prepare(
+          'DELETE FROM sessions WHERE id = ?'
+        ).bind(sessionToken).run();
+
+        console.log(`✅ Logout effettuato: token ${sessionToken.substring(0, 10)}...`);
+
+        return new Response(JSON.stringify({
+          success: true,
+          message: 'Logout effettuato'
+        }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+
+      } catch (error) {
+        console.error('❌ Errore logout:', error);
+        return new Response(JSON.stringify({
+          success: false,
+          error: error.message
+        }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
+    // ========== CUSTOMER AREA: GET MY ORDERS ==========
+    if (path === "/api/customers/me/orders" && request.method === "GET") {
+      try {
+        const sessionToken = request.headers.get('Authorization')?.replace('Bearer ', '');
+
+        if (!sessionToken) {
+          return new Response(JSON.stringify({
+            success: false,
+            error: 'Non autenticato'
+          }), {
+            status: 401,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Valida sessione e recupera email
+        const result = await env.CUSTOMERS_DB.prepare(`
+          SELECT c.email FROM customers c
+          INNER JOIN sessions s ON c.id = s.customer_id
+          WHERE s.id = ? AND s.expires_at > CURRENT_TIMESTAMP
+        `).bind(sessionToken).first();
+
+        if (!result) {
+          return new Response(JSON.stringify({
+            success: false,
+            error: 'Sessione non valida'
+          }), {
+            status: 401,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Cerca ordini Shopify per email
+        const { SHOPIFY_SHOP, SHOPIFY_ADMIN_TOKEN, SHOPIFY_API_VERSION } = env;
+
+        if (!SHOPIFY_SHOP || !SHOPIFY_ADMIN_TOKEN) {
+          return new Response(JSON.stringify({
+            success: false,
+            error: 'Shopify non configurato'
+          }), {
+            status: 500,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Cerca cliente Shopify per email
+        const customerUrl = `https://${SHOPIFY_SHOP}/admin/api/${SHOPIFY_API_VERSION}/customers/search.json?query=email:${encodeURIComponent(result.email)}`;
+        const customerResponse = await fetch(customerUrl, {
+          headers: {
+            'X-Shopify-Access-Token': SHOPIFY_ADMIN_TOKEN,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!customerResponse.ok) {
+          throw new Error('Errore ricerca cliente Shopify');
+        }
+
+        const customerData = await customerResponse.json();
+
+        if (!customerData.customers || customerData.customers.length === 0) {
+          return new Response(JSON.stringify({
+            success: true,
+            orders: []
+          }), {
+            status: 200,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        const shopifyCustomerId = customerData.customers[0].id;
+
+        // Recupera ordini del cliente
+        const ordersUrl = `https://${SHOPIFY_SHOP}/admin/api/${SHOPIFY_API_VERSION}/customers/${shopifyCustomerId}/orders.json`;
+        const ordersResponse = await fetch(ordersUrl, {
+          headers: {
+            'X-Shopify-Access-Token': SHOPIFY_ADMIN_TOKEN,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!ordersResponse.ok) {
+          throw new Error('Errore recupero ordini');
+        }
+
+        const ordersData = await ordersResponse.json();
+
+        return new Response(JSON.stringify({
+          success: true,
+          orders: ordersData.orders || []
+        }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+
+      } catch (error) {
+        console.error('❌ Errore get orders:', error);
+        return new Response(JSON.stringify({
+          success: false,
+          error: error.message
+        }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
+    // ========== CUSTOMER AREA: GET MY PFLEGEBOX SUBMISSIONS ==========
+    if (path === "/api/customers/me/pflegebox" && request.method === "GET") {
+      try {
+        const sessionToken = request.headers.get('Authorization')?.replace('Bearer ', '');
+
+        if (!sessionToken) {
+          return new Response(JSON.stringify({
+            success: false,
+            error: 'Non autenticato'
+          }), {
+            status: 401,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Valida sessione e recupera email
+        const result = await env.CUSTOMERS_DB.prepare(`
+          SELECT c.email FROM customers c
+          INNER JOIN sessions s ON c.id = s.customer_id
+          WHERE s.id = ? AND s.expires_at > CURRENT_TIMESTAMP
+        `).bind(sessionToken).first();
+
+        if (!result) {
+          return new Response(JSON.stringify({
+            success: false,
+            error: 'Sessione non valida'
+          }), {
+            status: 401,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        // Cerca form Pflegebox nel KV Storage
+        if (!env.PFLEGEBOX_SUBMISSIONS) {
+          return new Response(JSON.stringify({
+            success: true,
+            submissions: []
+          }), {
+            status: 200,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        const list = await env.PFLEGEBOX_SUBMISSIONS.list();
+        const submissions = [];
+
+        for (const key of list.keys) {
+          const submissionData = await env.PFLEGEBOX_SUBMISSIONS.get(key.name);
+          if (submissionData) {
+            const submission = JSON.parse(submissionData);
+            // Filtra per email del cliente
+            if (submission.versicherte?.email === result.email) {
+              submissions.push(submission);
+            }
+          }
+        }
+
+        // Ordina per data (più recente prima)
+        submissions.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+        return new Response(JSON.stringify({
+          success: true,
+          submissions
+        }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+
+      } catch (error) {
+        console.error('❌ Errore get pflegebox:', error);
+        return new Response(JSON.stringify({
+          success: false,
+          error: error.message
+        }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
     // Default 404
     return new Response(JSON.stringify({
       error: "Not found",
@@ -508,7 +1103,13 @@ export default {
         "/orders (GET)",
         "/customers (GET)",
         "/products (GET)",
-        "/customers/{id}/orders (GET)"
+        "/customers/{id}/orders (GET)",
+        "/api/customers/register (POST)",
+        "/api/customers/login (POST)",
+        "/api/customers/me (GET, PUT)",
+        "/api/customers/logout (POST)",
+        "/api/customers/me/orders (GET)",
+        "/api/customers/me/pflegebox (GET)"
       ]
     }), {
       status: 404,
@@ -1127,4 +1728,35 @@ async function sendPflegeboxEmailWithPDF(env, formData, pdfBytes) {
 
   console.warn('⚠️ Nessun servizio email configurato');
   return { success: false, note: 'No email service configured' };
+}
+
+// ==================== AUTH UTILITY FUNCTIONS ====================
+
+/**
+ * Hash password using bcrypt-like algorithm (Web Crypto API)
+ */
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hashHex;
+}
+
+/**
+ * Verify password against hash
+ */
+async function verifyPassword(password, hash) {
+  const passwordHash = await hashPassword(password);
+  return passwordHash === hash;
+}
+
+/**
+ * Generate secure session token (JWT-like)
+ */
+async function generateSessionToken() {
+  const array = new Uint8Array(32);
+  crypto.getRandomValues(array);
+  return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
 }

@@ -1,0 +1,1256 @@
+<!-- ==================== AREA CLIENTI PFLEGETEUFEL ==================== -->
+<div class="pflegeteufel-area-clienti-wrapper">
+<style>
+  /* Reset e isolamento */
+  .pflegeteufel-area-clienti-wrapper {
+    all: initial;
+    display: block;
+    font-family: 'Inter', sans-serif;
+    isolation: isolate;
+  }
+
+  .pflegeteufel-area-clienti-wrapper *,
+  .pflegeteufel-area-clienti-wrapper *::before,
+  .pflegeteufel-area-clienti-wrapper *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Container principale */
+  .area-clienti-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    background: #fafafa;
+    min-height: 100vh;
+    font-family: 'Inter', sans-serif;
+  }
+
+  /* Header pagina */
+  .area-clienti-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .area-clienti-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #2c3e50;
+    font-family: 'Arial Black', sans-serif;
+    margin-bottom: 10px;
+  }
+
+  .area-clienti-subtitle {
+    font-size: 1.1rem;
+    color: #666;
+    font-weight: 400;
+  }
+
+  /* Vista NON loggato - Login/Registrazione */
+  .auth-view {
+    max-width: 500px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    position: relative;
+  }
+
+  .auth-view::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #C12624, #A01F1D);
+    border-radius: 16px 16px 0 0;
+  }
+
+  /* Tabs Login/Registrazione */
+  .auth-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 30px;
+    border-bottom: 2px solid #e9ecef;
+  }
+
+  .auth-tab {
+    flex: 1;
+    padding: 12px 20px;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #6c757d;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .auth-tab.active {
+    color: #C12624;
+    border-bottom-color: #C12624;
+  }
+
+  .auth-tab:hover {
+    color: #C12624;
+  }
+
+  /* Form groups */
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-label {
+    display: block;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 8px;
+  }
+
+  .form-input {
+    width: 100%;
+    padding: 12px 15px;
+    font-size: 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s;
+  }
+
+  .form-input:focus {
+    outline: none;
+    border-color: #C12624;
+    box-shadow: 0 0 0 3px rgba(193, 38, 36, 0.1);
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+  }
+
+  /* Password toggle */
+  .password-wrapper {
+    position: relative;
+  }
+
+  .password-toggle {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #6c757d;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 5px;
+  }
+
+  /* Buttons */
+  .btn {
+    padding: 12px 30px;
+    font-size: 1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    transition: all 0.3s;
+    width: 100%;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%);
+    color: white;
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(193, 38, 36, 0.3);
+  }
+
+  .btn-secondary {
+    background: #6c757d;
+    color: white;
+  }
+
+  .btn-secondary:hover {
+    background: #5a6268;
+  }
+
+  .btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .btn-loading {
+    position: relative;
+    pointer-events: none;
+  }
+
+  .btn-loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    right: 20px;
+    margin-top: -8px;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spinner 0.6s linear infinite;
+  }
+
+  @keyframes spinner {
+    to { transform: rotate(360deg); }
+  }
+
+  /* Messages */
+  .message {
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+  }
+
+  .message-error {
+    background: #fff5f5;
+    border-left: 4px solid #dc3545;
+    color: #721c24;
+  }
+
+  .message-success {
+    background: #e7f5e7;
+    border-left: 4px solid #28a745;
+    color: #155724;
+  }
+
+  /* Vista LOGGATO - Dashboard */
+  .dashboard-view {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 30px;
+    align-items: start;
+  }
+
+  /* Sidebar */
+  .dashboard-sidebar {
+    background: white;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    position: sticky;
+    top: 20px;
+  }
+
+  .sidebar-user {
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #e9ecef;
+    margin-bottom: 20px;
+  }
+
+  .sidebar-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 auto 15px;
+  }
+
+  .sidebar-name {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 5px;
+  }
+
+  .sidebar-email {
+    font-size: 0.85rem;
+    color: #6c757d;
+  }
+
+  .sidebar-nav {
+    list-style: none;
+  }
+
+  .sidebar-nav-item {
+    margin-bottom: 5px;
+  }
+
+  .sidebar-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    color: #2c3e50;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.3s;
+  }
+
+  .sidebar-nav-link:hover {
+    background: #fff5f5;
+    color: #C12624;
+  }
+
+  .sidebar-nav-link.active {
+    background: #C12624;
+    color: white;
+  }
+
+  .sidebar-nav-icon {
+    font-size: 1.2rem;
+  }
+
+  .sidebar-logout {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 2px solid #e9ecef;
+  }
+
+  /* Dashboard content */
+  .dashboard-content {
+    background: white;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    min-height: 600px;
+  }
+
+  .content-header {
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 3px solid #C12624;
+  }
+
+  .content-title {
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: #2c3e50;
+    font-family: 'Arial Black', sans-serif;
+  }
+
+  /* Stats cards (Dashboard) */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+
+  .stat-card {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+    border-left: 4px solid #C12624;
+  }
+
+  .stat-value {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #C12624;
+    margin-bottom: 5px;
+  }
+
+  .stat-label {
+    font-size: 0.9rem;
+    color: #6c757d;
+    font-weight: 600;
+  }
+
+  /* Lista ordini/form */
+  .item-list {
+    list-style: none;
+  }
+
+  .item-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    border-left: 4px solid #C12624;
+    transition: all 0.3s;
+  }
+
+  .item-card:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 15px rgba(193, 38, 36, 0.1);
+  }
+
+  .item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .item-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #2c3e50;
+  }
+
+  .item-status {
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+
+  .status-paid {
+    background: #e7f5e7;
+    color: #28a745;
+  }
+
+  .status-pending {
+    background: #fff8e1;
+    color: #ffc107;
+  }
+
+  .status-cancelled {
+    background: #fff5f5;
+    color: #dc3545;
+  }
+
+  .item-details {
+    font-size: 0.9rem;
+    color: #6c757d;
+    line-height: 1.6;
+  }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+  }
+
+  .empty-icon {
+    font-size: 4rem;
+    margin-bottom: 20px;
+  }
+
+  .empty-text {
+    font-size: 1.2rem;
+    color: #6c757d;
+    font-weight: 500;
+  }
+
+  /* Loading overlay */
+  .loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+  }
+
+  .loading-overlay.active {
+    display: flex;
+  }
+
+  .loading-box {
+    background: white;
+    padding: 40px;
+    border-radius: 16px;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  }
+
+  .loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid #e9ecef;
+    border-top-color: #C12624;
+    border-radius: 50%;
+    animation: spinner 0.8s linear infinite;
+    margin: 0 auto 20px;
+  }
+
+  .loading-text {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #2c3e50;
+  }
+
+  /* Utility classes */
+  .hidden {
+    display: none !important;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .mb-20 {
+    margin-bottom: 20px;
+  }
+
+  /* Checkbox/Radio custom */
+  .checkbox-label,
+  .radio-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .area-clienti-container {
+      padding: 20px 15px;
+    }
+
+    .area-clienti-title {
+      font-size: 1.8rem;
+    }
+
+    .auth-view {
+      padding: 30px 20px;
+    }
+
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+
+    .dashboard-view {
+      grid-template-columns: 1fr;
+    }
+
+    .dashboard-sidebar {
+      position: static;
+    }
+
+    .dashboard-content {
+      padding: 25px 20px;
+    }
+
+    .stats-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<!-- Font Google -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<div class="area-clienti-container">
+  <!-- Header -->
+  <div class="area-clienti-header">
+    <h1 class="area-clienti-title">Mein Konto</h1>
+    <p class="area-clienti-subtitle">Verwalten Sie Ihre Bestellungen und persönlichen Daten</p>
+  </div>
+
+  <!-- Vista NON LOGGATO: Login/Registrazione -->
+  <div id="authView" class="auth-view">
+    <!-- Tabs -->
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="login">Anmelden</button>
+      <button class="auth-tab" data-tab="register">Registrieren</button>
+    </div>
+
+    <!-- Messages -->
+    <div id="authMessage" class="hidden"></div>
+
+    <!-- Form Login -->
+    <form id="loginForm" class="auth-form">
+      <div class="form-group">
+        <label class="form-label">E-Mail *</label>
+        <input type="email" id="loginEmail" class="form-input" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Passwort *</label>
+        <div class="password-wrapper">
+          <input type="password" id="loginPassword" class="form-input" required>
+          <button type="button" class="password-toggle" onclick="togglePassword('loginPassword')">👁️</button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Anmelden</button>
+    </form>
+
+    <!-- Form Registrazione -->
+    <form id="registerForm" class="auth-form hidden">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Vorname *</label>
+          <input type="text" id="regVorname" class="form-input" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nachname *</label>
+          <input type="text" id="regNachname" class="form-input" required>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">E-Mail *</label>
+        <input type="email" id="regEmail" class="form-input" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Passwort * (min. 8 Zeichen)</label>
+        <div class="password-wrapper">
+          <input type="password" id="regPassword" class="form-input" minlength="8" required>
+          <button type="button" class="password-toggle" onclick="togglePassword('regPassword')">👁️</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Telefon</label>
+        <input type="tel" id="regTelefon" class="form-input">
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">PLZ</label>
+          <input type="text" id="regPlz" class="form-input" pattern="[0-9]{5}">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Ort</label>
+          <input type="text" id="regOrt" class="form-input">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="checkbox-label">
+          <input type="checkbox" id="regNewsletter">
+          <span>Newsletter abonnieren</span>
+        </label>
+      </div>
+
+      <button type="submit" class="btn btn-primary">Konto erstellen</button>
+    </form>
+  </div>
+
+  <!-- Vista LOGGATO: Dashboard -->
+  <div id="dashboardView" class="dashboard-view hidden">
+    <!-- Sidebar -->
+    <aside class="dashboard-sidebar">
+      <div class="sidebar-user">
+        <div class="sidebar-avatar" id="userAvatar">M</div>
+        <div class="sidebar-name" id="userName">Laden...</div>
+        <div class="sidebar-email" id="userEmail">Laden...</div>
+      </div>
+
+      <nav>
+        <ul class="sidebar-nav">
+          <li class="sidebar-nav-item">
+            <a href="#dashboard" class="sidebar-nav-link active" data-section="dashboard">
+              <span class="sidebar-nav-icon">📊</span>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li class="sidebar-nav-item">
+            <a href="#profil" class="sidebar-nav-link" data-section="profil">
+              <span class="sidebar-nav-icon">👤</span>
+              <span>Mein Profil</span>
+            </a>
+          </li>
+          <li class="sidebar-nav-item">
+            <a href="#bestellungen" class="sidebar-nav-link" data-section="bestellungen">
+              <span class="sidebar-nav-icon">📦</span>
+              <span>Bestellungen</span>
+            </a>
+          </li>
+          <li class="sidebar-nav-item">
+            <a href="#pflegebox" class="sidebar-nav-link" data-section="pflegebox">
+              <span class="sidebar-nav-icon">📋</span>
+              <span>Pflegebox-Anträge</span>
+            </a>
+          </li>
+        </ul>
+
+        <div class="sidebar-logout">
+          <button onclick="handleLogout()" class="btn btn-secondary" style="width: 100%;">
+            Abmelden
+          </button>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-content">
+      <!-- Section: Dashboard -->
+      <div id="sectionDashboard" class="content-section">
+        <div class="content-header">
+          <h2 class="content-title">Dashboard</h2>
+        </div>
+
+        <div id="dashboardStats" class="stats-grid">
+          <!-- Stats dinamiche caricate via JS -->
+        </div>
+
+        <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; color: #2c3e50;">
+          Letzte Bestellungen
+        </h3>
+        <ul id="recentOrders" class="item-list">
+          <!-- Ordini caricati via JS -->
+        </ul>
+      </div>
+
+      <!-- Section: Profil -->
+      <div id="sectionProfil" class="content-section hidden">
+        <div class="content-header">
+          <h2 class="content-title">Mein Profil</h2>
+        </div>
+
+        <div id="profileMessage" class="hidden"></div>
+
+        <form id="profileForm">
+          <!-- Form profilo caricato via JS -->
+        </form>
+      </div>
+
+      <!-- Section: Bestellungen -->
+      <div id="sectionBestellungen" class="content-section hidden">
+        <div class="content-header">
+          <h2 class="content-title">Meine Bestellungen</h2>
+        </div>
+
+        <ul id="ordersList" class="item-list">
+          <!-- Lista ordini caricata via JS -->
+        </ul>
+      </div>
+
+      <!-- Section: Pflegebox -->
+      <div id="sectionPflegebox" class="content-section hidden">
+        <div class="content-header">
+          <h2 class="content-title">Pflegebox-Anträge</h2>
+        </div>
+
+        <ul id="pflegeboxList" class="item-list">
+          <!-- Lista form Pflegebox caricata via JS -->
+        </ul>
+      </div>
+    </main>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-box">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Wird geladen...</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ==================== SESSION MANAGEMENT ====================
+const AUTH_TOKEN_KEY = 'pflegeteufel_session';
+const WORKER_URL = 'https://shopify-backend.massarocalogero1997.workers.dev';
+const WORKER_KEY = 'felix_backend_2025';
+
+let currentUser = null;
+
+// Token management
+function saveToken(token) {
+  localStorage.setItem(AUTH_TOKEN_KEY, token);
+}
+
+function getToken() {
+  return localStorage.getItem(AUTH_TOKEN_KEY);
+}
+
+function clearToken() {
+  localStorage.removeItem(AUTH_TOKEN_KEY);
+}
+
+function isLoggedIn() {
+  return !!getToken();
+}
+
+// API call helper
+async function apiCall(endpoint, options = {}) {
+  const token = getToken();
+  const headers = {
+    'Content-Type': 'application/json',
+    'X-Worker-Key': WORKER_KEY,
+    ...(token && { 'Authorization': `Bearer ${token}` })
+  };
+
+  try {
+    const response = await fetch(`${WORKER_URL}${endpoint}`, {
+      ...options,
+      headers: { ...headers, ...options.headers }
+    });
+
+    if (response.status === 401) {
+      clearToken();
+      showAuthView();
+      return null;
+    }
+
+    return response;
+  } catch (error) {
+    console.error('API Error:', error);
+    showMessage('authMessage', 'Verbindungsfehler. Bitte versuchen Sie es später erneut.', 'error');
+    return null;
+  }
+}
+
+// ==================== UI HELPERS ====================
+function showLoading(show = true) {
+  document.getElementById('loadingOverlay').classList.toggle('active', show);
+}
+
+function showMessage(elementId, text, type = 'success') {
+  const el = document.getElementById(elementId);
+  el.className = `message message-${type}`;
+  el.textContent = type === 'error' ? '❌ ' + text : '✅ ' + text;
+  el.classList.remove('hidden');
+  setTimeout(() => el.classList.add('hidden'), 5000);
+}
+
+function showAuthView() {
+  document.getElementById('authView').classList.remove('hidden');
+  document.getElementById('dashboardView').classList.add('hidden');
+}
+
+function showDashboardView() {
+  document.getElementById('authView').classList.add('hidden');
+  document.getElementById('dashboardView').classList.remove('hidden');
+}
+
+function togglePassword(inputId) {
+  const input = document.getElementById(inputId);
+  input.type = input.type === 'password' ? 'text' : 'password';
+}
+
+// ==================== AUTH HANDLERS ====================
+// Tab switching
+document.querySelectorAll('.auth-tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    const tabName = tab.dataset.tab;
+
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+
+    document.getElementById('loginForm').classList.toggle('hidden', tabName !== 'login');
+    document.getElementById('registerForm').classList.toggle('hidden', tabName !== 'register');
+
+    document.getElementById('authMessage').classList.add('hidden');
+  });
+});
+
+// Login form
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+
+  showLoading();
+
+  const response = await apiCall('/api/customers/login', {
+    method: 'POST',
+    body: JSON.stringify({ email, password })
+  });
+
+  showLoading(false);
+
+  if (!response) return;
+
+  const data = await response.json();
+
+  if (data.success) {
+    saveToken(data.sessionToken);
+    currentUser = data.customer;
+    await loadDashboard();
+  } else {
+    showMessage('authMessage', data.error || 'Anmeldung fehlgeschlagen', 'error');
+  }
+});
+
+// Register form
+document.getElementById('registerForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const formData = {
+    vorname: document.getElementById('regVorname').value,
+    nachname: document.getElementById('regNachname').value,
+    email: document.getElementById('regEmail').value,
+    password: document.getElementById('regPassword').value,
+    telefon: document.getElementById('regTelefon').value || null,
+    plz: document.getElementById('regPlz').value || null,
+    ort: document.getElementById('regOrt').value || null,
+    newsletter: document.getElementById('regNewsletter').checked
+  };
+
+  showLoading();
+
+  const response = await apiCall('/api/customers/register', {
+    method: 'POST',
+    body: JSON.stringify(formData)
+  });
+
+  showLoading(false);
+
+  if (!response) return;
+
+  const data = await response.json();
+
+  if (data.success) {
+    saveToken(data.sessionToken);
+    currentUser = data.customer;
+    await loadDashboard();
+  } else {
+    showMessage('authMessage', data.error || 'Registrierung fehlgeschlagen', 'error');
+  }
+});
+
+// Logout
+async function handleLogout() {
+  if (!confirm('Möchten Sie sich wirklich abmelden?')) return;
+
+  showLoading();
+  await apiCall('/api/customers/logout', { method: 'POST' });
+  clearToken();
+  currentUser = null;
+  showLoading(false);
+  showAuthView();
+}
+
+// ==================== DASHBOARD FUNCTIONS ====================
+async function loadDashboard() {
+  showLoading();
+  showDashboardView();
+
+  // Carica profilo
+  const profileResponse = await apiCall('/api/customers/me');
+  if (profileResponse) {
+    const profileData = await profileResponse.json();
+    currentUser = profileData.customer;
+    updateUserInfo();
+  }
+
+  // Carica dashboard data
+  await loadDashboardStats();
+  await loadRecentOrders();
+
+  showLoading(false);
+
+  // Mostra sezione da URL hash
+  const hash = window.location.hash.replace('#', '') || 'dashboard';
+  showSection(hash);
+}
+
+function updateUserInfo() {
+  if (!currentUser) return;
+
+  const initial = (currentUser.vorname || currentUser.email).charAt(0).toUpperCase();
+  document.getElementById('userAvatar').textContent = initial;
+  document.getElementById('userName').textContent = `${currentUser.vorname || ''} ${currentUser.nachname || ''}`.trim();
+  document.getElementById('userEmail').textContent = currentUser.email;
+}
+
+async function loadDashboardStats() {
+  // Carica ordini e form Pflegebox per stats
+  const [ordersRes, pflegeboxRes] = await Promise.all([
+    apiCall('/api/customers/me/orders'),
+    apiCall('/api/customers/me/pflegebox')
+  ]);
+
+  let ordersCount = 0, pflegeboxCount = 0;
+
+  if (ordersRes) {
+    const ordersData = await ordersRes.json();
+    ordersCount = ordersData.orders?.length || 0;
+  }
+
+  if (pflegeboxRes) {
+    const pflegeboxData = await pflegeboxRes.json();
+    pflegeboxCount = pflegeboxData.submissions?.length || 0;
+  }
+
+  const statsHTML = `
+    <div class="stat-card">
+      <div class="stat-value">${ordersCount}</div>
+      <div class="stat-label">Bestellungen</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">${pflegeboxCount}</div>
+      <div class="stat-label">Pflegebox-Anträge</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">Aktiv</div>
+      <div class="stat-label">Account-Status</div>
+    </div>
+  `;
+
+  document.getElementById('dashboardStats').innerHTML = statsHTML;
+}
+
+async function loadRecentOrders() {
+  const response = await apiCall('/api/customers/me/orders');
+  if (!response) return;
+
+  const data = await response.json();
+  const orders = data.orders || [];
+
+  const ordersHTML = orders.slice(0, 5).map(order => {
+    const status = order.financial_status === 'paid' ? 'paid' :
+                   order.financial_status === 'pending' ? 'pending' : 'cancelled';
+    const statusText = status === 'paid' ? 'Bezahlt' :
+                       status === 'pending' ? 'Ausstehend' : 'Storniert';
+
+    return `
+      <li class="item-card">
+        <div class="item-header">
+          <div class="item-title">Bestellung ${order.name}</div>
+          <div class="item-status status-${status}">${statusText}</div>
+        </div>
+        <div class="item-details">
+          <div>Datum: ${new Date(order.created_at).toLocaleDateString('de-DE')}</div>
+          <div>Summe: €${order.current_total_price}</div>
+        </div>
+      </li>
+    `;
+  }).join('');
+
+  document.getElementById('recentOrders').innerHTML = ordersHTML || '<li class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">Noch keine Bestellungen</div></li>';
+}
+
+// ==================== NAVIGATION ====================
+// Sidebar navigation
+document.querySelectorAll('.sidebar-nav-link').forEach(link => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const section = link.dataset.section;
+    showSection(section);
+
+    document.querySelectorAll('.sidebar-nav-link').forEach(l => l.classList.remove('active'));
+    link.classList.add('active');
+  });
+});
+
+function showSection(sectionName) {
+  document.querySelectorAll('.content-section').forEach(section => {
+    section.classList.add('hidden');
+  });
+
+  const targetSection = document.getElementById(`section${sectionName.charAt(0).toUpperCase() + sectionName.slice(1)}`);
+  if (targetSection) {
+    targetSection.classList.remove('hidden');
+
+    // Carica dati sezione
+    if (sectionName === 'profil') loadProfile();
+    else if (sectionName === 'bestellungen') loadOrders();
+    else if (sectionName === 'pflegebox') loadPflegeboxForms();
+  }
+
+  window.location.hash = sectionName;
+}
+
+// ==================== PROFILE SECTION ====================
+async function loadProfile() {
+  if (!currentUser) return;
+
+  const formHTML = `
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Vorname *</label>
+        <input type="text" id="profileVorname" class="form-input" value="${currentUser.vorname || ''}" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Nachname *</label>
+        <input type="text" id="profileNachname" class="form-input" value="${currentUser.nachname || ''}" required>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">E-Mail</label>
+      <input type="email" class="form-input" value="${currentUser.email}" readonly style="background: #f8f9fa; cursor: not-allowed;">
+    </div>
+
+    <div class="form-group">
+      <label class="form-label">Telefon</label>
+      <input type="tel" id="profileTelefon" class="form-input" value="${currentUser.telefon || ''}">
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">PLZ</label>
+        <input type="text" id="profilePlz" class="form-input" value="${currentUser.plz || ''}">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Ort</label>
+        <input type="text" id="profileOrt" class="form-input" value="${currentUser.ort || ''}">
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Pflegegrad</label>
+        <input type="number" id="profilePflegegrad" class="form-input" value="${currentUser.pflegegrad || ''}" min="1" max="5">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Pflegekasse</label>
+        <input type="text" id="profilePflegekasse" class="form-input" value="${currentUser.pflegekasse || ''}">
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Änderungen speichern</button>
+  `;
+
+  document.getElementById('profileForm').innerHTML = formHTML;
+
+  document.getElementById('profileForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const updates = {
+      vorname: document.getElementById('profileVorname').value,
+      nachname: document.getElementById('profileNachname').value,
+      telefon: document.getElementById('profileTelefon').value,
+      plz: document.getElementById('profilePlz').value,
+      ort: document.getElementById('profileOrt').value,
+      pflegegrad: parseInt(document.getElementById('profilePflegegrad').value) || null,
+      pflegekasse: document.getElementById('profilePflegekasse').value
+    };
+
+    showLoading();
+
+    const response = await apiCall('/api/customers/me', {
+      method: 'PUT',
+      body: JSON.stringify(updates)
+    });
+
+    showLoading(false);
+
+    if (!response) return;
+
+    const data = await response.json();
+
+    if (data.success) {
+      showMessage('profileMessage', 'Profil erfolgreich aktualisiert!', 'success');
+      // Reload profilo
+      const profileResponse = await apiCall('/api/customers/me');
+      if (profileResponse) {
+        const profileData = await profileResponse.json();
+        currentUser = profileData.customer;
+        updateUserInfo();
+      }
+    } else {
+      showMessage('profileMessage', data.error || 'Fehler beim Speichern', 'error');
+    }
+  });
+}
+
+// ==================== ORDERS SECTION ====================
+async function loadOrders() {
+  showLoading();
+
+  const response = await apiCall('/api/customers/me/orders');
+
+  showLoading(false);
+
+  if (!response) return;
+
+  const data = await response.json();
+  const orders = data.orders || [];
+
+  if (orders.length === 0) {
+    document.getElementById('ordersList').innerHTML = '<li class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">Noch keine Bestellungen</div></li>';
+    return;
+  }
+
+  const ordersHTML = orders.map(order => {
+    const status = order.financial_status === 'paid' ? 'paid' :
+                   order.financial_status === 'pending' ? 'pending' : 'cancelled';
+    const statusText = status === 'paid' ? 'Bezahlt' :
+                       status === 'pending' ? 'Ausstehend' : 'Storniert';
+
+    const products = order.line_items?.map(item => item.title).join(', ') || 'Keine Produkte';
+
+    return `
+      <li class="item-card">
+        <div class="item-header">
+          <div class="item-title">Bestellung ${order.name}</div>
+          <div class="item-status status-${status}">${statusText}</div>
+        </div>
+        <div class="item-details">
+          <div><strong>Datum:</strong> ${new Date(order.created_at).toLocaleDateString('de-DE')}</div>
+          <div><strong>Summe:</strong> €${order.current_total_price}</div>
+          <div><strong>Produkte:</strong> ${products}</div>
+        </div>
+      </li>
+    `;
+  }).join('');
+
+  document.getElementById('ordersList').innerHTML = ordersHTML;
+}
+
+// ==================== PFLEGEBOX SECTION ====================
+async function loadPflegeboxForms() {
+  showLoading();
+
+  const response = await apiCall('/api/customers/me/pflegebox');
+
+  showLoading(false);
+
+  if (!response) return;
+
+  const data = await response.json();
+  const forms = data.submissions || [];
+
+  if (forms.length === 0) {
+    document.getElementById('pflegeboxList').innerHTML = '<li class="empty-state"><div class="empty-icon">📋</div><div class="empty-text">Noch keine Pflegebox-Anträge</div></li>';
+    return;
+  }
+
+  const formsHTML = forms.map(form => {
+    const date = new Date(form.created_at).toLocaleDateString('de-DE');
+    const products = Object.keys(form.pflegebox?.products || {})
+      .filter(key => form.pflegebox.products[key])
+      .join(', ') || 'Keine Produkte';
+
+    return `
+      <li class="item-card">
+        <div class="item-header">
+          <div class="item-title">Antrag vom ${date}</div>
+          <div class="item-status status-pending">${form.status || 'Pending'}</div>
+        </div>
+        <div class="item-details">
+          <div><strong>Pflegegrad:</strong> ${form.versicherte?.pflegegrad || '-'}</div>
+          <div><strong>Produkte:</strong> ${products}</div>
+        </div>
+      </li>
+    `;
+  }).join('');
+
+  document.getElementById('pflegeboxList').innerHTML = formsHTML;
+}
+
+// ==================== INIT ====================
+window.addEventListener('DOMContentLoaded', () => {
+  if (isLoggedIn()) {
+    loadDashboard();
+  } else {
+    showAuthView();
+  }
+});
+</script>
+
+</div>

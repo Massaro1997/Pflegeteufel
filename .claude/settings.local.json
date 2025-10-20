@@ -26,7 +26,15 @@
       "Bash(powershell -Command \"echo ''y'' | shopify theme push --store=0phy01-hc.myshopify.com --theme=181963456893 --only=''templates/page.backend-operaio.liquid''\")",
       "Bash(curl -X POST https://shopify-backend.massarocalogero1997.workers.dev/api/pflegebox/submit -H \"Content-Type: application/json\" -H \"X-Worker-Key: felix_backend_2025\" -d '{\n  \"\"versicherte\"\": {\n    \"\"anrede\"\": \"\"Herr\"\",\n    \"\"vorname\"\": \"\"Test\"\",\n    \"\"name\"\": \"\"Backend Dashboard Completo\"\",\n    \"\"strasse\"\": \"\"Brusseler Strasse\"\",\n    \"\"hausnummer\"\": \"\"39\"\",\n    \"\"plzOrt\"\": \"\"51149 Koln\"\",\n    \"\"telefon\"\": \"\"017682405507\"\",\n    \"\"email\"\": \"\"massarocalogero1997@gmail.com\"\",\n    \"\"geburtsdatum\"\": \"\"1990-05-15\"\",\n    \"\"versichertennummer\"\": \"\"DASH2025\"\",\n    \"\"pflegegrad\"\": \"\"3\"\",\n    \"\"versicherteTyp\"\": \"\"gesetzlich\"\",\n    \"\"pflegekasse\"\": \"\"AOK\"\"\n  },\n  \"\"angehoerige\"\": {\n    \"\"isSamePerson\"\": false,\n    \"\"data\"\": {\n      \"\"anrede\"\": \"\"Frau\"\",\n      \"\"vorname\"\": \"\"Maria\"\",\n      \"\"name\"\": \"\"Rossi\"\",\n      \"\"strasse\"\": \"\"Test Str\"\",\n      \"\"hausnummer\"\": \"\"10\"\",\n      \"\"plzOrt\"\": \"\"51149 Koln\"\",\n      \"\"telefon\"\": \"\"0221123456\"\",\n      \"\"email\"\": \"\"test@example.com\"\",\n      \"\"typ\"\": \"\"Familie\"\"\n    }\n  },\n  \"\"pflegebox\"\": {\n    \"\"products\"\": {\n      \"\"einmalhandschuhe\"\": true,\n      \"\"ffp2\"\": true,\n      \"\"haendedesinfektion\"\": true,\n      \"\"bettschutzeinlagen\"\": true,\n      \"\"fingerlinge\"\": false,\n      \"\"mundschutz\"\": false,\n      \"\"essslaetzchen\"\": false,\n      \"\"schutzschuerzenEinmal\"\": false,\n      \"\"schutzschuerzenWieder\"\": false,\n      \"\"flaechendesinfektion\"\": false,\n      \"\"flaechendesinfektionstuecher\"\": false\n    },\n    \"\"handschuhGroesse\"\": \"\"L\"\",\n    \"\"handschuhMaterial\"\": \"\"Nitril\"\"\n  },\n  \"\"lieferung\"\": {\n    \"\"an\"\": \"\"versicherte\"\"\n  },\n  \"\"rechnung\"\": {\n    \"\"an\"\": \"\"versicherte\"\"\n  },\n  \"\"signatures\"\": {\n    \"\"versicherte\"\": \"\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==\"\",\n    \"\"bevollmachtigte\"\": null\n  },\n  \"\"consents\"\": {\n    \"\"agb\"\": true,\n    \"\"privacy\"\": true\n  },\n  \"\"timestamp\"\": \"\"2025-10-19T16:30:00.000Z\"\",\n  \"\"bestelldatum\"\": \"\"19.10.2025\"\",\n  \"\"bestellzeit\"\": \"\"16:30:00\"\"\n}')",
       "Bash(curl -I \"https://shopify-backend.massarocalogero1997.workers.dev/api/pflegebox/pdf/pflegebox_1760883187335_dahdri45i\")",
-      "Bash(curl \"https://shopify-backend.massarocalogero1997.workers.dev/api/pflegebox/pdf/pflegebox_1760883187335_dahdri45i\" -o test_backend_pdf.pdf)"
+      "Bash(curl \"https://shopify-backend.massarocalogero1997.workers.dev/api/pflegebox/pdf/pflegebox_1760883187335_dahdri45i\" -o test_backend_pdf.pdf)",
+      "Bash(where:*)",
+      "Bash(dir:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(git log:*)",
+      "Bash(curl:*)",
+      "Bash(npx wrangler secret:*)",
+      "Bash(npx wrangler:*)",
+      "Bash(git add:*)"
     ],
     "deny": [],
     "ask": []

@@ -17,6 +17,12 @@ id = "ffdde73335f943f09e9fc9ecb46d9c0d"
 binding = "PDF_TEMPLATE"
 bucket_name = "pflegebox-templates"
 
+# D1 Database Bindings
+[[d1_databases]]
+binding = "CUSTOMERS_DB"
+database_name = "pflegeteufel-customers"
+database_id = "baaad9c0-081f-4377-a313-0ce75d5e5bc1"
+
 # Secrets (da configurare con: wrangler secret put NOME_VARIABILE)
 # - SHOPIFY_ADMIN_TOKEN
 # - SHOPIFY_SHOP
