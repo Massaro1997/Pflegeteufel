@@ -25,7 +25,7 @@ export default {
     const corsHeaders = {
       "Access-Control-Allow-Origin": isAllowed ? origin : "null",
       "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, X-Worker-Key, X-Shared-Key",
+      "Access-Control-Allow-Headers": "Content-Type, X-Worker-Key, X-Shared-Key, Authorization",
       "Access-Control-Max-Age": "86400",
       "Vary": "Origin"
     };
