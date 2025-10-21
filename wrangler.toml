@@ -1,6 +1,7 @@
 name = "shopify-backend"
 main = "cloudflare-worker-pdf-template.js"
 compatibility_date = "2024-01-01"
+node_compat = true
 
 # Environment variables (aggiungi le chiavi su Cloudflare Dashboard)
 [vars]
