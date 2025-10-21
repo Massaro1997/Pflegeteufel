@@ -30,7 +30,7 @@ jobs:
 
       - name: Deploy to Shopify
         env:
-          SHOPIFY_FLAG_STORE: ${{ secrets.SHOPIFY_STORE }}
+          SHOPIFY_FLAG_STORE: 0phy01-hc.myshopify.com
           SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_CLI_THEME_TOKEN }}
         run: |
-          shopify theme push --theme=${{ secrets.SHOPIFY_THEME_ID }} --allow-live --only=templates/ --only=sections/ --only=snippets/
+          shopify theme push --theme=181963456893 --allow-live --only=templates/ --only=sections/ --only=snippets/
