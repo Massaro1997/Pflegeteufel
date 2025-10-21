@@ -1265,7 +1265,17 @@ async function loadPflegeboxForms() {
 
 // ==================== NEUER ANTRAG SECTION ====================
 async function loadPflegeboxForm() {
-  if (!currentUser) return;
+  if (!currentUser) {
+    console.error('No current user data');
+    return;
+  }
+
+  console.log('Loading form with user data:', currentUser);
+
+  // Prepara indirizzo completo (strasse + hausnummer)
+  const strasseCompleto = currentUser.strasse && currentUser.hausnummer
+    ? `${currentUser.strasse}/${currentUser.hausnummer}`
+    : (currentUser.strasse || '');
 
   const formHTML = `
     <div class="info-box info-box-blue" style="margin-bottom: 30px;">
@@ -1291,7 +1301,7 @@ async function loadPflegeboxForm() {
             </div>
             <div class="radio-option">
               <label class="radio-label">
-                <input type="radio" name="gender" value="Herr" ${currentUser.anrede === 'Herr' ? 'checked' : ''} required>
+                <input type="radio" name="gender" value="Herr" ${currentUser.anrede === 'Herr' || !currentUser.anrede ? 'checked' : ''} required>
                 <span>Herr</span>
               </label>
             </div>
@@ -1311,7 +1321,7 @@ async function loadPflegeboxForm() {
 
         <div class="form-group">
           <label class="form-label">Straße/Nr. *</label>
-          <input type="text" name="street" class="form-input" value="${currentUser.strasse || ''}" required>
+          <input type="text" name="street" class="form-input" value="${strasseCompleto}" required>
         </div>
 
         <div class="form-row">
@@ -1349,12 +1359,12 @@ async function loadPflegeboxForm() {
         <div class="form-group">
           <label class="form-label">Pflegegrad *</label>
           <div class="radio-group">
-            <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="1" ${currentUser.pflegegrad === 1 ? 'checked' : ''} required><span>1</span></label></div>
-            <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="2" ${currentUser.pflegegrad === 2 ? 'checked' : ''}><span>2</span></label></div>
-            <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="3" ${currentUser.pflegegrad === 3 ? 'checked' : ''}><span>3</span></label></div>
-            <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="4" ${currentUser.pflegegrad === 4 ? 'checked' : ''}><span>4</span></label></div>
-            <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="5" ${currentUser.pflegegrad === 5 ? 'checked' : ''}><span>5</span></label></div>
-            <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="beantragt"><span>Beantragt</span></label></div>
+            <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="1" ${currentUser.pflegegrad == 1 ? 'checked' : ''} required><span>1</span></label></div>
+            <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="2" ${currentUser.pflegegrad == 2 ? 'checked' : ''}><span>2</span></label></div>
+            <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="3" ${currentUser.pflegegrad == 3 ? 'checked' : ''}><span>3</span></label></div>
+            <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="4" ${currentUser.pflegegrad == 4 ? 'checked' : ''}><span>4</span></label></div>
+            <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="5" ${currentUser.pflegegrad == 5 ? 'checked' : ''}><span>5</span></label></div>
+            <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="beantragt" ${!currentUser.pflegegrad ? 'checked' : ''}><span>Beantragt</span></label></div>
           </div>
         </div>
 
