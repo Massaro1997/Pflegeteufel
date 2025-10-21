@@ -681,6 +681,12 @@
               <span>Pflegebox-Anträge</span>
             </a>
           </li>
+          <li class="sidebar-nav-item">
+            <a href="#neuer-antrag" class="sidebar-nav-link" data-section="neuer-antrag">
+              <span class="sidebar-nav-icon">✏️</span>
+              <span>Neuer Antrag</span>
+            </a>
+          </li>
         </ul>
 
         <div class="sidebar-logout">
@@ -744,6 +750,19 @@
         <ul id="pflegeboxList" class="item-list">
           <!-- Lista form Pflegebox caricata via JS -->
         </ul>
+      </div>
+
+      <!-- Section: Neuer Antrag -->
+      <div id="sectionNeuer-antrag" class="content-section hidden">
+        <div class="content-header">
+          <h2 class="content-title">Neuen Pflegebox-Antrag erstellen</h2>
+        </div>
+
+        <div id="formMessage" class="hidden"></div>
+
+        <div id="pflegeboxFormContainer">
+          <!-- Formulario Pflegebox inserito qui via JS -->
+        </div>
       </div>
     </main>
   </div>
@@ -1059,6 +1078,7 @@ function showSection(sectionName) {
     if (sectionName === 'profil') loadProfile();
     else if (sectionName === 'bestellungen') loadOrders();
     else if (sectionName === 'pflegebox') loadPflegeboxForms();
+    else if (sectionName === 'neuer-antrag') loadPflegeboxForm();
   }
 
   window.location.hash = sectionName;
@@ -1241,6 +1261,331 @@ async function loadPflegeboxForms() {
   }).join('');
 
   document.getElementById('pflegeboxList').innerHTML = formsHTML;
+}
+
+// ==================== NEUER ANTRAG SECTION ====================
+async function loadPflegeboxForm() {
+  if (!currentUser) return;
+
+  const formHTML = `
+    <div class="info-box info-box-blue" style="margin-bottom: 30px;">
+      <strong>💡 Hinweis:</strong> Ihre persönlichen Daten wurden bereits automatisch eingetragen.
+      Bitte überprüfen Sie die Angaben und ergänzen Sie fehlende Informationen.
+    </div>
+
+    <form id="neuerAntragForm">
+      <!-- STEP 1: Antragsteller (PRE-COMPILATO) -->
+      <div class="form-step">
+        <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; color: #2c3e50; border-bottom: 2px solid #C12624; padding-bottom: 10px;">
+          1. Name der/des Antragstellers
+        </h3>
+
+        <div class="form-group">
+          <label class="form-label">Anrede *</label>
+          <div class="radio-group">
+            <div class="radio-option">
+              <label class="radio-label">
+                <input type="radio" name="gender" value="Frau" ${currentUser.anrede === 'Frau' ? 'checked' : ''} required>
+                <span>Frau</span>
+              </label>
+            </div>
+            <div class="radio-option">
+              <label class="radio-label">
+                <input type="radio" name="gender" value="Herr" ${currentUser.anrede === 'Herr' ? 'checked' : ''} required>
+                <span>Herr</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Vorname *</label>
+            <input type="text" name="firstName" class="form-input" value="${currentUser.vorname || ''}" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Name *</label>
+            <input type="text" name="lastName" class="form-input" value="${currentUser.nachname || ''}" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Straße/Nr. *</label>
+          <input type="text" name="street" class="form-input" value="${currentUser.strasse || ''}" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">PLZ *</label>
+            <input type="text" name="plz" class="form-input" pattern="[0-9]{5}" value="${currentUser.plz || ''}" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Ort *</label>
+            <input type="text" name="ort" class="form-input" value="${currentUser.ort || ''}" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Telefon *</label>
+            <input type="tel" name="phone" class="form-input" value="${currentUser.telefon || ''}" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">E-Mail *</label>
+            <input type="email" name="email" class="form-input" value="${currentUser.email || ''}" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Geburtsdatum *</label>
+          <input type="date" name="geburtsdatum" class="form-input" value="${currentUser.geburtsdatum || ''}" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Versichertennummer *</label>
+          <input type="text" name="versichertennummer" class="form-input" value="${currentUser.versichertennummer || ''}" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Pflegegrad *</label>
+          <div class="radio-group">
+            <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="1" ${currentUser.pflegegrad === 1 ? 'checked' : ''} required><span>1</span></label></div>
+            <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="2" ${currentUser.pflegegrad === 2 ? 'checked' : ''}><span>2</span></label></div>
+            <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="3" ${currentUser.pflegegrad === 3 ? 'checked' : ''}><span>3</span></label></div>
+            <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="4" ${currentUser.pflegegrad === 4 ? 'checked' : ''}><span>4</span></label></div>
+            <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="5" ${currentUser.pflegegrad === 5 ? 'checked' : ''}><span>5</span></label></div>
+            <div class="radio-option"><label class="radio-label"><input type="radio" name="pflegegrad" value="beantragt"><span>Beantragt</span></label></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Versicherte(r) ist *</label>
+          <div class="radio-group">
+            <div class="radio-option"><label class="radio-label"><input type="radio" name="insuranceType" value="gesetzlich" checked required><span>gesetzlich</span></label></div>
+            <div class="radio-option"><label class="radio-label"><input type="radio" name="insuranceType" value="privat"><span>privat</span></label></div>
+            <div class="radio-option"><label class="radio-label"><input type="radio" name="insuranceType" value="beihilfeberechtigt"><span>beihilfeberechtigt</span></label></div>
+            <div class="radio-option"><label class="radio-label"><input type="radio" name="insuranceType" value="sozialamt"><span>über Ortsamt/Sozialamt</span></label></div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Pflegekasse *</label>
+          <input type="text" name="pflegekasse" class="form-input" value="${currentUser.pflegekasse || ''}" required>
+        </div>
+      </div>
+
+      <!-- STEP 2: Prodotti Pflegebox -->
+      <div class="form-step" style="margin-top: 40px;">
+        <h3 style="font-size: 1.3rem; font-weight: 700; margin-bottom: 20px; color: #2c3e50; border-bottom: 2px solid #C12624; padding-bottom: 10px;">
+          2. Pflegebox-Produkte auswählen
+        </h3>
+
+        <div class="info-box" style="margin-bottom: 20px;">
+          <strong>💡 Hinweis:</strong> Wählen Sie die Produkte aus, die Sie benötigen (max. 40€ pro Monat).
+        </div>
+
+        <div class="checkbox-group">
+          <div class="checkbox-card">
+            <label class="checkbox-label">
+              <input type="checkbox" name="product_einmalhandschuhe" value="true">
+              <span>Einmalhandschuhe</span>
+            </label>
+          </div>
+          <div class="checkbox-card">
+            <label class="checkbox-label">
+              <input type="checkbox" name="product_ffp2" value="true">
+              <span>FFP2 Masken</span>
+            </label>
+          </div>
+          <div class="checkbox-card">
+            <label class="checkbox-label">
+              <input type="checkbox" name="product_haendedesinfektion" value="true">
+              <span>Händedesinfektion</span>
+            </label>
+          </div>
+          <div class="checkbox-card">
+            <label class="checkbox-label">
+              <input type="checkbox" name="product_bettschutzeinlagen" value="true">
+              <span>Bettschutzeinlagen</span>
+            </label>
+          </div>
+          <div class="checkbox-card">
+            <label class="checkbox-label">
+              <input type="checkbox" name="product_fingerlinge" value="true">
+              <span>Fingerlinge</span>
+            </label>
+          </div>
+          <div class="checkbox-card">
+            <label class="checkbox-label">
+              <input type="checkbox" name="product_mundschutz" value="true">
+              <span>Mundschutz</span>
+            </label>
+          </div>
+          <div class="checkbox-card">
+            <label class="checkbox-label">
+              <input type="checkbox" name="product_essslaetzchen" value="true">
+              <span>Esslätzchen</span>
+            </label>
+          </div>
+          <div class="checkbox-card">
+            <label class="checkbox-label">
+              <input type="checkbox" name="product_schutzschuerzenEinmal" value="true">
+              <span>Schutzschürzen (Einmal)</span>
+            </label>
+          </div>
+          <div class="checkbox-card">
+            <label class="checkbox-label">
+              <input type="checkbox" name="product_schutzschuerzenWieder" value="true">
+              <span>Schutzschürzen (Wiederverwendbar)</span>
+            </label>
+          </div>
+          <div class="checkbox-card">
+            <label class="checkbox-label">
+              <input type="checkbox" name="product_flaechendesinfektion" value="true">
+              <span>Flächendesinfektion</span>
+            </label>
+          </div>
+          <div class="checkbox-card">
+            <label class="checkbox-label">
+              <input type="checkbox" name="product_flaechendesinfektionstuecher" value="true">
+              <span>Flächendesinfektionstücher</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-row" style="margin-top: 25px;">
+          <div class="form-group">
+            <label class="form-label">Handschuhgröße</label>
+            <select name="handschuhGroesse" class="form-input">
+              <option value="">Bitte wählen</option>
+              <option value="XS">XS</option>
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Handschuhmaterial</label>
+            <select name="handschuhMaterial" class="form-input">
+              <option value="">Bitte wählen</option>
+              <option value="Nitril">Nitril</option>
+              <option value="Vinyl">Vinyl</option>
+              <option value="Latex">Latex</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUBMIT BUTTON -->
+      <div style="margin-top: 40px; padding-top: 30px; border-top: 2px solid #e9ecef;">
+        <button type="submit" class="btn btn-primary" style="width: 100%;">
+          Antrag absenden
+        </button>
+      </div>
+    </form>
+  `;
+
+  document.getElementById('pflegeboxFormContainer').innerHTML = formHTML;
+
+  // Event listener per checkbox cards
+  document.querySelectorAll('.checkbox-card').forEach(card => {
+    const checkbox = card.querySelector('input[type="checkbox"]');
+    checkbox.addEventListener('change', () => {
+      card.classList.toggle('checked', checkbox.checked);
+    });
+  });
+
+  // Submit handler
+  document.getElementById('neuerAntragForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    await submitPflegeboxForm(e.target);
+  });
+}
+
+async function submitPflegeboxForm(form) {
+  const formData = new FormData(form);
+
+  // Costruisci l'oggetto dati per il backend
+  const submissionData = {
+    versicherte: {
+      anrede: formData.get('gender'),
+      vorname: formData.get('firstName'),
+      name: formData.get('lastName'),
+      strasse: formData.get('street').split('/')[0]?.trim() || formData.get('street'),
+      hausnummer: formData.get('street').split('/')[1]?.trim() || '',
+      plzOrt: `${formData.get('plz')} ${formData.get('ort')}`,
+      telefon: formData.get('phone'),
+      email: formData.get('email'),
+      geburtsdatum: formData.get('geburtsdatum'),
+      versichertennummer: formData.get('versichertennummer'),
+      pflegegrad: formData.get('pflegegrad'),
+      versicherteTyp: formData.get('insuranceType'),
+      pflegekasse: formData.get('pflegekasse')
+    },
+    pflegebox: {
+      products: {
+        einmalhandschuhe: formData.get('product_einmalhandschuhe') === 'true',
+        ffp2: formData.get('product_ffp2') === 'true',
+        haendedesinfektion: formData.get('product_haendedesinfektion') === 'true',
+        bettschutzeinlagen: formData.get('product_bettschutzeinlagen') === 'true',
+        fingerlinge: formData.get('product_fingerlinge') === 'true',
+        mundschutz: formData.get('product_mundschutz') === 'true',
+        essslaetzchen: formData.get('product_essslaetzchen') === 'true',
+        schutzschuerzenEinmal: formData.get('product_schutzschuerzenEinmal') === 'true',
+        schutzschuerzenWieder: formData.get('product_schutzschuerzenWieder') === 'true',
+        flaechendesinfektion: formData.get('product_flaechendesinfektion') === 'true',
+        flaechendesinfektionstuecher: formData.get('product_flaechendesinfektionstuecher') === 'true'
+      },
+      handschuhGroesse: formData.get('handschuhGroesse') || null,
+      handschuhMaterial: formData.get('handschuhMaterial') || null
+    },
+    angehoerige: {
+      isSamePerson: true,
+      data: null
+    },
+    lieferung: {
+      an: 'versicherte'
+    },
+    rechnung: {
+      an: 'versicherte'
+    },
+    consents: {
+      agb: true,
+      privacy: true
+    },
+    timestamp: new Date().toISOString(),
+    bestelldatum: new Date().toLocaleDateString('de-DE'),
+    bestellzeit: new Date().toLocaleTimeString('de-DE')
+  };
+
+  showLoading();
+
+  const response = await apiCall('/api/pflegebox/submit', {
+    method: 'POST',
+    body: JSON.stringify(submissionData)
+  });
+
+  showLoading(false);
+
+  if (!response) {
+    showMessage('formMessage', 'Fehler beim Senden des Antrags', 'error');
+    return;
+  }
+
+  const data = await response.json();
+
+  if (data.success) {
+    showMessage('formMessage', 'Antrag erfolgreich gesendet! Sie erhalten in Kürze eine Bestätigung per E-Mail.', 'success');
+    // Reset form
+    form.reset();
+    // Torna alla sezione Pflegebox dopo 3 secondi
+    setTimeout(() => {
+      showSection('pflegebox');
+    }, 3000);
+  } else {
+    showMessage('formMessage', data.error || 'Fehler beim Senden des Antrags', 'error');
+  }
 }
 
 // ==================== INIT ====================
