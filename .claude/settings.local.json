@@ -38,7 +38,22 @@
       "Bash(git commit -m \"$(cat <<''EOF''\nAdd complete customer area (Mein Konto) with D1 database backend\n\nFeatures:\n- Cloudflare D1 database with customers, sessions, addresses tables\n- 7 REST API endpoints for authentication and customer management\n- Customer registration and login with secure password hashing\n- Session management with JWT-like tokens (30 days expiry)\n- Complete customer dashboard with profile editing\n- Order history from Shopify API\n- Pflegebox form submissions history\n- Responsive design matching existing Pflegebox form style\n- Activity logs for audit trail\n\nBackend (Worker):\n- POST /api/customers/register - Register new customer\n- POST /api/customers/login - Login with email/password\n- GET /api/customers/me - Get customer profile\n- PUT /api/customers/me - Update customer profile\n- POST /api/customers/logout - Logout\n- GET /api/customers/me/orders - Get Shopify orders\n- GET /api/customers/me/pflegebox - Get Pflegebox submissions\n\nFrontend:\n- templates/page.area-clienti.liquid - Complete customer area page\n- Login/Registration tabs with password toggle\n- Dashboard with statistics (orders, Pflegebox, status)\n- Profile editing form (name, address, Pflegegrad, phone)\n- Sidebar navigation (Dashboard, Profil, Bestellungen, Pflegebox)\n- Session management with localStorage\n- Loading states and error handling\n- Mobile responsive design\n\nDatabase:\n- database-schema.sql - Complete D1 schema\n- Tables: customers, sessions, password_resets, addresses, activity_logs\n- Indexes for performance\n- View for customer stats\n\nDocumentation:\n- PIANO_REGISTRAZIONE_CLIENTI.md - Complete implementation plan\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(git push:*)",
       "Bash(git commit:*)",
-      "Bash(shopify theme push:*)"
+      "Bash(shopify theme push:*)",
+      "Bash(npm init:*)",
+      "Bash(git checkout:*)",
+      "Bash(sed:*)",
+      "Read(//c/Users/calog/.config/**)",
+      "Read(//c/Users/calog/AppData/Roaming/Claude/**)",
+      "Bash(npm install:*)",
+      "Bash(claude mcp list:*)",
+      "Bash(claude mcp add --transport stdio openai-dalle -- npx -y @singularity2045/image-generator-mcp-server)",
+      "Read(//c/Users/calog/**)",
+      "Bash(shopify version:*)",
+      "Bash(git restore:*)",
+      "Bash(cmd /c \"echo y | shopify theme push --store=0phy01-hc.myshopify.com --theme=181963456893 --only=assets/blog-familie-wohnung-gesucht.png\")",
+      "Bash(shopify auth status:*)",
+      "Bash(./upload-image.bat)",
+      "Bash(node upload-to-shopify.js:*)"
     ],
     "deny": [],
     "ask": []

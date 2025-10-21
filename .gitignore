@@ -11,6 +11,10 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+# MCP Configuration (contains API keys)
+mcp-config.json
+**/mcp.json
+
 # OS files
 .DS_Store
 Thumbs.db
