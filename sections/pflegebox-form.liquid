@@ -568,16 +568,12 @@ function initializeCheckboxes() {
 
         // Card click handler
         card.addEventListener('click', function(e) {
-            // If clicking directly on the checkbox, let it handle naturally
-            if (e.target === checkbox) {
-                return;
-            }
             e.preventDefault();
             e.stopPropagation();
             handleCheckboxToggle(checkbox, card);
         });
 
-        // Checkbox change handler (for when checkbox is clicked directly)
+        // Checkbox click handler (for when checkbox is clicked directly)
         checkbox.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
