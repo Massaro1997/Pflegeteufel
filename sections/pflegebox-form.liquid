@@ -222,33 +222,33 @@
             <h2 class="section-title">3. Pflegebox</h2>
             <p style="font-size: 0.95rem; margin-bottom: 25px;">Stellen Sie sich Ihre individuelle Pflegebox nach Ihren Bedürfnissen zusammen.</p>
             <div class="checkbox-group">
-                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="bettschutzeinlagen"><span>Bettschutzeinlagen</span></label></div>
-                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="fingerlinge"><span>Fingerlinge</span></label></div>
-                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="ffp2"><span>FFP2 Masken</span></label></div>
-                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="einmalhandschuhe" checked><span>Einmalhandschuhe</span></label></div>
-                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="mundschutz"><span>Mundschutz</span></label></div>
-                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="essslaetzchen"><span>Esslätzchen</span></label></div>
-                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="schutzschuerzenEinmal"><span>Schutzschürzen lang (einmal verwendbar)</span></label></div>
-                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="schutzschuerzenWieder"><span>Schutzschürzen lang (wieder verwendbar)</span></label></div>
-                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="flaechendesinfektion"><span>Flächendesinfektionsmittel</span></label></div>
-                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="flaechendesinfektionstuecher"><span>Flächendesinfektionstücher</span></label></div>
-                <div class="checkbox-card" onclick="toggleCheckbox(this)"><label class="checkbox-label"><input type="checkbox" name="haendedesinfektion"><span>Händedesinfektionsmittel</span></label></div>
+                <div class="checkbox-card"><label class="checkbox-label"><input type="checkbox" name="bettschutzeinlagen"><span>Bettschutzeinlagen</span></label></div>
+                <div class="checkbox-card"><label class="checkbox-label"><input type="checkbox" name="fingerlinge"><span>Fingerlinge</span></label></div>
+                <div class="checkbox-card"><label class="checkbox-label"><input type="checkbox" name="ffp2"><span>FFP2 Masken</span></label></div>
+                <div class="checkbox-card"><label class="checkbox-label"><input type="checkbox" name="einmalhandschuhe" checked><span>Einmalhandschuhe</span></label></div>
+                <div class="checkbox-card"><label class="checkbox-label"><input type="checkbox" name="mundschutz"><span>Mundschutz</span></label></div>
+                <div class="checkbox-card"><label class="checkbox-label"><input type="checkbox" name="essslaetzchen"><span>Esslätzchen</span></label></div>
+                <div class="checkbox-card"><label class="checkbox-label"><input type="checkbox" name="schutzschuerzenEinmal"><span>Schutzschürzen lang (einmal verwendbar)</span></label></div>
+                <div class="checkbox-card"><label class="checkbox-label"><input type="checkbox" name="schutzschuerzenWieder"><span>Schutzschürzen lang (wieder verwendbar)</span></label></div>
+                <div class="checkbox-card"><label class="checkbox-label"><input type="checkbox" name="flaechendesinfektion"><span>Flächendesinfektionsmittel</span></label></div>
+                <div class="checkbox-card"><label class="checkbox-label"><input type="checkbox" name="flaechendesinfektionstuecher"><span>Flächendesinfektionstücher</span></label></div>
+                <div class="checkbox-card"><label class="checkbox-label"><input type="checkbox" name="haendedesinfektion"><span>Händedesinfektionsmittel</span></label></div>
             </div>
             <div class="form-group" style="margin-top: 30px;">
                 <label class="form-label" style="color: #C12624;">Handschuhgröße *</label>
                 <div class="radio-group">
-                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gloveSize" value="S"><span>S</span></label></div>
-                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gloveSize" value="M" checked><span>M</span></label></div>
-                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gloveSize" value="L"><span>L</span></label></div>
-                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gloveSize" value="XL"><span>XL</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gloveSize" value="S" required><span>S</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gloveSize" value="M" checked required><span>M</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gloveSize" value="L" required><span>L</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gloveSize" value="XL" required><span>XL</span></label></div>
                 </div>
             </div>
             <div class="form-group">
                 <label class="form-label" style="color: #C12624;">Handschuhmaterial *</label>
                 <div class="radio-group">
-                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gloveMaterial" value="Nitril" checked><span>Nitril</span></label></div>
-                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gloveMaterial" value="Vinyl"><span>Vinyl</span></label></div>
-                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gloveMaterial" value="Latex"><span>Latex</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gloveMaterial" value="Nitril" checked required><span>Nitril</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gloveMaterial" value="Vinyl" required><span>Vinyl</span></label></div>
+                    <div class="radio-option"><label class="radio-label"><input type="radio" name="gloveMaterial" value="Latex" required><span>Latex</span></label></div>
                 </div>
             </div>
         </div>
@@ -370,6 +370,7 @@ let isBevollmachtigte = false;
 // Init
 document.addEventListener('DOMContentLoaded', function() {
     initCanvas();
+    initializeCheckboxes();
 
     // Sozialamt field toggle
     document.querySelectorAll('input[name="insuranceType"]').forEach(function(radio) {
@@ -543,11 +544,89 @@ function clearBevollmachtigteSignature() {
     bevollmachtigteSignatureData = '';
 }
 
-// Checkbox toggle
-function toggleCheckbox(card) {
-    const checkbox = card.querySelector('input[type="checkbox"]');
+// Initialize checkbox cards with proper event listeners
+function initializeCheckboxes() {
+    const checkboxCards = document.querySelectorAll('.checkbox-card');
+
+    checkboxCards.forEach(card => {
+        const checkbox = card.querySelector('input[type="checkbox"]');
+        const label = card.querySelector('label');
+
+        // Initialize checked state
+        if (checkbox.checked) {
+            card.classList.add('checked');
+        }
+
+        // Prevent default label behavior
+        if (label) {
+            label.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                handleCheckboxToggle(checkbox, card);
+            });
+        }
+
+        // Card click handler
+        card.addEventListener('click', function(e) {
+            // If clicking directly on the checkbox, let it handle naturally
+            if (e.target === checkbox) {
+                return;
+            }
+            e.preventDefault();
+            e.stopPropagation();
+            handleCheckboxToggle(checkbox, card);
+        });
+
+        // Checkbox change handler (for when checkbox is clicked directly)
+        checkbox.addEventListener('change', function(e) {
+            handleCheckboxChange(checkbox, card);
+        });
+    });
+}
+
+// Handle checkbox toggle with 5-item limit
+function handleCheckboxToggle(checkbox, card) {
+    // Count currently checked checkboxes
+    const allCheckboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
+    const checkedCount = Array.from(allCheckboxes).filter(cb => cb.checked).length;
+
+    // If trying to check and already at limit, show alert
+    if (!checkbox.checked && checkedCount >= 5) {
+        alert('⚠️ Sie können maximal 5 Produkte auswählen.');
+        return;
+    }
+
+    // Toggle the checkbox
     checkbox.checked = !checkbox.checked;
-    checkbox.checked ? card.classList.add('checked') : card.classList.remove('checked');
+
+    // Update card styling
+    if (checkbox.checked) {
+        card.classList.add('checked');
+    } else {
+        card.classList.remove('checked');
+    }
+}
+
+// Handle direct checkbox click
+function handleCheckboxChange(checkbox, card) {
+    // Count currently checked checkboxes
+    const allCheckboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
+    const checkedCount = Array.from(allCheckboxes).filter(cb => cb.checked).length;
+
+    // If just checked and now over limit, uncheck and show alert
+    if (checkbox.checked && checkedCount > 5) {
+        checkbox.checked = false;
+        alert('⚠️ Sie können maximal 5 Produkte auswählen.');
+        card.classList.remove('checked');
+        return;
+    }
+
+    // Update card styling
+    if (checkbox.checked) {
+        card.classList.add('checked');
+    } else {
+        card.classList.remove('checked');
+    }
 }
 
 // Progress update
