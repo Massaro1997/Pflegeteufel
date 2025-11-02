@@ -75,12 +75,12 @@
     },
     "related_products_KkfH6p": {
       "type": "related-products",
-      "name": "Empfohlene Produkte",
+      "name": "Alle Produkte",
       "settings": {
-        "title": "Empfohlene Produkte",
-        "subtitle": "Kunden kauften auch diese Produkte",
+        "title": "Alle verfügbaren Produkte",
+        "subtitle": "Entdecken Sie unser komplettes Sortiment",
         "collection": "",
-        "products_limit": 12,
+        "products_limit": 50,
         "show_vendor": true,
         "show_rating": true,
         "show_add_button": true

@@ -34,7 +34,7 @@ INSTALLAZIONE:
         {% endif %}
 
         {% assign products_count = 0 %}
-        {% assign products_limit = section.settings.products_limit | default: 20 %}
+        {% assign products_limit = section.settings.products_limit | default: 50 %}
 
         {% comment %} Mostra tutti i prodotti della collection {% endcomment %}
         {% for related_product in source_collection.products %}
@@ -552,9 +552,9 @@ console.log('Related products {{ section.id }} - Native Shopify cart system con 
       "id": "products_limit",
       "label": "Anzahl Produkte",
       "min": 4,
-      "max": 20,
+      "max": 100,
       "step": 1,
-      "default": 12
+      "default": 50
     },
     {
       "type": "checkbox",
