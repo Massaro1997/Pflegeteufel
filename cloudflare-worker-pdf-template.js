@@ -96,8 +96,11 @@ export default {
         // 🎯 COMPILA IL PDF TEMPLATE UFFICIALE
         const pdfBytes = await fillPDFTemplate(formData, env);
 
-        // 📧 INVIA EMAIL CON PDF ALLEGATO
+        // 📧 INVIA EMAIL CON PDF ALLEGATO (all'agenzia)
         await sendPflegeboxEmailWithPDF(env, formData, pdfBytes);
+
+        // 📧 INVIA EMAIL DI CONFERMA AL CLIENTE
+        await sendCustomerConfirmationEmail(env, formData, pdfBytes);
 
         // 💾 SALVA NEL KV STORAGE PER BACKEND DASHBOARD
         if (env.PFLEGEBOX_SUBMISSIONS) {
@@ -1091,6 +1094,65 @@ export default {
       }
     }
 
+    // ========== SHOPIFY WEBHOOK: ORDER CREATED ==========
+    if (path === "/api/shopify/webhooks/orders/create" && request.method === "POST") {
+      try {
+        console.log('📦 Ricevuto webhook Shopify - Nuovo ordine');
+
+        // Verifica HMAC signature per sicurezza (opzionale ma raccomandato)
+        const hmacHeader = request.headers.get('X-Shopify-Hmac-Sha256');
+        const shopDomain = request.headers.get('X-Shopify-Shop-Domain');
+
+        console.log('🏪 Shop Domain:', shopDomain);
+
+        // Parse order data
+        const orderData = body;
+
+        console.log('📋 Order ID:', orderData.id);
+        console.log('👤 Customer:', orderData.customer?.email);
+
+        // Recupera il PDF dell'ordine da Shopify
+        let orderPdfBytes = null;
+        try {
+          orderPdfBytes = await fetchShopifyOrderPDF(orderData, env);
+          console.log('📄 PDF ordine Shopify recuperato');
+        } catch (pdfError) {
+          console.warn('⚠️ Impossibile recuperare PDF da Shopify, genero PDF custom:', pdfError.message);
+          // Fallback: genera PDF custom se quello di Shopify non è disponibile
+          orderPdfBytes = await generateOrderPDF(orderData, env);
+          console.log('📄 PDF ordine custom generato');
+        }
+
+        // Invia email di conferma al cliente con PDF allegato
+        if (orderData.customer?.email) {
+          await sendOrderConfirmationEmail(env, orderData, orderPdfBytes);
+          console.log('✅ Email conferma ordine con PDF inviata al cliente');
+        } else {
+          console.warn('⚠️ Ordine senza email cliente - email non inviata');
+        }
+
+        // Rispondi a Shopify con successo
+        return new Response(JSON.stringify({
+          success: true,
+          message: 'Webhook processed successfully',
+          orderId: orderData.id
+        }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+
+      } catch (error) {
+        console.error('❌ Errore processing webhook ordine:', error);
+        return new Response(JSON.stringify({
+          success: false,
+          error: error.message
+        }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
     // ========== ADMIN: GET ALL REGISTERED CUSTOMERS (D1) ==========
     if (path === "/api/admin/customers/registered" && request.method === "GET") {
       try {
@@ -1170,6 +1232,7 @@ export default {
         "/api/pflegebox/submissions (GET)",
         "/api/pflegebox/pdf/{id} (GET)",
         "/api/pflegebox/submission/{id} (DELETE)",
+        "/api/shopify/webhooks/orders/create (POST)",
         "/orders (GET)",
         "/customers (GET)",
         "/products (GET)",
@@ -1799,6 +1862,745 @@ async function sendPflegeboxEmailWithPDF(env, formData, pdfBytes) {
 
   console.warn('⚠️ Nessun servizio email configurato');
   return { success: false, note: 'No email service configured' };
+}
+
+// ==================== CUSTOMER CONFIRMATION EMAIL ====================
+
+async function sendCustomerConfirmationEmail(env, formData, pdfBytes) {
+  const customerEmail = formData.versicherte.email;
+  const fromEmail = 'formular@pflegeteufel.de';
+  const subject = `✅ Bestätigung Ihrer Pflegebox-Anfrage - Pflege Teufel`;
+
+  // Converti PDF in base64
+  const uint8Array = new Uint8Array(pdfBytes);
+  let binaryString = '';
+  const chunkSize = 8192;
+  for (let i = 0; i < uint8Array.length; i += chunkSize) {
+    const chunk = uint8Array.subarray(i, Math.min(i + chunkSize, uint8Array.length));
+    binaryString += String.fromCharCode(...chunk);
+  }
+  const pdfBase64 = btoa(binaryString);
+
+  // Email HTML per il cliente
+  const customerEmailHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background: #f4f4f4; }
+    .container { max-width: 600px; margin: 20px auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    .header { background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%); color: white; padding: 40px 30px; text-align: center; }
+    .header h1 { margin: 0; font-size: 28px; font-weight: 700; }
+    .header p { margin: 15px 0 0; opacity: 0.95; font-size: 16px; }
+    .content { padding: 40px 30px; }
+    .greeting { font-size: 18px; font-weight: 600; color: #2c3e50; margin-bottom: 20px; }
+    .message { font-size: 15px; line-height: 1.8; color: #555; margin-bottom: 25px; }
+    .info-box { background: #e7f5e7; border-left: 4px solid #28a745; padding: 20px; margin: 25px 0; border-radius: 4px; }
+    .info-box h3 { margin: 0 0 12px 0; color: #28a745; font-size: 16px; }
+    .info-box p { margin: 0; color: #555; font-size: 14px; line-height: 1.6; }
+    .highlight-box { background: #fff8e1; border-left: 4px solid #ffcc02; padding: 20px; margin: 25px 0; border-radius: 4px; }
+    .highlight-box strong { color: #f57c00; display: block; margin-bottom: 8px; font-size: 15px; }
+    .data-summary { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 25px 0; }
+    .data-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e0e0e0; }
+    .data-row:last-child { border-bottom: none; }
+    .data-label { font-weight: 600; color: #666; font-size: 14px; }
+    .data-value { color: #2c3e50; font-weight: 500; font-size: 14px; }
+    .footer { background: #f8f9fa; padding: 25px; text-align: center; font-size: 13px; color: #666; line-height: 1.6; }
+    .footer a { color: #C12624; text-decoration: none; font-weight: 600; }
+    .checkmark { display: inline-block; width: 60px; height: 60px; background: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; margin: 0 auto 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="checkmark">✓</div>
+      <h1>Vielen Dank für Ihre Anfrage!</h1>
+      <p>Wir haben Ihr Pflegebox-Formular erfolgreich erhalten</p>
+    </div>
+    <div class="content">
+      <div class="greeting">
+        Sehr geehrte/r ${formData.versicherte.anrede} ${formData.versicherte.name},
+      </div>
+
+      <div class="message">
+        vielen Dank für Ihre Pflegebox-Anfrage über unsere Website. Wir haben Ihre Unterlagen erfolgreich erhalten und werden uns nun um alles Weitere kümmern.
+      </div>
+
+      <div class="info-box">
+        <h3>📋 Was passiert jetzt?</h3>
+        <p>
+          <strong>1.</strong> Wir prüfen Ihre Angaben und bereiten den Antrag für Ihre Krankenkasse vor.<br>
+          <strong>2.</strong> Wir reichen alle erforderlichen Unterlagen bei Ihrer Pflegekasse ein.<br>
+          <strong>3.</strong> Sobald wir eine Rückmeldung von der Krankenkasse erhalten, werden wir Sie umgehend kontaktieren.
+        </p>
+      </div>
+
+      <div class="highlight-box">
+        <strong>💡 Wichtiger Hinweis:</strong>
+        Sie müssen sich um nichts weiter kümmern! Wir übernehmen die komplette Abwicklung mit Ihrer Krankenkasse und halten Sie auf dem Laufenden.
+      </div>
+
+      <div class="data-summary">
+        <strong style="display: block; margin-bottom: 15px; color: #2c3e50; font-size: 16px;">📄 Ihre Antragsdaten:</strong>
+        <div class="data-row">
+          <span class="data-label">Name:</span>
+          <span class="data-value">${formData.versicherte.vorname} ${formData.versicherte.name}</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">E-Mail:</span>
+          <span class="data-value">${formData.versicherte.email}</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">Telefon:</span>
+          <span class="data-value">${formData.versicherte.telefon}</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">Pflegegrad:</span>
+          <span class="data-value">${formData.versicherte.pflegegrad}</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">Pflegekasse:</span>
+          <span class="data-value">${formData.versicherte.pflegekasse}</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">Eingereicht am:</span>
+          <span class="data-value">${formData.bestelldatum} um ${formData.bestellzeit} Uhr</span>
+        </div>
+      </div>
+
+      <div class="message">
+        Im Anhang dieser E-Mail finden Sie eine Kopie Ihres ausgefüllten Formulars für Ihre Unterlagen.
+      </div>
+
+      <div class="message">
+        Bei Rückfragen stehen wir Ihnen gerne zur Verfügung:<br>
+        <strong>📧 E-Mail:</strong> <a href="mailto:pflegeteufelagentur@gmail.com">pflegeteufelagentur@gmail.com</a><br>
+        <strong>📞 Telefon:</strong> [Ihre Telefonnummer hier einfügen]
+      </div>
+
+      <div class="message" style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e0e0e0;">
+        Mit freundlichen Grüßen<br>
+        <strong style="color: #C12624;">Ihr Pflege Teufel Team</strong>
+      </div>
+    </div>
+    <div class="footer">
+      <p><strong>Pflege Teufel Agentur</strong><br>
+      Ihr Partner für häusliche Pflege und Pflegehilfsmittel</p>
+      <p style="margin-top: 15px;">
+        <a href="https://pflegeteufel.de">www.pflegeteufel.de</a> |
+        <a href="mailto:pflegeteufelagentur@gmail.com">pflegeteufelagentur@gmail.com</a>
+      </p>
+      <p style="margin-top: 15px; font-size: 11px; color: #999;">
+        © ${new Date().getFullYear()} Pflege Teufel. Alle Rechte vorbehalten.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
+  `.trim();
+
+  // Invia email via Resend
+  if (env.RESEND_API_KEY) {
+    try {
+      const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          from: fromEmail,
+          to: customerEmail,
+          subject: subject,
+          html: customerEmailHtml,
+          attachments: [
+            {
+              filename: `Pflegebox_Formular_${formData.versicherte.name}_${formData.bestelldatum}.pdf`,
+              content: pdfBase64
+            }
+          ]
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Resend API error: ${error}`);
+      }
+
+      const result = await response.json();
+      console.log(`✅ Email di conferma inviata al cliente: ${customerEmail} (ID: ${result.id})`);
+      return result;
+    } catch (error) {
+      console.error('❌ Errore invio email conferma cliente:', error);
+      // Non blocchiamo il processo se l'email al cliente fallisce
+      return { success: false, error: error.message };
+    }
+  }
+
+  console.warn('⚠️ Resend API non configurato - email conferma cliente non inviata');
+  return { success: false, note: 'Resend API not configured' };
+}
+
+// ==================== ORDER CONFIRMATION EMAIL ====================
+
+async function sendOrderConfirmationEmail(env, orderData, pdfBytes) {
+  const customerEmail = orderData.customer?.email;
+  const fromEmail = 'bestellung@pflegeteufel.de';
+  const subject = `✅ Bestellbestätigung #${orderData.order_number} - Pflege Teufel`;
+
+  // Converti PDF in base64
+  const uint8Array = new Uint8Array(pdfBytes);
+  let binaryString = '';
+  const chunkSize = 8192;
+  for (let i = 0; i < uint8Array.length; i += chunkSize) {
+    const chunk = uint8Array.subarray(i, Math.min(i + chunkSize, uint8Array.length));
+    binaryString += String.fromCharCode(...chunk);
+  }
+  const pdfBase64 = btoa(binaryString);
+
+  // Formatta gli item dell'ordine
+  const orderItemsHtml = orderData.line_items.map(item => `
+    <tr style="border-bottom: 1px solid #e0e0e0;">
+      <td style="padding: 15px 10px;">
+        <strong style="color: #2c3e50; font-size: 15px;">${item.name}</strong><br>
+        <span style="color: #666; font-size: 13px;">Menge: ${item.quantity}</span>
+      </td>
+      <td style="padding: 15px 10px; text-align: right; color: #2c3e50; font-weight: 600;">
+        ${(parseFloat(item.price) * item.quantity).toFixed(2)} €
+      </td>
+    </tr>
+  `).join('');
+
+  // Indirizzo di spedizione
+  const shippingAddress = orderData.shipping_address;
+  const addressHtml = shippingAddress ? `
+    ${shippingAddress.first_name} ${shippingAddress.last_name}<br>
+    ${shippingAddress.address1}${shippingAddress.address2 ? ', ' + shippingAddress.address2 : ''}<br>
+    ${shippingAddress.zip} ${shippingAddress.city}<br>
+    ${shippingAddress.country}
+  ` : 'Keine Versandadresse';
+
+  // Email HTML
+  const orderEmailHtml = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background: #f4f4f4; }
+    .container { max-width: 600px; margin: 20px auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    .header { background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%); color: white; padding: 40px 30px; text-align: center; }
+    .header h1 { margin: 0; font-size: 28px; font-weight: 700; }
+    .header p { margin: 15px 0 0; opacity: 0.95; font-size: 16px; }
+    .content { padding: 40px 30px; }
+    .greeting { font-size: 18px; font-weight: 600; color: #2c3e50; margin-bottom: 20px; }
+    .message { font-size: 15px; line-height: 1.8; color: #555; margin-bottom: 25px; }
+    .order-box { background: #f8f9fa; border: 2px solid #e0e0e0; border-radius: 8px; padding: 20px; margin: 25px 0; }
+    .order-header { font-size: 18px; font-weight: 700; color: #2c3e50; margin-bottom: 15px; border-bottom: 2px solid #C12624; padding-bottom: 10px; }
+    .order-items { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    .order-total { background: #e7f5e7; padding: 15px; border-radius: 6px; margin: 15px 0; }
+    .total-row { display: flex; justify-content: space-between; padding: 8px 0; }
+    .total-row.final { font-size: 18px; font-weight: 700; color: #28a745; border-top: 2px solid #28a745; padding-top: 12px; margin-top: 8px; }
+    .info-box { background: #e7f3ff; border-left: 4px solid #0066cc; padding: 20px; margin: 25px 0; border-radius: 4px; }
+    .info-box h3 { margin: 0 0 12px 0; color: #0066cc; font-size: 16px; }
+    .info-box p { margin: 0; color: #555; font-size: 14px; line-height: 1.6; }
+    .shipping-box { background: #fff8e1; border-left: 4px solid #ffcc02; padding: 20px; margin: 25px 0; border-radius: 4px; }
+    .shipping-box h3 { margin: 0 0 12px 0; color: #f57c00; font-size: 16px; }
+    .footer { background: #f8f9fa; padding: 25px; text-align: center; font-size: 13px; color: #666; line-height: 1.6; }
+    .footer a { color: #C12624; text-decoration: none; font-weight: 600; }
+    .checkmark { display: inline-block; width: 60px; height: 60px; background: #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; margin: 0 auto 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="checkmark">✓</div>
+      <h1>Vielen Dank für Ihre Bestellung!</h1>
+      <p>Bestellnummer: #${orderData.order_number}</p>
+    </div>
+    <div class="content">
+      <div class="greeting">
+        Hallo ${orderData.customer?.first_name || 'Kunde'},
+      </div>
+
+      <div class="message">
+        vielen Dank für Ihre Bestellung bei Pflege Teufel! Wir haben Ihre Bestellung erfolgreich erhalten und werden sie schnellstmöglich bearbeiten.
+      </div>
+
+      <div class="order-box">
+        <div class="order-header">📦 Ihre Bestellung</div>
+        <table class="order-items">
+          <tbody>
+            ${orderItemsHtml}
+          </tbody>
+        </table>
+        <div class="order-total">
+          <div class="total-row">
+            <span>Zwischensumme:</span>
+            <span>${parseFloat(orderData.subtotal_price || 0).toFixed(2)} €</span>
+          </div>
+          ${orderData.total_tax && parseFloat(orderData.total_tax) > 0 ? `
+          <div class="total-row">
+            <span>MwSt.:</span>
+            <span>${parseFloat(orderData.total_tax).toFixed(2)} €</span>
+          </div>
+          ` : ''}
+          ${orderData.total_shipping_price_set?.shop_money?.amount && parseFloat(orderData.total_shipping_price_set.shop_money.amount) > 0 ? `
+          <div class="total-row">
+            <span>Versand:</span>
+            <span>${parseFloat(orderData.total_shipping_price_set.shop_money.amount).toFixed(2)} €</span>
+          </div>
+          ` : ''}
+          <div class="total-row final">
+            <span>Gesamtsumme:</span>
+            <span>${parseFloat(orderData.total_price || 0).toFixed(2)} €</span>
+          </div>
+        </div>
+      </div>
+
+      ${shippingAddress ? `
+      <div class="shipping-box">
+        <h3>📍 Lieferadresse</h3>
+        <p style="margin: 0; color: #555; font-size: 14px; line-height: 1.8;">
+          ${addressHtml}
+        </p>
+      </div>
+      ` : ''}
+
+      <div class="info-box">
+        <h3>📋 Was passiert jetzt?</h3>
+        <p>
+          <strong>1.</strong> Wir bereiten Ihre Bestellung vor und verpacken sie sorgfältig.<br>
+          <strong>2.</strong> Sie erhalten eine weitere E-Mail, sobald Ihre Bestellung versandt wurde.<br>
+          <strong>3.</strong> Die Lieferung erfolgt in der Regel innerhalb von 2-4 Werktagen.
+        </p>
+      </div>
+
+      <div class="message">
+        Im Anhang dieser E-Mail finden Sie eine Kopie Ihrer Bestellung als PDF für Ihre Unterlagen.
+      </div>
+
+      <div class="message">
+        Sie können Ihre Bestellung jederzeit in Ihrem Kundenkonto verfolgen oder uns bei Fragen kontaktieren.
+      </div>
+
+      <div class="message">
+        Bei Rückfragen stehen wir Ihnen gerne zur Verfügung:<br>
+        <strong>📧 E-Mail:</strong> <a href="mailto:pflegeteufelagentur@gmail.com">pflegeteufelagentur@gmail.com</a><br>
+        <strong>📞 Telefon:</strong> [Ihre Telefonnummer hier einfügen]
+      </div>
+
+      <div class="message" style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #e0e0e0;">
+        Mit freundlichen Grüßen<br>
+        <strong style="color: #C12624;">Ihr Pflege Teufel Team</strong>
+      </div>
+    </div>
+    <div class="footer">
+      <p><strong>Pflege Teufel Agentur</strong><br>
+      Ihr Partner für häusliche Pflege und Pflegehilfsmittel</p>
+      <p style="margin-top: 15px;">
+        <a href="https://pflegeteufel.de">www.pflegeteufel.de</a> |
+        <a href="mailto:pflegeteufelagentur@gmail.com">pflegeteufelagentur@gmail.com</a>
+      </p>
+      <p style="margin-top: 15px; font-size: 11px; color: #999;">
+        © ${new Date().getFullYear()} Pflege Teufel. Alle Rechte vorbehalten.
+      </p>
+    </div>
+  </div>
+</body>
+</html>
+  `.trim();
+
+  // Invia email via Resend
+  if (env.RESEND_API_KEY) {
+    try {
+      const response = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          from: fromEmail,
+          to: customerEmail,
+          subject: subject,
+          html: orderEmailHtml,
+          attachments: [
+            {
+              filename: `Bestellung_${orderData.order_number}.pdf`,
+              content: pdfBase64
+            }
+          ]
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Resend API error: ${error}`);
+      }
+
+      const result = await response.json();
+      console.log(`✅ Email conferma ordine inviata: ${customerEmail} (Order #${orderData.order_number}, Email ID: ${result.id})`);
+      return result;
+    } catch (error) {
+      console.error('❌ Errore invio email conferma ordine:', error);
+      return { success: false, error: error.message };
+    }
+  }
+
+  console.warn('⚠️ Resend API non configurato - email conferma ordine non inviata');
+  return { success: false, note: 'Resend API not configured' };
+}
+
+// ==================== FETCH SHOPIFY ORDER PDF ====================
+
+async function fetchShopifyOrderPDF(orderData, env) {
+  console.log('📥 Tentativo recupero PDF ordine da Shopify...');
+
+  const { SHOPIFY_SHOP, SHOPIFY_ADMIN_TOKEN, SHOPIFY_API_VERSION } = env;
+
+  if (!SHOPIFY_SHOP || !SHOPIFY_ADMIN_TOKEN) {
+    throw new Error('Shopify credentials non configurati');
+  }
+
+  // URL per scaricare il PDF dell'ordine da Shopify
+  // Shopify genera automaticamente un PDF accessibile via API
+  const pdfUrl = `https://${SHOPIFY_SHOP}/admin/api/${SHOPIFY_API_VERSION}/orders/${orderData.id}.pdf`;
+
+  console.log('📡 Richiesta PDF a:', pdfUrl);
+
+  const response = await fetch(pdfUrl, {
+    headers: {
+      'X-Shopify-Access-Token': SHOPIFY_ADMIN_TOKEN
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error(`Shopify PDF API error: ${response.status}`);
+  }
+
+  const pdfBytes = await response.arrayBuffer();
+  console.log(`✅ PDF Shopify scaricato: ${pdfBytes.byteLength} bytes`);
+
+  return new Uint8Array(pdfBytes);
+}
+
+// ==================== GENERATE ORDER PDF ====================
+
+async function generateOrderPDF(orderData, env) {
+  console.log('📄 Generazione PDF ordine...');
+
+  // Crea un nuovo documento PDF
+  const pdfDoc = await PDFDocument.create();
+  const page = pdfDoc.addPage([595, 842]); // A4
+
+  // Font
+  const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+  const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+
+  const { width, height } = page.getSize();
+  let yPosition = height - 50;
+
+  // Header
+  page.drawText('BESTELLBESTÄTIGUNG', {
+    x: 50,
+    y: yPosition,
+    size: 24,
+    font: helveticaBold,
+    color: rgb(0.75, 0.15, 0.14) // #C12624
+  });
+
+  yPosition -= 30;
+  page.drawText(`Bestellnummer: #${orderData.order_number}`, {
+    x: 50,
+    y: yPosition,
+    size: 14,
+    font: helveticaBold
+  });
+
+  yPosition -= 20;
+  const orderDate = new Date(orderData.created_at);
+  page.drawText(`Datum: ${orderDate.toLocaleDateString('de-DE')} um ${orderDate.toLocaleTimeString('de-DE')}`, {
+    x: 50,
+    y: yPosition,
+    size: 11,
+    font: helveticaFont
+  });
+
+  yPosition -= 40;
+
+  // Customer info
+  page.drawText('KUNDE', {
+    x: 50,
+    y: yPosition,
+    size: 14,
+    font: helveticaBold
+  });
+
+  yPosition -= 20;
+  const customer = orderData.customer;
+  if (customer) {
+    page.drawText(`${customer.first_name || ''} ${customer.last_name || ''}`, {
+      x: 50,
+      y: yPosition,
+      size: 11,
+      font: helveticaFont
+    });
+    yPosition -= 15;
+    page.drawText(customer.email || '', {
+      x: 50,
+      y: yPosition,
+      size: 11,
+      font: helveticaFont
+    });
+    yPosition -= 15;
+    if (customer.phone) {
+      page.drawText(customer.phone, {
+        x: 50,
+        y: yPosition,
+        size: 11,
+        font: helveticaFont
+      });
+      yPosition -= 15;
+    }
+  }
+
+  yPosition -= 25;
+
+  // Shipping address
+  const shippingAddress = orderData.shipping_address;
+  if (shippingAddress) {
+    page.drawText('LIEFERADRESSE', {
+      x: 50,
+      y: yPosition,
+      size: 14,
+      font: helveticaBold
+    });
+    yPosition -= 20;
+
+    page.drawText(`${shippingAddress.first_name || ''} ${shippingAddress.last_name || ''}`, {
+      x: 50,
+      y: yPosition,
+      size: 11,
+      font: helveticaFont
+    });
+    yPosition -= 15;
+
+    page.drawText(`${shippingAddress.address1 || ''}${shippingAddress.address2 ? ', ' + shippingAddress.address2 : ''}`, {
+      x: 50,
+      y: yPosition,
+      size: 11,
+      font: helveticaFont
+    });
+    yPosition -= 15;
+
+    page.drawText(`${shippingAddress.zip || ''} ${shippingAddress.city || ''}`, {
+      x: 50,
+      y: yPosition,
+      size: 11,
+      font: helveticaFont
+    });
+    yPosition -= 15;
+
+    page.drawText(shippingAddress.country || '', {
+      x: 50,
+      y: yPosition,
+      size: 11,
+      font: helveticaFont
+    });
+    yPosition -= 25;
+  }
+
+  yPosition -= 10;
+
+  // Order items
+  page.drawText('BESTELLTE ARTIKEL', {
+    x: 50,
+    y: yPosition,
+    size: 14,
+    font: helveticaBold
+  });
+
+  yPosition -= 25;
+
+  // Table header
+  page.drawText('Artikel', {
+    x: 50,
+    y: yPosition,
+    size: 11,
+    font: helveticaBold
+  });
+  page.drawText('Menge', {
+    x: 350,
+    y: yPosition,
+    size: 11,
+    font: helveticaBold
+  });
+  page.drawText('Preis', {
+    x: 450,
+    y: yPosition,
+    size: 11,
+    font: helveticaBold
+  });
+
+  yPosition -= 5;
+  page.drawLine({
+    start: { x: 50, y: yPosition },
+    end: { x: 545, y: yPosition },
+    thickness: 1,
+    color: rgb(0, 0, 0)
+  });
+
+  yPosition -= 20;
+
+  // Line items
+  for (const item of orderData.line_items) {
+    if (yPosition < 100) {
+      // Nuova pagina se necessario
+      const newPage = pdfDoc.addPage([595, 842]);
+      yPosition = height - 50;
+    }
+
+    // Nome prodotto (con word wrap se troppo lungo)
+    const productName = item.name || '';
+    const maxWidth = 280;
+    let displayName = productName;
+
+    if (helveticaFont.widthOfTextAtSize(productName, 11) > maxWidth) {
+      displayName = productName.substring(0, 40) + '...';
+    }
+
+    page.drawText(displayName, {
+      x: 50,
+      y: yPosition,
+      size: 11,
+      font: helveticaFont
+    });
+
+    page.drawText(`${item.quantity}`, {
+      x: 350,
+      y: yPosition,
+      size: 11,
+      font: helveticaFont
+    });
+
+    const itemTotal = (parseFloat(item.price) * item.quantity).toFixed(2);
+    page.drawText(`${itemTotal} €`, {
+      x: 450,
+      y: yPosition,
+      size: 11,
+      font: helveticaFont
+    });
+
+    yPosition -= 20;
+  }
+
+  yPosition -= 10;
+  page.drawLine({
+    start: { x: 50, y: yPosition },
+    end: { x: 545, y: yPosition },
+    thickness: 1,
+    color: rgb(0, 0, 0)
+  });
+
+  yPosition -= 25;
+
+  // Totals
+  page.drawText('Zwischensumme:', {
+    x: 350,
+    y: yPosition,
+    size: 11,
+    font: helveticaFont
+  });
+  page.drawText(`${parseFloat(orderData.subtotal_price || 0).toFixed(2)} €`, {
+    x: 450,
+    y: yPosition,
+    size: 11,
+    font: helveticaFont
+  });
+
+  yPosition -= 20;
+
+  if (orderData.total_tax && parseFloat(orderData.total_tax) > 0) {
+    page.drawText('MwSt.:', {
+      x: 350,
+      y: yPosition,
+      size: 11,
+      font: helveticaFont
+    });
+    page.drawText(`${parseFloat(orderData.total_tax).toFixed(2)} €`, {
+      x: 450,
+      y: yPosition,
+      size: 11,
+      font: helveticaFont
+    });
+    yPosition -= 20;
+  }
+
+  if (orderData.total_shipping_price_set?.shop_money?.amount && parseFloat(orderData.total_shipping_price_set.shop_money.amount) > 0) {
+    page.drawText('Versand:', {
+      x: 350,
+      y: yPosition,
+      size: 11,
+      font: helveticaFont
+    });
+    page.drawText(`${parseFloat(orderData.total_shipping_price_set.shop_money.amount).toFixed(2)} €`, {
+      x: 450,
+      y: yPosition,
+      size: 11,
+      font: helveticaFont
+    });
+    yPosition -= 20;
+  }
+
+  yPosition -= 5;
+  page.drawLine({
+    start: { x: 350, y: yPosition },
+    end: { x: 545, y: yPosition },
+    thickness: 2,
+    color: rgb(0, 0, 0)
+  });
+
+  yPosition -= 25;
+
+  page.drawText('GESAMT:', {
+    x: 350,
+    y: yPosition,
+    size: 14,
+    font: helveticaBold
+  });
+  page.drawText(`${parseFloat(orderData.total_price || 0).toFixed(2)} €`, {
+    x: 450,
+    y: yPosition,
+    size: 14,
+    font: helveticaBold,
+    color: rgb(0.16, 0.65, 0.27) // #28a745
+  });
+
+  // Footer
+  yPosition = 50;
+  page.drawText('Vielen Dank für Ihre Bestellung bei Pflege Teufel!', {
+    x: 50,
+    y: yPosition,
+    size: 10,
+    font: helveticaFont,
+    color: rgb(0.4, 0.4, 0.4)
+  });
+
+  yPosition -= 15;
+  page.drawText('www.pflegeteufel.de | pflegeteufelagentur@gmail.com', {
+    x: 50,
+    y: yPosition,
+    size: 9,
+    font: helveticaFont,
+    color: rgb(0.4, 0.4, 0.4)
+  });
+
+  const pdfBytes = await pdfDoc.save();
+  console.log(`✅ PDF ordine generato: ${pdfBytes.length} bytes`);
+
+  return pdfBytes;
 }
 
 // ==================== AUTH UTILITY FUNCTIONS ====================
