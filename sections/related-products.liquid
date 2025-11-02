@@ -20,32 +20,35 @@ INSTALLAZIONE:
       <p class="section-subtitle-{{ section.id }}">{{ section.settings.subtitle | default: 'Kunden kauften auch diese Produkte' }}</p>
     </div>
 
-    <!-- Grid prodotti -->
+    <!-- Grid prodotti raggruppati per collezione -->
     <div class="products-grid-wrapper-{{ section.id }}">
-      <div class="products-grid-{{ section.id }}">
-        
-        {% comment %} Mostra tutti i prodotti della collection corrente {% endcomment %}
-        {% if product.collections.size > 0 %}
-          {% assign source_collection = product.collections.first %}
-        {% elsif section.settings.collection != blank %}
-          {% assign source_collection = collections[section.settings.collection] %}
-        {% else %}
-          {% assign source_collection = collections.all %}
-        {% endif %}
 
-        {% assign products_count = 0 %}
-        {% assign products_limit = section.settings.products_limit | default: 50 %}
+      {% comment %} Ottieni tutte le collezioni {% endcomment %}
+      {% assign all_collections = collections | sort: 'title' %}
+      {% assign products_limit = section.settings.products_limit | default: 50 %}
+      {% assign total_products_shown = 0 %}
 
-        {% comment %} Mostra tutti i prodotti della collection {% endcomment %}
-        {% for related_product in source_collection.products %}
-          {% if products_count >= products_limit %}
-            {% break %}
-          {% endif %}
-          
-          {% if related_product.available %}
-            {% assign products_count = products_count | plus: 1 %}
-            
-            <div class="product-card-{{ section.id }}">
+      {% comment %} Loop attraverso ogni collezione {% endcomment %}
+      {% for collection in all_collections %}
+        {% if collection.products.size > 0 and total_products_shown < products_limit %}
+
+          <!-- Intestazione collezione -->
+          <div class="collection-header-{{ section.id }}">
+            <h3 class="collection-title-{{ section.id }}">{{ collection.title }}</h3>
+            <div class="collection-divider-{{ section.id }}"></div>
+          </div>
+
+          <!-- Grid prodotti di questa collezione -->
+          <div class="products-grid-{{ section.id }}">
+            {% for related_product in collection.products %}
+              {% if total_products_shown >= products_limit %}
+                {% break %}
+              {% endif %}
+
+              {% if related_product.available %}
+                {% assign total_products_shown = total_products_shown | plus: 1 %}
+
+                <div class="product-card-{{ section.id }}">
               
               <!-- Immagine prodotto -->
               <div class="product-image-wrapper-{{ section.id }}">
@@ -136,10 +139,15 @@ INSTALLAZIONE:
 
               </div>
             </div>
-          {% endif %}
-        {% endfor %}
+              {% endif %}
+            {% endfor %}
+          </div>
+          <!-- Fine grid prodotti collezione -->
 
-      </div>
+        {% endif %}
+      {% endfor %}
+      <!-- Fine loop collezioni -->
+
     </div>
   </div>
 </section>
@@ -193,11 +201,37 @@ INSTALLAZIONE:
   overflow: hidden;
 }
 
+/* Intestazione collezione */
+.collection-header-{{ section.id }} {
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.collection-header-{{ section.id }}:first-child {
+  margin-top: 0;
+}
+
+.collection-title-{{ section.id }} {
+  font-size: 24px;
+  font-weight: 700;
+  color: #C12624;
+  margin-bottom: 10px;
+  text-align: left;
+}
+
+.collection-divider-{{ section.id }} {
+  height: 3px;
+  background: linear-gradient(90deg, #C12624, #A01F1D, transparent);
+  border-radius: 2px;
+  margin-bottom: 20px;
+}
+
 /* Grid prodotti */
 .products-grid-{{ section.id }} {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 20px;
+  margin-bottom: 40px;
 }
 
 /* Card prodotto */
