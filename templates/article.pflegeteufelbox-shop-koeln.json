@@ -1,0 +1,474 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "hero_39xnHj": {
+      "type": "hero",
+      "name": "t:names.hero",
+      "settings": {
+        "link": "",
+        "open_in_new_tab": false,
+        "media_type_1": "image",
+        "image_1": "shopify://shop_images/WhatsApp_Image_2025-11-02_at_7.16.19_PM.jpg",
+        "media_type_2": "image",
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 0,
+        "section_width": "page-width",
+        "section_height": "large",
+        "section_height_custom": 50,
+        "color_scheme": "scheme-5",
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "gradient",
+        "gradient_direction": "to top",
+        "blurred_reflection": true,
+        "reflection_opacity": 80,
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "section": {
+      "type": "main-blog-post",
+      "blocks": {
+        "blog-post-title": {
+          "type": "text",
+          "name": "Title",
+          "disabled": true,
+          "static": true,
+          "settings": {
+            "text": "<h1>{{ article.title }}</h1>",
+            "width": "100%",
+            "max_width": "normal",
+            "alignment": "center",
+            "type_preset": "h2",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "blog-post-details": {
+          "type": "_blog-post-info-text",
+          "name": "Blog post details",
+          "disabled": true,
+          "static": true,
+          "settings": {
+            "show_date": false,
+            "show_author": false,
+            "type_preset": "",
+            "alignment": "center",
+            "show_alignment": true,
+            "padding-block-start": 24,
+            "padding-block-end": 0
+          },
+          "blocks": {}
+        },
+        "blog-post-image": {
+          "type": "image",
+          "name": "Featured image",
+          "disabled": true,
+          "static": true,
+          "settings": {
+            "image": "shopify://shop_images/world_aids_day.jpg",
+            "link": "",
+            "image_ratio": "landscape",
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fit-content",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "blog-post-content": {
+          "type": "_blog-post-content",
+          "disabled": true,
+          "static": true,
+          "settings": {},
+          "blocks": {}
+        }
+      },
+      "disabled": true,
+      "settings": {
+        "content_direction": "column",
+        "gap": 0,
+        "color_scheme": "",
+        "padding-block-start": 20,
+        "padding-block-end": 20
+      }
+    },
+    "section_VxjhjE": {
+      "type": "section",
+      "blocks": {
+        "custom_liquid_z8VUPj": {
+          "type": "custom-liquid",
+          "name": "t:names.custom_liquid",
+          "settings": {
+            "custom_liquid": "<!-- Blog Post Template - Pflege Teufel - Clean & Simple -->\n<div class=\"pflegeteufel-blog-wrapper\">\n<style>\n    /* Isolamento completo per evitare conflitti */\n    .pflegeteufel-blog-wrapper {\n        all: initial;\n        display: block;\n        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n        isolation: isolate;\n        contain: layout style;\n        line-height: 1.6;\n        color: #333;\n    }\n\n    .pflegeteufel-blog-wrapper *,\n    .pflegeteufel-blog-wrapper *::before,\n    .pflegeteufel-blog-wrapper *::after {\n        box-sizing: border-box;\n        margin: 0;\n        padding: 0;\n    }\n\n    /* Container principale */\n    .pflegeteufel-blog-wrapper .blog-container {\n        max-width: 800px;\n        margin: 0 auto;\n        padding: 40px 20px;\n        background: white;\n        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;\n    }\n\n    /* Header del blog */\n    .pflegeteufel-blog-wrapper .blog-header {\n        text-align: center;\n        margin-bottom: 50px;\n        padding-bottom: 30px;\n        border-bottom: 1px solid #e1e5e9;\n    }\n\n    .pflegeteufel-blog-wrapper .blog-category {\n        color: #C12624;\n        font-size: 14px;\n        font-weight: 600;\n        text-transform: uppercase;\n        letter-spacing: 1px;\n        margin-bottom: 15px;\n    }\n\n    .pflegeteufel-blog-wrapper .blog-title {\n        font-size: 2.5rem;\n        font-weight: 700;\n        color: #1a1a1a;\n        line-height: 1.2;\n        margin-bottom: 20px;\n        font-family: Georgia, 'Times New Roman', serif;\n    }\n\n    .pflegeteufel-blog-wrapper .blog-subtitle {\n        font-size: 1.3rem;\n        color: #666;\n        font-weight: 400;\n        line-height: 1.4;\n        margin-bottom: 25px;\n    }\n\n    .pflegeteufel-blog-wrapper .blog-meta {\n        display: flex;\n        justify-content: center;\n        align-items: center;\n        gap: 20px;\n        font-size: 14px;\n        color: #888;\n        margin-bottom: 20px;\n    }\n\n    .pflegeteufel-blog-wrapper .blog-meta-item {\n        display: flex;\n        align-items: center;\n        gap: 5px;\n    }\n\n    .pflegeteufel-blog-wrapper .blog-description {\n        font-size: 1.1rem;\n        color: #555;\n        line-height: 1.6;\n        font-style: italic;\n    }\n\n    /* Contenuto principale */\n    .pflegeteufel-blog-wrapper .blog-content {\n        margin-bottom: 50px;\n    }\n\n    .pflegeteufel-blog-wrapper .blog-content h2 {\n        font-size: 1.8rem;\n        color: #1a1a1a;\n        font-weight: 600;\n        margin: 40px 0 20px 0;\n        line-height: 1.3;\n        font-family: Georgia, 'Times New Roman', serif;\n    }\n\n    .pflegeteufel-blog-wrapper .blog-content h3 {\n        font-size: 1.4rem;\n        color: #1a1a1a;\n        font-weight: 600;\n        margin: 30px 0 15px 0;\n        line-height: 1.3;\n    }\n\n    .pflegeteufel-blog-wrapper .blog-content h4 {\n        font-size: 1.2rem;\n        color: #1a1a1a;\n        font-weight: 600;\n        margin: 25px 0 10px 0;\n        line-height: 1.3;\n    }\n\n    .pflegeteufel-blog-wrapper .blog-content p {\n        font-size: 1.1rem;\n        line-height: 1.7;\n        color: #333;\n        margin-bottom: 20px;\n    }\n\n    .pflegeteufel-blog-wrapper .blog-content ul,\n    .pflegeteufel-blog-wrapper .blog-content ol {\n        margin: 20px 0;\n        padding-left: 30px;\n    }\n\n    .pflegeteufel-blog-wrapper .blog-content li {\n        font-size: 1.1rem;\n        line-height: 1.6;\n        color: #333;\n        margin-bottom: 8px;\n    }\n\n    .pflegeteufel-blog-wrapper .blog-content blockquote {\n        border-left: 4px solid #C12624;\n        padding: 20px 25px;\n        margin: 30px 0;\n        background: #f9f9f9;\n        font-style: italic;\n        color: #555;\n    }\n\n    .pflegeteufel-blog-wrapper .blog-content a {\n        color: #C12624;\n        text-decoration: underline;\n    }\n\n    .pflegeteufel-blog-wrapper .blog-content a:hover {\n        color: #A01F1D;\n    }\n\n    /* Highlight box */\n    .pflegeteufel-blog-wrapper .highlight-box {\n        background: #f8f9fa;\n        border: 1px solid #e9ecef;\n        border-left: 4px solid #C12624;\n        padding: 25px;\n        margin: 30px 0;\n        border-radius: 4px;\n    }\n\n    .pflegeteufel-blog-wrapper .highlight-title {\n        font-size: 1.1rem;\n        font-weight: 600;\n        color: #C12624;\n        margin-bottom: 10px;\n    }\n\n    .pflegeteufel-blog-wrapper .highlight-text {\n        font-size: 1rem;\n        line-height: 1.6;\n        color: #555;\n    }\n\n    /* Author box */\n    .pflegeteufel-blog-wrapper .author-section {\n        background: #f8f9fa;\n        padding: 30px;\n        border-radius: 8px;\n        margin: 40px 0;\n        border: 1px solid #e9ecef;\n    }\n\n    .pflegeteufel-blog-wrapper .author-info {\n        display: flex;\n        align-items: center;\n        gap: 20px;\n    }\n\n    .pflegeteufel-blog-wrapper .author-avatar {\n        width: 60px;\n        height: 60px;\n        background: #C12624;\n        border-radius: 50%;\n        display: flex;\n        align-items: center;\n        justify-content: center;\n        color: white;\n        font-size: 24px;\n        flex-shrink: 0;\n    }\n\n    .pflegeteufel-blog-wrapper .author-details h4 {\n        font-size: 1.2rem;\n        color: #1a1a1a;\n        margin-bottom: 5px;\n    }\n\n    .pflegeteufel-blog-wrapper .author-details p {\n        font-size: 0.95rem;\n        color: #666;\n        margin: 0;\n    }\n\n    /* Related articles */\n    .pflegeteufel-blog-wrapper .related-section {\n        background: #f8f9fa;\n        padding: 30px;\n        border-radius: 8px;\n        margin: 40px 0;\n        border: 1px solid #e9ecef;\n    }\n\n    .pflegeteufel-blog-wrapper .related-title {\n        font-size: 1.3rem;\n        color: #1a1a1a;\n        font-weight: 600;\n        margin-bottom: 20px;\n        text-align: center;\n    }\n\n    .pflegeteufel-blog-wrapper .related-article {\n        padding: 15px;\n        margin-bottom: 10px;\n        background: white;\n        border-radius: 4px;\n        border: 1px solid #e9ecef;\n        transition: box-shadow 0.2s ease;\n    }\n\n    .pflegeteufel-blog-wrapper .related-article:hover {\n        box-shadow: 0 2px 8px rgba(0,0,0,0.1);\n    }\n\n    .pflegeteufel-blog-wrapper .related-article a {\n        color: #333;\n        text-decoration: none;\n        font-weight: 500;\n    }\n\n    .pflegeteufel-blog-wrapper .related-article a:hover {\n        color: #C12624;\n    }\n\n    /* Navigation */\n    .pflegeteufel-blog-wrapper .blog-navigation {\n        display: grid;\n        grid-template-columns: 1fr 1fr;\n        gap: 20px;\n        margin: 40px 0;\n        padding-top: 30px;\n        border-top: 1px solid #e1e5e9;\n    }\n\n    .pflegeteufel-blog-wrapper .nav-button {\n        padding: 20px;\n        background: #f8f9fa;\n        border: 1px solid #e9ecef;\n        border-radius: 8px;\n        text-decoration: none;\n        color: #333;\n        transition: all 0.2s ease;\n        display: block;\n    }\n\n    .pflegeteufel-blog-wrapper .nav-button:hover {\n        background: #e9ecef;\n        border-color: #C12624;\n    }\n\n    .pflegeteufel-blog-wrapper .nav-label {\n        font-size: 0.9rem;\n        color: #888;\n        font-weight: 500;\n        margin-bottom: 5px;\n        display: block;\n    }\n\n    .pflegeteufel-blog-wrapper .nav-title {\n        font-size: 1rem;\n        color: #333;\n        font-weight: 600;\n        line-height: 1.3;\n    }\n\n\n\n    /* Responsive */\n    @media (max-width: 768px) {\n        .pflegeteufel-blog-wrapper .blog-container {\n            padding: 20px 15px;\n        }\n        \n        .pflegeteufel-blog-wrapper .blog-title {\n            font-size: 2rem;\n        }\n        \n        .pflegeteufel-blog-wrapper .blog-subtitle {\n            font-size: 1.1rem;\n        }\n        \n        .pflegeteufel-blog-wrapper .blog-meta {\n            flex-direction: column;\n            gap: 10px;\n        }\n        \n        .pflegeteufel-blog-wrapper .blog-content h2 {\n            font-size: 1.5rem;\n        }\n        \n        .pflegeteufel-blog-wrapper .blog-content h3 {\n            font-size: 1.3rem;\n        }\n        \n        .pflegeteufel-blog-wrapper .blog-content p {\n            font-size: 1rem;\n        }\n        \n        .pflegeteufel-blog-wrapper .blog-navigation {\n            grid-template-columns: 1fr;\n        }\n        \n        .pflegeteufel-blog-wrapper .author-info {\n            flex-direction: column;\n            text-align: center;\n        }\n    }\n\n    @media (max-width: 480px) {\n        .pflegeteufel-blog-wrapper .blog-container {\n            padding: 15px 10px;\n        }\n        \n        .pflegeteufel-blog-wrapper .blog-title {\n            font-size: 1.7rem;\n        }\n        \n        .pflegeteufel-blog-wrapper .author-section,\n        .pflegeteufel-blog-wrapper .related-section,\n        .pflegeteufel-blog-wrapper .blog-cta {\n            padding: 20px 15px;\n        }\n    }\n</style>\n\n<div class=\"blog-container\">\n    <!-- Blog Header -->\n    <header class=\"blog-header\">\n        <div class=\"blog-category\">Aktuelles</div>\n        <h1 class=\"blog-title\">Neu im Herzen von Köln: Der Pflegeteufelbox-Shop – Pflege zum Anfassen!</h1>\n        <h2 class=\"blog-subtitle\">Ihr neuer Treffpunkt für individuelle Pflegeboxen und persönliche Beratung</h2>\n        \n        <div class=\"blog-meta\">\n            <div class=\"blog-meta-item\">\n                <span>📅</span>\n                <span>02.11.2025</span>\n            </div>\n            <div class=\"blog-meta-item\">\n                <span>👤</span>\n                <span>Pflege Teufel Team</span>\n            </div>\n            <div class=\"blog-meta-item\">\n                <span>⏱️</span>\n                <span>4 Min. Lesezeit</span>\n            </div>\n        </div>\n    </header>\n\n    <!-- Blog Content -->\n    <article class=\"blog-content\">\n        <p>Ab sofort wird Pflege bei uns noch persönlicher und einfacher! Unser brandneuer Pflegeteufelbox-Shop öffnet jeden <strong>Montag und Donnerstag von 10:00 bis 18:00 Uhr</strong> seine Türen – und lädt Sie herzlich ein, Ihre individuelle Pflegebox direkt vor Ort zusammenzustellen.</p>\n\n        <h2>Ihre Pflegebox – direkt zum Abholen</h2>\n\n        <p>Wenn die Kassenzustimmung bereits vorliegt, können Sie Ihre Pflegebox ganz bequem bei uns im Shop abholen – schnell, unkompliziert und mit einem Lächeln. Und das Beste: Sie können sich vor Ort beraten lassen, welche Produkte für Sie am besten geeignet sind.</p>\n\n        <div class=\"highlight-box\">\n            <h4 class=\"highlight-title\">🕓 Öffnungszeiten</h4>\n            <p class=\"highlight-text\"><strong>Montag & Donnerstag: 10:00 – 18:00 Uhr</strong><br>Ihr Partner für Pflege mit Herz und Teufelspower!</p>\n        </div>\n\n        <h3>Keine Kassenzustimmung? Kein Problem!</h3>\n        \n        <p>Falls Ihre Zustimmung von der Krankenkasse noch aussteht, ist das kein Problem: Sie können alle Produkte auch direkt im Shop kaufen und bar bezahlen.</p>\n\n        <p>Von praktischen Pflegehilfsmitteln über Einmalhandschuhe bis hin zu Desinfektionsmitteln – alles, was den Pflegealltag leichter macht, finden Sie bei uns an einem Ort.</p>\n\n        <h2>Was Sie in unserem Shop erwartet</h2>\n\n        <h3>Umfangreiches Produktsortiment</h3>\n\n        <p>Unser Pflegeteufelbox-Shop bietet Ihnen eine breite Auswahl an Pflegeprodukten:</p>\n\n        <ul>\n            <li><strong>Einmalhandschuhe</strong> in verschiedenen Größen und Materialien (Nitril, Vinyl, Latex)</li>\n            <li><strong>Desinfektionsmittel</strong> für Hände und Flächen</li>\n            <li><strong>Schutzausrüstung</strong> wie FFP2-Masken und Mundschutz</li>\n            <li><strong>Bettschutzeinlagen</strong> und Inkontinenzprodukte</li>\n            <li><strong>Pflegehilfsmittel</strong> für den täglichen Bedarf</li>\n            <li><strong>Spezialprodukte</strong> nach individuellen Anforderungen</li>\n        </ul>\n\n        <h3>Persönliche Beratung vor Ort</h3>\n\n        <p>Unser Team vom Pflegeteufel steht Ihnen mit Herz, Humor und Fachwissen zur Seite – damit Sie immer das bekommen, was Sie wirklich brauchen.</p>\n\n        <ul>\n            <li><strong>Individuelle Beratung:</strong> Welche Produkte passen zu Ihren Bedürfnissen?</li>\n            <li><strong>Produktvorführung:</strong> Sehen und fühlen Sie die Qualität vor dem Kauf</li>\n            <li><strong>Pflegetipps:</strong> Praktische Ratschläge aus erster Hand</li>\n            <li><strong>Kassenfragen:</strong> Hilfe bei Anträgen und Genehmigungen</li>\n        </ul>\n\n        <blockquote>\n            <p>\"Pflege darf auch Spaß machen – besonders, wenn der Teufel im Detail steckt!\"</p>\n        </blockquote>\n\n        <h2>So funktioniert's</h2>\n\n        <h3>Mit Kassenzustimmung</h3>\n\n        <ol>\n            <li><strong>Antrag stellen:</strong> Beantragen Sie Ihre Pflegebox bei Ihrer Krankenkasse</li>\n            <li><strong>Zustimmung erhalten:</strong> Warten Sie auf die Genehmigung (wir helfen gerne dabei!)</li>\n            <li><strong>Shop besuchen:</strong> Kommen Sie montags oder donnerstags vorbei</li>\n            <li><strong>Box zusammenstellen:</strong> Wählen Sie Ihre Produkte mit unserer Beratung</li>\n            <li><strong>Kostenlos mitnehmen:</strong> Ihre Pflegebox ist für Sie kostenfrei!</li>\n        </ol>\n\n        <h3>Ohne Kassenzustimmung</h3>\n\n        <ol>\n            <li><strong>Shop besuchen:</strong> Einfach zu unseren Öffnungszeiten vorbeikommen</li>\n            <li><strong>Produkte auswählen:</strong> Stöbern Sie durch unser Sortiment</li>\n            <li><strong>Beraten lassen:</strong> Unsere Experten helfen bei der Auswahl</li>\n            <li><strong>Bar bezahlen:</strong> Schnell und unkompliziert an der Kasse</li>\n            <li><strong>Direkt mitnehmen:</strong> Sofort einsatzbereit für Ihre Pflege</li>\n        </ol>\n\n        <h2>Warum unser Shop besonders ist</h2>\n\n        <h3>Persönlicher Service statt Online-Anonymität</h3>\n\n        <p>In unserem Shop erleben Sie Pflege mit allen Sinnen:</p>\n\n        <ul>\n            <li><strong>Anfassen erlaubt:</strong> Testen Sie Produkte vor dem Kauf</li>\n            <li><strong>Echte Menschen:</strong> Keine Chatbots, sondern persönliche Beratung</li>\n            <li><strong>Sofort verfügbar:</strong> Keine Wartezeiten durch Versand</li>\n            <li><strong>Flexible Auswahl:</strong> Ändern Sie Ihre Pflegebox-Zusammenstellung spontan</li>\n        </ul>\n\n        <h3>Zentrale Lage in Köln</h3>\n\n        <p>Unser Shop liegt im Herzen von Köln – gut erreichbar mit öffentlichen Verkehrsmitteln und Auto. Parkplätze sind in der Nähe vorhanden.</p>\n\n        <div class=\"highlight-box\">\n            <h4 class=\"highlight-title\">📍 Standort</h4>\n            <p class=\"highlight-text\">Pflegeteufelbox-Shop<br>Köln – im Herzen der Stadt<br><br>Besuchen Sie uns zu unseren Öffnungszeiten oder kontaktieren Sie uns für weitere Informationen!</p>\n        </div>\n\n        <h2>Unser Motto: Pflege mit Herz und Humor</h2>\n\n        <p>Bei uns im Pflegeteufelbox-Shop erwartet Sie nicht nur erstklassige Qualität, sondern auch eine Atmosphäre, in der Sie sich wohlfühlen. Wir glauben daran, dass Pflege nicht grau und ernst sein muss – mit ein bisschen Teufelspower wird auch der Pflegealltag leichter!</p>\n\n        <h3>Mehr als nur ein Shop</h3>\n\n        <ul>\n            <li><strong>Treffpunkt:</strong> Austausch mit anderen Pflegenden und Angehörigen</li>\n            <li><strong>Informationszentrum:</strong> Neuigkeiten aus der Pflegewelt</li>\n            <li><strong>Anlaufstelle:</strong> Bei Fragen rund um Pflege und Krankenkasse</li>\n            <li><strong>Wohlfühlort:</strong> Freundliche Atmosphäre mit einem Lächeln</li>\n        </ul>\n\n        <h2>Kommen Sie vorbei!</h2>\n\n        <p>Wir freuen uns darauf, Sie persönlich in unserem Pflegeteufelbox-Shop begrüßen zu dürfen. Ob Sie Ihre genehmigte Pflegebox abholen möchten oder spontan Pflegeprodukte benötigen – bei uns sind Sie richtig!</p>\n\n        <p><strong>Ihre Vorteile auf einen Blick:</strong></p>\n\n        <ul>\n            <li>Persönliche Beratung von Pflegeexperten</li>\n            <li>Große Produktauswahl an einem Ort</li>\n            <li>Bequeme Abholung Ihrer Pflegebox</li>\n            <li>Direktkauf ohne Wartezeiten</li>\n            <li>Zentrale Lage in Köln</li>\n            <li>Flexible Öffnungszeiten (Mo & Do)</li>\n        </ul>\n\n        <p>Erleben Sie Pflege neu – im Pflegeteufelbox-Shop, wo Qualität auf Herzlichkeit trifft! Wir sehen uns montags oder donnerstags von 10:00 bis 18:00 Uhr.</p>\n\n        <p><strong>Ihr Pflege Teufel Team – Mit Herz und Teufelspower für Sie da!</strong></p>\n    </article>\n\n    <!-- Author Section -->\n    <section class=\"author-section\">\n        <div class=\"author-info\">\n            <div class=\"author-avatar\">👨‍⚕️</div>\n            <div class=\"author-details\">\n                <h4>Pflege Teufel Team</h4>\n                <p>Das Team von Pflege Teufel besteht aus erfahrenen Pflegekräften und Experten, die sich täglich für die bestmögliche Betreuung unserer Klienten einsetzen.</p>\n            </div>\n        </div>\n    </section>\n\n</div>\n</div>"
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "custom_liquid_z8VUPj"
+      ],
+      "name": "t:names.custom_section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "center",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    },
+    "section_7hXTQ6": {
+      "type": "section",
+      "blocks": {
+        "group_V77x64": {
+          "type": "group",
+          "name": "t:names.group",
+          "settings": {
+            "link": "",
+            "open_in_new_tab": false,
+            "content_direction": "row",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "center",
+            "vertical_alignment": "center",
+            "align_baseline": false,
+            "horizontal_alignment_flex_direction_column": "center",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 12,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "custom_height": 100,
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "background_media": "none",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 20,
+            "toggle_overlay": false,
+            "overlay_color": "#00000026",
+            "overlay_style": "solid",
+            "gradient_direction": "to top",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "image_1": {
+              "type": "image",
+              "name": "t:names.image",
+              "settings": {
+                "image": "shopify://shop_images/WhatsApp_Image_2025-11-02_at_7.16.20_PM_3.jpg",
+                "link": "",
+                "image_ratio": "adapt",
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "image_2": {
+              "type": "image",
+              "name": "t:names.image",
+              "settings": {
+                "image": "shopify://shop_images/WhatsApp_Image_2025-11-02_at_7.16.20_PM_4.jpg",
+                "link": "",
+                "image_ratio": "adapt",
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "image_3": {
+              "type": "image",
+              "name": "t:names.image",
+              "settings": {
+                "image": "shopify://shop_images/WhatsApp_Image_2025-11-02_at_7.16.19_PM_2.jpg",
+                "link": "",
+                "image_ratio": "adapt",
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "image_4": {
+              "type": "image",
+              "name": "t:names.image",
+              "settings": {
+                "image": "shopify://shop_images/WhatsApp_Image_2025-11-02_at_7.16.20_PM_2.jpg",
+                "link": "",
+                "image_ratio": "adapt",
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "image_1",
+            "image_2",
+            "image_3",
+            "image_4"
+          ]
+        },
+        "group_2": {
+          "type": "group",
+          "name": "t:names.group",
+          "settings": {
+            "link": "",
+            "open_in_new_tab": false,
+            "content_direction": "row",
+            "vertical_on_mobile": true,
+            "horizontal_alignment": "center",
+            "vertical_alignment": "center",
+            "align_baseline": false,
+            "horizontal_alignment_flex_direction_column": "center",
+            "vertical_alignment_flex_direction_column": "center",
+            "gap": 12,
+            "width": "fill",
+            "custom_width": 100,
+            "width_mobile": "fill",
+            "custom_width_mobile": 100,
+            "height": "fit",
+            "custom_height": 100,
+            "inherit_color_scheme": true,
+            "color_scheme": "",
+            "background_media": "none",
+            "video_position": "cover",
+            "background_image_position": "cover",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_radius": 20,
+            "toggle_overlay": false,
+            "overlay_color": "#00000026",
+            "overlay_style": "solid",
+            "gradient_direction": "to top",
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "image_5": {
+              "type": "image",
+              "name": "t:names.image",
+              "settings": {
+                "image": "shopify://shop_images/WhatsApp_Image_2025-11-02_at_7.16.20_PM.jpg",
+                "link": "",
+                "image_ratio": "adapt",
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "image_6": {
+              "type": "image",
+              "name": "t:names.image",
+              "settings": {
+                "image": "shopify://shop_images/WhatsApp_Image_2025-11-02_at_7.16.20_PM_1.jpg",
+                "link": "",
+                "image_ratio": "adapt",
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "image_7": {
+              "type": "image",
+              "name": "t:names.image",
+              "settings": {
+                "image": "shopify://shop_images/WhatsApp_Image_2025-11-02_at_7.16.19_PM_1.jpg",
+                "link": "",
+                "image_ratio": "adapt",
+                "width": "fill",
+                "custom_width": 100,
+                "width_mobile": "fill",
+                "custom_width_mobile": 100,
+                "height": "fit",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "image_5",
+            "image_6",
+            "image_7"
+          ]
+        }
+      },
+      "block_order": [
+        "group_V77x64",
+        "group_2"
+      ],
+      "name": "t:names.custom_section",
+      "settings": {
+        "content_direction": "column",
+        "vertical_on_mobile": true,
+        "horizontal_alignment": "flex-start",
+        "vertical_alignment": "center",
+        "align_baseline": false,
+        "horizontal_alignment_flex_direction_column": "flex-start",
+        "vertical_alignment_flex_direction_column": "center",
+        "gap": 12,
+        "section_width": "page-width",
+        "section_height": "",
+        "section_height_custom": 50,
+        "color_scheme": "",
+        "background_media": "none",
+        "video_position": "cover",
+        "background_image_position": "cover",
+        "border": "none",
+        "border_width": 1,
+        "border_opacity": 100,
+        "border_radius": 0,
+        "toggle_overlay": false,
+        "overlay_color": "#00000026",
+        "overlay_style": "solid",
+        "gradient_direction": "to top",
+        "padding-block-start": 0,
+        "padding-block-end": 0
+      }
+    }
+  },
+  "order": [
+    "hero_39xnHj",
+    "section",
+    "section_VxjhjE",
+    "section_7hXTQ6"
+  ]
+}
