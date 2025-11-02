@@ -578,8 +578,10 @@ function initializeCheckboxes() {
         });
 
         // Checkbox change handler (for when checkbox is clicked directly)
-        checkbox.addEventListener('change', function(e) {
-            handleCheckboxChange(checkbox, card);
+        checkbox.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            handleCheckboxToggle(checkbox, card);
         });
     });
 }
@@ -598,28 +600,6 @@ function handleCheckboxToggle(checkbox, card) {
 
     // Toggle the checkbox
     checkbox.checked = !checkbox.checked;
-
-    // Update card styling
-    if (checkbox.checked) {
-        card.classList.add('checked');
-    } else {
-        card.classList.remove('checked');
-    }
-}
-
-// Handle direct checkbox click
-function handleCheckboxChange(checkbox, card) {
-    // Count currently checked checkboxes
-    const allCheckboxes = document.querySelectorAll('.checkbox-group input[type="checkbox"]');
-    const checkedCount = Array.from(allCheckboxes).filter(cb => cb.checked).length;
-
-    // If just checked and now over limit, uncheck and show alert
-    if (checkbox.checked && checkedCount > 5) {
-        checkbox.checked = false;
-        alert('⚠️ Sie können maximal 5 Produkte auswählen.');
-        card.classList.remove('checked');
-        return;
-    }
 
     // Update card styling
     if (checkbox.checked) {
