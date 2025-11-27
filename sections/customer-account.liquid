@@ -32,6 +32,28 @@
 
       <!-- Account content -->
       <div id="account-content" class="account-content" style="display: none;">
+
+        <!-- Pflegebox CTA Card - visibile solo con tag pflegemittel_ok -->
+        <div id="pflegebox-cta-card" class="pflegebox-cta-card" style="display: none;">
+          <div class="pflegebox-cta-confetti">🎉</div>
+          <div class="pflegebox-cta-badge">GENEHMIGT</div>
+          <h2 class="pflegebox-cta-title">Herzlichen Glückwunsch!</h2>
+          <p class="pflegebox-cta-subtitle">Ihre Pflegekasse hat Ihren Antrag genehmigt</p>
+          <div class="pflegebox-cta-amount">
+            <span class="pflegebox-cta-euro">💶</span>
+            <span class="pflegebox-cta-value">42,00€</span>
+            <span class="pflegebox-cta-period">monatlich</span>
+          </div>
+          <p class="pflegebox-cta-desc">
+            Sie haben jetzt Anspruch auf bis zu <strong>42€ monatliche Erstattung</strong> für Pflegehilfsmittel.
+            Stellen Sie sich jetzt Ihre persönliche Pflegebox zusammen – die Kosten werden vollständig von Ihrer Pflegekasse übernommen!
+          </p>
+          <a href="/collections/pflegebox" class="pflegebox-cta-button">
+            🛒 Jetzt Pflegebox zusammenstellen
+          </a>
+          <p class="pflegebox-cta-hint">Kostenlose Lieferung jeden Monat direkt zu Ihnen nach Hause</p>
+        </div>
+
         <div class="account-tabs">
           <button class="tab-btn active" data-tab="profile">Profil</button>
           <button class="tab-btn" data-tab="orders">Bestellungen</button>
@@ -279,6 +301,19 @@
   function displayCustomer() {
     document.getElementById('welcome-title').textContent = `Willkommen, ${currentCustomer.vorname}!`;
     document.getElementById('customer-email').textContent = currentCustomer.email;
+
+    // Mostra la CTA Pflegebox se il cliente ha il tag pflegemittel_ok
+    const pflegeboxCtaCard = document.getElementById('pflegebox-cta-card');
+    if (pflegeboxCtaCard) {
+      const tags = currentCustomer.tags || '';
+      if (tags.includes('pflegemittel_ok')) {
+        pflegeboxCtaCard.style.display = 'block';
+        console.log('[Account] Cliente con tag pflegemittel_ok, mostra CTA Pflegebox');
+      } else {
+        pflegeboxCtaCard.style.display = 'none';
+        console.log('[Account] Cliente senza tag pflegemittel_ok, CTA nascosta');
+      }
+    }
 
     // Popola form
     if (currentCustomer.anrede) {
@@ -767,6 +802,172 @@
 
   .tab-btn {
     white-space: nowrap;
+  }
+}
+
+/* Pflegebox CTA Card - Mega Banner per clienti approvati */
+.pflegebox-cta-card {
+  background: linear-gradient(135deg, #fef6f6 0%, #fff5f5 50%, #ffffff 100%);
+  border: 3px solid #C12624;
+  border-radius: 20px;
+  padding: 40px;
+  margin-bottom: 35px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(193, 38, 36, 0.15);
+  animation: pflegeboxCtaFadeIn 0.6s ease-out;
+}
+
+@keyframes pflegeboxCtaFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.pflegebox-cta-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, #C12624 0%, #28a745 100%);
+}
+
+.pflegebox-cta-confetti {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  animation: pflegeboxCtaBounce 2s infinite;
+}
+
+@keyframes pflegeboxCtaBounce {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+}
+
+.pflegebox-cta-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 8px 25px;
+  border-radius: 30px;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+}
+
+.pflegebox-cta-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #C12624;
+  margin: 0 0 8px 0;
+}
+
+.pflegebox-cta-subtitle {
+  font-size: 1.1rem;
+  color: #555;
+  margin: 0 0 25px 0;
+}
+
+.pflegebox-cta-amount {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.pflegebox-cta-euro {
+  font-size: 2.5rem;
+}
+
+.pflegebox-cta-value {
+  font-size: 3rem;
+  font-weight: 900;
+  color: #28a745;
+  text-shadow: 2px 2px 4px rgba(40, 167, 69, 0.2);
+}
+
+.pflegebox-cta-period {
+  font-size: 1.2rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.pflegebox-cta-desc {
+  font-size: 1.05rem;
+  color: #555;
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto 30px;
+}
+
+.pflegebox-cta-button {
+  display: inline-block;
+  background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%);
+  color: white;
+  font-size: 1.3rem;
+  font-weight: 700;
+  padding: 18px 45px;
+  border-radius: 50px;
+  text-decoration: none;
+  box-shadow: 0 8px 25px rgba(193, 38, 36, 0.4);
+  transition: all 0.3s ease;
+  animation: pflegeboxCtaPulse 2.5s infinite;
+}
+
+.pflegebox-cta-button:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 12px 35px rgba(193, 38, 36, 0.5);
+  color: white;
+}
+
+@keyframes pflegeboxCtaPulse {
+  0%, 100% {
+    box-shadow: 0 8px 25px rgba(193, 38, 36, 0.4);
+  }
+  50% {
+    box-shadow: 0 8px 25px rgba(193, 38, 36, 0.4),
+                0 0 40px rgba(193, 38, 36, 0.3);
+  }
+}
+
+.pflegebox-cta-hint {
+  font-size: 0.9rem;
+  color: #888;
+  margin: 20px 0 0 0;
+}
+
+@media (max-width: 768px) {
+  .pflegebox-cta-card {
+    padding: 30px 20px;
+  }
+
+  .pflegebox-cta-title {
+    font-size: 1.5rem;
+  }
+
+  .pflegebox-cta-value {
+    font-size: 2.2rem;
+  }
+
+  .pflegebox-cta-button {
+    font-size: 1.1rem;
+    padding: 15px 35px;
+  }
+
+  .pflegebox-cta-amount {
+    flex-direction: column;
+    gap: 5px;
   }
 }
 </style>
