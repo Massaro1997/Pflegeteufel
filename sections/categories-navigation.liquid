@@ -1,126 +1,272 @@
 {% comment %}
-  Section: Categories Navigation Bar
-  Barra di navigazione categorie - completamente isolata
-  Da inserire sotto la navbar principale
+  Section: Categories Navigation
+  - Desktop: Sidebar laterale fissa a sinistra
+  - Mobile: Barra orizzontale sopra
+  Completamente isolata con CSS namespaced
 {% endcomment %}
 
 <style>
-  /* ========== CATEGORIES NAV - ISOLATED STYLES ========== */
-  /* Namespace: .pt-categories-nav per evitare conflitti */
+  /* ========== PT-NAV - ISOLATED NAMESPACE ========== */
 
-  .pt-categories-nav {
-    width: 100%;
-    background: #ffffff;
-    border-bottom: 1px solid #e5e5e5;
-    padding: 0;
-    margin: 0;
-    font-family: inherit;
+  /* Reset per questa sezione */
+  .pt-nav-section,
+  .pt-nav-section * {
+    box-sizing: border-box;
   }
 
-  .pt-categories-nav__container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
+  .pt-nav-section {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
-  .pt-categories-nav__list {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    padding: 12px 0;
-    margin: 0;
-    list-style: none;
+  /* DESKTOP: Sidebar laterale */
+  @media screen and (min-width: 993px) {
+    .pt-nav-section {
+      position: fixed;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 220px;
+      z-index: 100;
+      padding: 0;
+    }
+
+    .pt-nav-container {
+      background: #ffffff;
+      border-radius: 0 12px 12px 0;
+      box-shadow: 2px 0 20px rgba(0, 0, 0, 0.1);
+      padding: 15px 0;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    .pt-nav-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: #999;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      padding: 0 15px 10px;
+      margin: 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    .pt-nav-list {
+      list-style: none;
+      margin: 0;
+      padding: 10px 0 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .pt-nav-item {
+      margin: 0;
+      padding: 0;
+    }
+
+    .pt-nav-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 15px;
+      color: #333;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+    }
+
+    .pt-nav-link:hover {
+      background: #f8f8f8;
+      color: #C12624;
+      border-left-color: #C12624;
+    }
+
+    .pt-nav-link--active {
+      background: #fef2f2;
+      color: #C12624;
+      border-left-color: #C12624;
+      font-weight: 600;
+    }
+
+    .pt-nav-icon {
+      font-size: 16px;
+      width: 24px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+
+    .pt-nav-text {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .pt-nav-count {
+      font-size: 10px;
+      background: #eee;
+      color: #666;
+      padding: 2px 6px;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+
+    .pt-nav-link:hover .pt-nav-count,
+    .pt-nav-link--active .pt-nav-count {
+      background: #C12624;
+      color: white;
+    }
+
+    .pt-nav-divider {
+      height: 1px;
+      background: #eee;
+      margin: 10px 15px;
+    }
+
+    .pt-nav-cta {
+      display: block;
+      margin: 10px 15px 5px;
+      padding: 12px 15px;
+      background: linear-gradient(135deg, #C12624, #A01F1D);
+      color: white !important;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+
+    .pt-nav-cta:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(193, 38, 36, 0.4);
+    }
+
+    /* Scrollbar custom */
+    .pt-nav-container::-webkit-scrollbar {
+      width: 4px;
+    }
+    .pt-nav-container::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+    .pt-nav-container::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 2px;
+    }
   }
 
-  .pt-categories-nav__item {
-    margin: 0;
-    padding: 0;
-  }
+  /* MOBILE/TABLET: Barra orizzontale */
+  @media screen and (max-width: 992px) {
+    .pt-nav-section {
+      position: relative;
+      width: 100%;
+      background: #fff;
+      border-bottom: 1px solid #e5e5e5;
+      z-index: 50;
+    }
 
-  .pt-categories-nav__link {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    font-size: 14px;
-    font-weight: 500;
-    color: #333333;
-    text-decoration: none;
-    background: #f8f8f8;
-    border: 1px solid #e5e5e5;
-    border-radius: 20px;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-  }
+    .pt-nav-container {
+      max-width: 100%;
+      padding: 0;
+    }
 
-  .pt-categories-nav__link:hover {
-    background: #C12624;
-    color: #ffffff;
-    border-color: #C12624;
-    transform: translateY(-1px);
-  }
+    .pt-nav-title {
+      display: none;
+    }
 
-  .pt-categories-nav__link--active {
-    background: #C12624;
-    color: #ffffff;
-    border-color: #C12624;
-  }
-
-  .pt-categories-nav__icon {
-    font-size: 16px;
-    line-height: 1;
-  }
-
-  .pt-categories-nav__count {
-    font-size: 11px;
-    background: rgba(0,0,0,0.1);
-    padding: 2px 6px;
-    border-radius: 10px;
-    margin-left: 4px;
-  }
-
-  .pt-categories-nav__link:hover .pt-categories-nav__count,
-  .pt-categories-nav__link--active .pt-categories-nav__count {
-    background: rgba(255,255,255,0.2);
-  }
-
-  /* Mobile responsive */
-  @media screen and (max-width: 768px) {
-    .pt-categories-nav__list {
-      justify-content: flex-start;
-      overflow-x: auto;
-      flex-wrap: nowrap;
-      padding: 10px 0;
+    .pt-nav-list {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
       gap: 8px;
+      padding: 12px 15px;
+      margin: 0;
+      list-style: none;
+      overflow-x: auto;
       -webkit-overflow-scrolling: touch;
       scrollbar-width: none;
     }
 
-    .pt-categories-nav__list::-webkit-scrollbar {
+    .pt-nav-list::-webkit-scrollbar {
       display: none;
     }
 
-    .pt-categories-nav__link {
-      padding: 6px 12px;
-      font-size: 13px;
+    .pt-nav-item {
+      flex-shrink: 0;
     }
 
-    .pt-categories-nav__container {
-      padding: 0 15px;
+    .pt-nav-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: #f5f5f5;
+      border: 1px solid #e0e0e0;
+      border-radius: 20px;
+      color: #333;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .pt-nav-link:hover,
+    .pt-nav-link--active {
+      background: #C12624;
+      color: white;
+      border-color: #C12624;
+    }
+
+    .pt-nav-icon {
+      font-size: 14px;
+    }
+
+    .pt-nav-count {
+      font-size: 10px;
+      background: rgba(0,0,0,0.1);
+      padding: 1px 5px;
+      border-radius: 8px;
+    }
+
+    .pt-nav-link:hover .pt-nav-count,
+    .pt-nav-link--active .pt-nav-count {
+      background: rgba(255,255,255,0.2);
+    }
+
+    .pt-nav-divider {
+      display: none;
+    }
+
+    .pt-nav-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      background: linear-gradient(135deg, #C12624, #A01F1D);
+      color: white !important;
+      text-decoration: none;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      border: none;
     }
   }
 </style>
 
-<nav class="pt-categories-nav" aria-label="Produktkategorien">
-  <div class="pt-categories-nav__container">
-    <ul class="pt-categories-nav__list">
+<nav class="pt-nav-section" aria-label="Produktkategorien">
+  <div class="pt-nav-container">
+    <h2 class="pt-nav-title">Kategorien</h2>
+
+    <ul class="pt-nav-list">
       <!-- Alle Produkte -->
-      <li class="pt-categories-nav__item">
-        <a href="/collections/all" class="pt-categories-nav__link {% if request.path == '/collections/all' %}pt-categories-nav__link--active{% endif %}">
-          <span class="pt-categories-nav__icon">📦</span>
-          <span>Alle Produkte</span>
+      <li class="pt-nav-item">
+        <a href="/collections/all" class="pt-nav-link {% if request.path == '/collections/all' or request.path == '/collections' %}pt-nav-link--active{% endif %}">
+          <span class="pt-nav-icon">📦</span>
+          <span class="pt-nav-text">Alle Produkte</span>
         </a>
       </li>
 
@@ -129,42 +275,37 @@
         {% unless collection.handle == 'all' or collection.handle == 'frontpage' %}
           {% assign icon = '🛒' %}
           {% case collection.handle %}
-            {% when 'cbd-produkte' %}
-              {% assign icon = '🌿' %}
-            {% when 'desinfektionmittel' %}
-              {% assign icon = '🧴' %}
-            {% when 'elektronik-gerate' %}
-              {% assign icon = '⚡' %}
-            {% when 'hausgemacht-spezialitaten' %}
-              {% assign icon = '🍯' %}
-            {% when 'hygiene' %}
-              {% assign icon = '🧼' %}
-            {% when 'primavera' %}
-              {% assign icon = '🌸' %}
-            {% when 'rotbackchen' %}
-              {% assign icon = '🍎' %}
+            {% when 'cbd-produkte' %}{% assign icon = '🌿' %}
+            {% when 'desinfektionmittel' %}{% assign icon = '🧴' %}
+            {% when 'elektronik-gerate' %}{% assign icon = '⚡' %}
+            {% when 'hausgemacht-spezialitaten' %}{% assign icon = '🍯' %}
+            {% when 'hygiene' %}{% assign icon = '🧼' %}
+            {% when 'primavera' %}{% assign icon = '🌸' %}
+            {% when 'rotbackchen' %}{% assign icon = '🍎' %}
           {% endcase %}
 
-          <li class="pt-categories-nav__item">
-            <a href="{{ collection.url }}" class="pt-categories-nav__link {% if request.path contains collection.handle %}pt-categories-nav__link--active{% endif %}">
-              <span class="pt-categories-nav__icon">{{ icon }}</span>
-              <span>{{ collection.title }}</span>
+          <li class="pt-nav-item">
+            <a href="{{ collection.url }}" class="pt-nav-link {% if request.path contains collection.handle %}pt-nav-link--active{% endif %}">
+              <span class="pt-nav-icon">{{ icon }}</span>
+              <span class="pt-nav-text">{{ collection.title }}</span>
               {% if section.settings.show_count %}
-                <span class="pt-categories-nav__count">{{ collection.products_count }}</span>
+                <span class="pt-nav-count">{{ collection.products_count }}</span>
               {% endif %}
             </a>
           </li>
         {% endunless %}
       {% endfor %}
 
-      <!-- Pflegebox Link -->
+      <!-- Divider e Pflegebox CTA -->
+      <li class="pt-nav-divider" aria-hidden="true"></li>
+
       {% if section.settings.show_pflegebox %}
-      <li class="pt-categories-nav__item">
-        <a href="/pages/pflegebox-formular" class="pt-categories-nav__link" style="background: linear-gradient(135deg, #C12624, #A01F1D); color: white; border-color: #C12624;">
-          <span class="pt-categories-nav__icon">💶</span>
-          <span>Pflegebox</span>
-        </a>
-      </li>
+        <li class="pt-nav-item">
+          <a href="/pages/pflegebox-formular" class="pt-nav-cta">
+            <span class="pt-nav-icon">💶</span>
+            <span>Kostenlose Pflegebox</span>
+          </a>
+        </li>
       {% endif %}
     </ul>
   </div>
@@ -174,7 +315,7 @@
 {
   "name": "Kategorien Navigation",
   "tag": "section",
-  "class": "pt-categories-section",
+  "class": "pt-categories-section-wrapper",
   "settings": [
     {
       "type": "checkbox",
@@ -185,7 +326,7 @@
     {
       "type": "checkbox",
       "id": "show_pflegebox",
-      "label": "Pflegebox Link anzeigen",
+      "label": "Pflegebox CTA anzeigen",
       "default": true
     }
   ],
