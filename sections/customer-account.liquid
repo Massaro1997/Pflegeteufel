@@ -48,7 +48,7 @@
             Sie haben jetzt Anspruch auf bis zu <strong>42€ monatliche Erstattung</strong> für Pflegehilfsmittel.
             Stellen Sie sich jetzt Ihre persönliche Pflegebox zusammen – die Kosten werden vollständig von Ihrer Pflegekasse übernommen!
           </p>
-          <a href="/collections/pflegebox" class="pflegebox-cta-button">
+          <a href="/pages/pflegebox" class="pflegebox-cta-button">
             🛒 Jetzt Pflegebox zusammenstellen
           </a>
           <p class="pflegebox-cta-hint">Kostenlose Lieferung jeden Monat direkt zu Ihnen nach Hause</p>
@@ -805,17 +805,17 @@
   }
 }
 
-/* Pflegebox CTA Card - Mega Banner per clienti approvati */
+/* Pflegebox CTA Card - Banner per clienti approvati */
 .pflegebox-cta-card {
   background: linear-gradient(135deg, #fef6f6 0%, #fff5f5 50%, #ffffff 100%);
-  border: 3px solid #C12624;
-  border-radius: 20px;
-  padding: 40px;
-  margin-bottom: 35px;
+  border: 2px solid #C12624;
+  border-radius: 16px;
+  padding: 25px 30px;
+  margin-bottom: 25px;
   text-align: center;
   position: relative;
   overflow: hidden;
-  box-shadow: 0 10px 40px rgba(193, 38, 36, 0.15);
+  box-shadow: 0 6px 25px rgba(193, 38, 36, 0.12);
   animation: pflegeboxCtaFadeIn 0.6s ease-out;
 }
 
@@ -841,8 +841,8 @@
 }
 
 .pflegebox-cta-confetti {
-  font-size: 3rem;
-  margin-bottom: 10px;
+  font-size: 2rem;
+  margin-bottom: 5px;
   animation: pflegeboxCtaBounce 2s infinite;
 }
 
@@ -855,72 +855,72 @@
   display: inline-block;
   background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
   color: white;
-  font-size: 0.85rem;
+  font-size: 0.7rem;
   font-weight: 800;
-  padding: 8px 25px;
-  border-radius: 30px;
+  padding: 5px 15px;
+  border-radius: 20px;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  margin-bottom: 15px;
-  box-shadow: 0 4px 15px rgba(40, 167, 69, 0.3);
+  letter-spacing: 1.5px;
+  margin-bottom: 10px;
+  box-shadow: 0 3px 10px rgba(40, 167, 69, 0.3);
 }
 
 .pflegebox-cta-title {
-  font-size: 2rem;
+  font-size: 1.4rem;
   font-weight: 800;
   color: #C12624;
-  margin: 0 0 8px 0;
+  margin: 0 0 5px 0;
 }
 
 .pflegebox-cta-subtitle {
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   color: #555;
-  margin: 0 0 25px 0;
+  margin: 0 0 15px 0;
 }
 
 .pflegebox-cta-amount {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 8px;
+  margin-bottom: 12px;
 }
 
 .pflegebox-cta-euro {
-  font-size: 2.5rem;
+  font-size: 1.8rem;
 }
 
 .pflegebox-cta-value {
-  font-size: 3rem;
+  font-size: 2.2rem;
   font-weight: 900;
   color: #28a745;
-  text-shadow: 2px 2px 4px rgba(40, 167, 69, 0.2);
+  text-shadow: 1px 1px 3px rgba(40, 167, 69, 0.2);
 }
 
 .pflegebox-cta-period {
-  font-size: 1.2rem;
+  font-size: 1rem;
   color: #666;
   font-weight: 500;
 }
 
 .pflegebox-cta-desc {
-  font-size: 1.05rem;
+  font-size: 0.9rem;
   color: #555;
-  line-height: 1.6;
-  max-width: 600px;
-  margin: 0 auto 30px;
+  line-height: 1.5;
+  max-width: 550px;
+  margin: 0 auto 20px;
 }
 
 .pflegebox-cta-button {
   display: inline-block;
   background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%);
   color: white;
-  font-size: 1.3rem;
+  font-size: 1rem;
   font-weight: 700;
-  padding: 18px 45px;
-  border-radius: 50px;
+  padding: 12px 30px;
+  border-radius: 30px;
   text-decoration: none;
-  box-shadow: 0 8px 25px rgba(193, 38, 36, 0.4);
+  box-shadow: 0 5px 18px rgba(193, 38, 36, 0.35);
   transition: all 0.3s ease;
   animation: pflegeboxCtaPulse 2.5s infinite;
 }
@@ -942,32 +942,36 @@
 }
 
 .pflegebox-cta-hint {
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #888;
-  margin: 20px 0 0 0;
+  margin: 12px 0 0 0;
 }
 
 @media (max-width: 768px) {
   .pflegebox-cta-card {
-    padding: 30px 20px;
+    padding: 20px 15px;
   }
 
   .pflegebox-cta-title {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 
   .pflegebox-cta-value {
-    font-size: 2.2rem;
+    font-size: 1.8rem;
   }
 
   .pflegebox-cta-button {
-    font-size: 1.1rem;
-    padding: 15px 35px;
+    font-size: 0.9rem;
+    padding: 10px 25px;
   }
 
   .pflegebox-cta-amount {
     flex-direction: column;
-    gap: 5px;
+    gap: 3px;
+  }
+
+  .pflegebox-cta-desc {
+    font-size: 0.85rem;
   }
 }
 </style>
