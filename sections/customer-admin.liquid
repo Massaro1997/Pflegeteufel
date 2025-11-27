@@ -257,6 +257,94 @@
     pointer-events: none;
   }
 
+  /* Delete Button */
+  .admin-delete-btn {
+    padding: 6px 12px;
+    background: transparent;
+    border: 1px solid #dc3545;
+    color: #dc3545;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: all 0.2s;
+  }
+
+  .admin-delete-btn:hover {
+    background: #dc3545;
+    color: #fff;
+  }
+
+  .admin-delete-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Confirm Modal */
+  .admin-modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .admin-modal-overlay.visible {
+    display: flex;
+  }
+
+  .admin-modal {
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 400px;
+    width: 90%;
+    text-align: center;
+  }
+
+  .admin-modal-title {
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    color: #333;
+  }
+
+  .admin-modal-text {
+    color: #666;
+    margin-bottom: 25px;
+  }
+
+  .admin-modal-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+  }
+
+  .admin-modal-btn {
+    padding: 10px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    border: none;
+  }
+
+  .admin-modal-btn.cancel {
+    background: #f0f0f0;
+    color: #333;
+  }
+
+  .admin-modal-btn.confirm {
+    background: #dc3545;
+    color: #fff;
+  }
+
+  .admin-modal-btn:hover {
+    opacity: 0.9;
+  }
+
   /* Status Badge */
   .admin-status-badge {
     display: inline-block;
@@ -419,11 +507,12 @@
             <th>Registriert</th>
             <th>Status</th>
             <th>Pflegemittel</th>
+            <th>Aktionen</th>
           </tr>
         </thead>
         <tbody id="adminCustomersBody">
           <tr>
-            <td colspan="5" class="admin-loading">Lädt...</td>
+            <td colspan="6" class="admin-loading">Lädt...</td>
           </tr>
         </tbody>
       </table>
@@ -438,6 +527,21 @@
 <!-- Toast -->
 <div class="admin-toast" id="adminToast"></div>
 
+<!-- Delete Confirmation Modal -->
+<div class="admin-modal-overlay" id="adminDeleteModal">
+  <div class="admin-modal">
+    <h3 class="admin-modal-title">Kunde löschen?</h3>
+    <p class="admin-modal-text">
+      Möchten Sie <strong id="adminDeleteCustomerName"></strong> wirklich löschen?<br>
+      Diese Aktion kann nicht rückgängig gemacht werden.
+    </p>
+    <div class="admin-modal-buttons">
+      <button type="button" class="admin-modal-btn cancel" onclick="adminCloseDeleteModal()">Abbrechen</button>
+      <button type="button" class="admin-modal-btn confirm" id="adminConfirmDeleteBtn">Löschen</button>
+    </div>
+  </div>
+</div>
+
 <script>
 (function() {
   // Configuration
@@ -448,6 +552,7 @@
   let currentPin = '';
   let isAuthenticated = false;
   let customers = [];
+  let customerToDelete = null;
 
   // Make functions global
   window.adminAddDigit = function(digit) {
@@ -481,6 +586,57 @@
   };
 
   window.adminLoadCustomers = loadCustomers;
+
+  window.adminShowDeleteModal = function(customerId) {
+    const customer = customers.find(c => c.id === customerId);
+    if (!customer) return;
+
+    customerToDelete = customer;
+    const name = ((customer.first_name || '') + ' ' + (customer.last_name || '')).trim() || customer.email;
+    document.getElementById('adminDeleteCustomerName').textContent = name;
+    document.getElementById('adminDeleteModal').classList.add('visible');
+  };
+
+  window.adminCloseDeleteModal = function() {
+    customerToDelete = null;
+    document.getElementById('adminDeleteModal').classList.remove('visible');
+  };
+
+  window.adminConfirmDelete = async function() {
+    if (!customerToDelete) return;
+
+    const btn = document.getElementById('adminConfirmDeleteBtn');
+    btn.disabled = true;
+    btn.textContent = 'Löschen...';
+
+    try {
+      const response = await fetch(WORKER_URL + '/admin/customer/' + customerToDelete.id, {
+        method: 'DELETE',
+        headers: {
+          'X-Admin-Pin': CORRECT_PIN
+        }
+      });
+
+      if (!response.ok) throw new Error('Failed');
+
+      // Remove from local state
+      customers = customers.filter(c => c.id !== customerToDelete.id);
+      renderCustomers();
+      updateStats();
+      showToast('Kunde gelöscht ✓', 'success');
+      adminCloseDeleteModal();
+
+    } catch (error) {
+      console.error('Delete error:', error);
+      showToast('Fehler beim Löschen', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Löschen';
+    }
+  };
+
+  // Bind confirm button
+  document.getElementById('adminConfirmDeleteBtn').addEventListener('click', adminConfirmDelete);
 
   window.adminTogglePflegemittel = async function(customerId, enabled) {
     const toggle = document.getElementById('adminToggle-' + customerId);
@@ -550,7 +706,7 @@
 
   async function loadCustomers() {
     const tbody = document.getElementById('adminCustomersBody');
-    tbody.innerHTML = '<tr><td colspan="5" class="admin-loading">Lädt...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="admin-loading">Lädt...</td></tr>';
 
     try {
       const response = await fetch(WORKER_URL + '/admin/customers', {
@@ -602,6 +758,11 @@
               ' onchange="adminTogglePflegemittel(' + customer.id + ', this.checked)">' +
             '<span class="admin-toggle-slider"></span>' +
           '</label>' +
+        '</td>' +
+        '<td>' +
+          '<button type="button" class="admin-delete-btn" onclick="adminShowDeleteModal(' + customer.id + ')">' +
+            'Löschen' +
+          '</button>' +
         '</td>' +
       '</tr>';
     }).join('');

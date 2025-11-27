@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PflegeTeufel - Admin Panel</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #1a1a1a;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    /* PIN Screen */
+    .pin-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .pin-screen.hidden {
+      display: none;
+    }
+
+    .pin-logo {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #C12624;
+      margin-bottom: 40px;
+    }
+
+    .pin-display {
+      display: flex;
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .pin-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid #444;
+      background: transparent;
+      transition: all 0.2s;
+    }
+
+    .pin-dot.filled {
+      background: #C12624;
+      border-color: #C12624;
+    }
+
+    .pin-error {
+      color: #ff4444;
+      margin-bottom: 20px;
+      min-height: 24px;
+    }
+
+    .pin-pad {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      max-width: 280px;
+    }
+
+    .pin-btn {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 2px solid #333;
+      background: #222;
+      color: #fff;
+      font-size: 1.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pin-btn:hover {
+      background: #333;
+      border-color: #C12624;
+    }
+
+    .pin-btn:active {
+      transform: scale(0.95);
+      background: #C12624;
+    }
+
+    .pin-btn.clear {
+      font-size: 1.2rem;
+    }
+
+    .pin-btn.backspace {
+      font-size: 1.5rem;
+    }
+
+    /* Admin Panel */
+    .admin-panel {
+      display: none;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .admin-panel.visible {
+      display: block;
+    }
+
+    .admin-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 20px 0;
+      border-bottom: 1px solid #333;
+      margin-bottom: 30px;
+    }
+
+    .admin-title {
+      font-size: 1.5rem;
+      color: #C12624;
+    }
+
+    .logout-btn {
+      padding: 10px 20px;
+      background: #333;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .logout-btn:hover {
+      background: #C12624;
+    }
+
+    /* Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .stat-card {
+      background: #222;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #C12624;
+    }
+
+    .stat-label {
+      color: #888;
+      margin-top: 5px;
+    }
+
+    /* Customers Table */
+    .customers-section {
+      background: #222;
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    .section-title {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .refresh-btn {
+      padding: 8px 16px;
+      background: #333;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .refresh-btn:hover {
+      background: #444;
+    }
+
+    .customers-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .customers-table th,
+    .customers-table td {
+      padding: 15px;
+      text-align: left;
+      border-bottom: 1px solid #333;
+    }
+
+    .customers-table th {
+      color: #888;
+      font-weight: 500;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
+
+    .customers-table tr:hover {
+      background: #2a2a2a;
+    }
+
+    .customer-name {
+      font-weight: 500;
+    }
+
+    .customer-email {
+      color: #888;
+      font-size: 0.9rem;
+    }
+
+    .customer-date {
+      color: #666;
+      font-size: 0.85rem;
+    }
+
+    /* Toggle Switch */
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 26px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #444;
+      transition: 0.3s;
+      border-radius: 26px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+
+    .toggle-switch input:checked + .toggle-slider {
+      background-color: #C12624;
+    }
+
+    .toggle-switch input:checked + .toggle-slider:before {
+      transform: translateX(24px);
+    }
+
+    .toggle-switch.loading .toggle-slider {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+
+    /* Tag Badge */
+    .tag-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      background: #333;
+      color: #888;
+    }
+
+    .tag-badge.active {
+      background: rgba(193, 38, 36, 0.2);
+      color: #C12624;
+    }
+
+    /* Loading */
+    .loading-spinner {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #333;
+      border-top-color: #C12624;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.8);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .loading-overlay.visible {
+      display: flex;
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #666;
+    }
+
+    .empty-state svg {
+      width: 80px;
+      height: 80px;
+      margin-bottom: 20px;
+      opacity: 0.3;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      padding: 15px 25px;
+      background: #333;
+      border-radius: 8px;
+      color: #fff;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s;
+      z-index: 1001;
+    }
+
+    .toast.visible {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    .toast.success {
+      background: #28a745;
+    }
+
+    .toast.error {
+      background: #dc3545;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .customers-table {
+        display: block;
+        overflow-x: auto;
+      }
+
+      .admin-header {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PIN Screen -->
+  <div class="pin-screen" id="pinScreen">
+    <div class="pin-logo">🔐 PflegeTeufel Admin</div>
+
+    <div class="pin-display">
+      <div class="pin-dot" id="dot1"></div>
+      <div class="pin-dot" id="dot2"></div>
+      <div class="pin-dot" id="dot3"></div>
+      <div class="pin-dot" id="dot4"></div>
+    </div>
+
+    <div class="pin-error" id="pinError"></div>
+
+    <div class="pin-pad">
+      <button class="pin-btn" onclick="addDigit('1')">1</button>
+      <button class="pin-btn" onclick="addDigit('2')">2</button>
+      <button class="pin-btn" onclick="addDigit('3')">3</button>
+      <button class="pin-btn" onclick="addDigit('4')">4</button>
+      <button class="pin-btn" onclick="addDigit('5')">5</button>
+      <button class="pin-btn" onclick="addDigit('6')">6</button>
+      <button class="pin-btn" onclick="addDigit('7')">7</button>
+      <button class="pin-btn" onclick="addDigit('8')">8</button>
+      <button class="pin-btn" onclick="addDigit('9')">9</button>
+      <button class="pin-btn clear" onclick="clearPin()">C</button>
+      <button class="pin-btn" onclick="addDigit('0')">0</button>
+      <button class="pin-btn backspace" onclick="backspace()">⌫</button>
+    </div>
+  </div>
+
+  <!-- Admin Panel -->
+  <div class="admin-panel" id="adminPanel">
+    <header class="admin-header">
+      <h1 class="admin-title">👑 PflegeTeufel Admin</h1>
+      <button class="logout-btn" onclick="logout()">Abmelden</button>
+    </header>
+
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" id="totalCustomers">-</div>
+        <div class="stat-label">Kunden gesamt</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="approvedCustomers">-</div>
+        <div class="stat-label">Mit Pflegemittel-Tag</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="pendingCustomers">-</div>
+        <div class="stat-label">Ausstehend</div>
+      </div>
+    </div>
+
+    <div class="customers-section">
+      <div class="section-title">
+        <span>Registrierte Kunden</span>
+        <button class="refresh-btn" onclick="loadCustomers()">🔄 Aktualisieren</button>
+      </div>
+
+      <table class="customers-table" id="customersTable">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>E-Mail</th>
+            <th>Registriert am</th>
+            <th>Status</th>
+            <th>Pflegemittel</th>
+          </tr>
+        </thead>
+        <tbody id="customersBody">
+          <!-- Populated by JS -->
+        </tbody>
+      </table>
+
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+        </svg>
+        <p>Noch keine Kunden registriert</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner" style="width: 50px; height: 50px;"></div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // Configuration
+    const CONFIG = {
+      WORKER_URL: 'https://pflegeteufel-auth.massarocalogero1997.workers.dev',
+      CORRECT_PIN: '1111'
+    };
+
+    // State
+    let currentPin = '';
+    let isAuthenticated = false;
+    let customers = [];
+
+    // PIN Functions
+    function addDigit(digit) {
+      if (currentPin.length < 4) {
+        currentPin += digit;
+        updatePinDisplay();
+
+        if (currentPin.length === 4) {
+          setTimeout(verifyPin, 200);
+        }
+      }
+    }
+
+    function backspace() {
+      currentPin = currentPin.slice(0, -1);
+      updatePinDisplay();
+      document.getElementById('pinError').textContent = '';
+    }
+
+    function clearPin() {
+      currentPin = '';
+      updatePinDisplay();
+      document.getElementById('pinError').textContent = '';
+    }
+
+    function updatePinDisplay() {
+      for (let i = 1; i <= 4; i++) {
+        const dot = document.getElementById(`dot${i}`);
+        dot.classList.toggle('filled', i <= currentPin.length);
+      }
+    }
+
+    function verifyPin() {
+      if (currentPin === CONFIG.CORRECT_PIN) {
+        isAuthenticated = true;
+        document.getElementById('pinScreen').classList.add('hidden');
+        document.getElementById('adminPanel').classList.add('visible');
+        loadCustomers();
+      } else {
+        document.getElementById('pinError').textContent = 'Falscher PIN';
+        currentPin = '';
+        updatePinDisplay();
+
+        // Shake animation
+        const pinPad = document.querySelector('.pin-pad');
+        pinPad.style.animation = 'shake 0.5s';
+        setTimeout(() => pinPad.style.animation = '', 500);
+      }
+    }
+
+    function logout() {
+      isAuthenticated = false;
+      currentPin = '';
+      updatePinDisplay();
+      document.getElementById('pinScreen').classList.remove('hidden');
+      document.getElementById('adminPanel').classList.remove('visible');
+    }
+
+    // Customer Functions
+    async function loadCustomers() {
+      showLoading(true);
+
+      try {
+        const response = await fetch(`${CONFIG.WORKER_URL}/admin/customers`, {
+          headers: {
+            'X-Admin-Pin': CONFIG.CORRECT_PIN
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to load customers');
+        }
+
+        const data = await response.json();
+        customers = data.customers || [];
+
+        renderCustomers();
+        updateStats();
+
+      } catch (error) {
+        console.error('Error loading customers:', error);
+        showToast('Fehler beim Laden der Kunden', 'error');
+      } finally {
+        showLoading(false);
+      }
+    }
+
+    function renderCustomers() {
+      const tbody = document.getElementById('customersBody');
+      const emptyState = document.getElementById('emptyState');
+
+      if (customers.length === 0) {
+        tbody.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+
+      tbody.innerHTML = customers.map(customer => `
+        <tr>
+          <td>
+            <div class="customer-name">${escapeHtml(customer.first_name || '')} ${escapeHtml(customer.last_name || '')}</div>
+          </td>
+          <td>
+            <div class="customer-email">${escapeHtml(customer.email)}</div>
+          </td>
+          <td>
+            <div class="customer-date">${formatDate(customer.created_at)}</div>
+          </td>
+          <td>
+            <span class="tag-badge ${customer.tags && customer.tags.includes('pflegemittel') ? 'active' : ''}">
+              ${customer.tags && customer.tags.includes('pflegemittel') ? 'Aktiv' : 'Ausstehend'}
+            </span>
+          </td>
+          <td>
+            <label class="toggle-switch" id="toggle-${customer.id}">
+              <input
+                type="checkbox"
+                ${customer.tags && customer.tags.includes('pflegemittel') ? 'checked' : ''}
+                onchange="togglePflegemittel(${customer.id}, this.checked)"
+              >
+              <span class="toggle-slider"></span>
+            </label>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function updateStats() {
+      const total = customers.length;
+      const approved = customers.filter(c => c.tags && c.tags.includes('pflegemittel')).length;
+      const pending = total - approved;
+
+      document.getElementById('totalCustomers').textContent = total;
+      document.getElementById('approvedCustomers').textContent = approved;
+      document.getElementById('pendingCustomers').textContent = pending;
+    }
+
+    async function togglePflegemittel(customerId, enabled) {
+      const toggle = document.getElementById(`toggle-${customerId}`);
+      toggle.classList.add('loading');
+
+      try {
+        const response = await fetch(`${CONFIG.WORKER_URL}/admin/customer/${customerId}/tag`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Pin': CONFIG.CORRECT_PIN
+          },
+          body: JSON.stringify({
+            tag: 'pflegemittel',
+            enabled: enabled
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to update customer');
+        }
+
+        // Update local state
+        const customer = customers.find(c => c.id === customerId);
+        if (customer) {
+          if (enabled) {
+            customer.tags = customer.tags ? customer.tags + ',pflegemittel' : 'pflegemittel';
+          } else {
+            customer.tags = (customer.tags || '').replace(/,?pflegemittel/g, '').replace(/^,/, '');
+          }
+        }
+
+        renderCustomers();
+        updateStats();
+
+        showToast(enabled ? 'Pflegemittel aktiviert' : 'Pflegemittel deaktiviert', 'success');
+
+      } catch (error) {
+        console.error('Error toggling pflegemittel:', error);
+        showToast('Fehler beim Aktualisieren', 'error');
+
+        // Revert checkbox
+        const checkbox = toggle.querySelector('input');
+        checkbox.checked = !enabled;
+      } finally {
+        toggle.classList.remove('loading');
+      }
+    }
+
+    // Utility Functions
+    function showLoading(show) {
+      document.getElementById('loadingOverlay').classList.toggle('visible', show);
+    }
+
+    function showToast(message, type = '') {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.className = 'toast visible ' + type;
+
+      setTimeout(() => {
+        toast.classList.remove('visible');
+      }, 3000);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text || '';
+      return div.innerHTML;
+    }
+
+    function formatDate(dateString) {
+      if (!dateString) return '-';
+      const date = new Date(dateString);
+      return date.toLocaleDateString('de-DE', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    // Add shake animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes shake {
+        0%, 100% { transform: translateX(0); }
+        20%, 60% { transform: translateX(-10px); }
+        40%, 80% { transform: translateX(10px); }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // Keyboard support
+    document.addEventListener('keydown', (e) => {
+      if (!isAuthenticated) {
+        if (e.key >= '0' && e.key <= '9') {
+          addDigit(e.key);
+        } else if (e.key === 'Backspace') {
+          backspace();
+        } else if (e.key === 'Escape') {
+          clearPin();
+        }
+      }
+    });
+  </script>
+</body>
+</html>
