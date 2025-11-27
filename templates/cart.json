@@ -9,10 +9,6 @@
  */
 {
   "sections": {
-    "categories_nav": {
-      "type": "categories-navigation",
-      "settings": {}
-    },
     "cart_progress_bar_biNMDp": {
       "type": "cart-progress-bar",
       "name": "Cart Progress Bar",
@@ -92,7 +88,6 @@
     }
   },
   "order": [
-    "categories_nav",
     "cart_progress_bar_biNMDp",
     "cart-section",
     "related_products_KkfH6p"
