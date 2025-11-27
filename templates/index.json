@@ -98,9 +98,24 @@
       "type": "audio-player",
       "settings": {
         "audio_file": "https://cdn.shopify.com/s/files/1/0909/2805/4653/files/Audio_WhatsApp_2025-11-12_ore_11.07.33_5d1783db.mp3?v=1762943007",
-        "title": "Ascolta il nostro messaggio",
-        "subtitle": "Clicca play per ascoltare",
-        "show_audio_controls": true
+        "show_audio_controls": true,
+        "show_title": true,
+        "title": "Hören Sie unser Song",
+        "title_size": 32,
+        "title_color": "#000000",
+        "show_subtitle": true,
+        "subtitle": "Klicken Sie auf Play, um zu starten",
+        "subtitle_size": 16,
+        "subtitle_color": "#666666",
+        "background_color": "#f5f5f5",
+        "player_background": "#ffffff",
+        "controls_background": "#f0f0f0",
+        "button_color_1": "#c12624",
+        "button_color_2": "#a01f1d",
+        "border_radius": 20,
+        "container_width": 800,
+        "padding_top": 50,
+        "padding_bottom": 50
       }
     },
     "section_mhHMjg": {
