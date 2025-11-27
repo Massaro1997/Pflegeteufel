@@ -184,6 +184,24 @@
         <div id="registration-error" class="form-error" style="display: none;"></div>
         <div id="registration-success" class="form-success" style="display: none;"></div>
 
+        <!-- CTA dopo registrazione -->
+        <div id="post-registration-cta" class="post-registration-cta" style="display: none;">
+          <div class="post-reg-icon">🎉</div>
+          <h2 class="post-reg-title">Registrierung erfolgreich!</h2>
+          <p class="post-reg-subtitle">Jetzt können Sie Ihren Antrag für die kostenlose Pflegebox stellen</p>
+          <div class="post-reg-benefit">
+            <span class="post-reg-euro">💶</span>
+            <span class="post-reg-amount">Bis zu 42,00€</span>
+            <span class="post-reg-text">monatlich von Ihrer Pflegekasse</span>
+          </div>
+          <a href="/pages/pflegebox-formular" class="post-reg-button">
+            📋 Jetzt Pflegebox-Antrag ausfüllen
+          </a>
+          <p class="post-reg-skip">
+            <a href="/pages/login?registered=1">Später fortfahren &rarr;</a>
+          </p>
+        </div>
+
         <!-- Submit -->
         <div class="form-actions">
           <button type="submit" class="btn btn-primary btn-submit" id="submit-btn">
@@ -280,13 +298,13 @@
       const result = await response.json();
 
       if (response.ok && result.success) {
-        showSuccess(result.message || 'Registrierung erfolgreich! Sie werden weitergeleitet...');
-        form.reset();
+        // Nascondi il form e mostra la CTA
+        form.style.display = 'none';
+        document.querySelector('.registration-header').style.display = 'none';
+        document.getElementById('post-registration-cta').style.display = 'block';
 
-        // Redirect dopo 2 secondi
-        setTimeout(() => {
-          window.location.href = '/pages/login?registered=1';
-        }, 2000);
+        // Scroll to top
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         showError(result.error || 'Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.');
       }
@@ -514,6 +532,121 @@
   border-radius: 6px;
   margin-bottom: 20px;
   border-left: 4px solid #28a745;
+}
+
+/* CTA Post-Registrazione */
+.post-registration-cta {
+  text-align: center;
+  padding: 30px 20px;
+  animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.post-reg-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+  animation: bounce 1s ease infinite;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+.post-reg-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #28a745;
+  margin: 0 0 10px 0;
+}
+
+.post-reg-subtitle {
+  font-size: 1rem;
+  color: #555;
+  margin: 0 0 20px 0;
+}
+
+.post-reg-benefit {
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  border: 2px solid #28a745;
+  border-radius: 12px;
+  padding: 15px 20px;
+  margin-bottom: 25px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.post-reg-euro {
+  font-size: 1.5rem;
+}
+
+.post-reg-amount {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #28a745;
+}
+
+.post-reg-text {
+  font-size: 0.95rem;
+  color: #155724;
+}
+
+.post-reg-button {
+  display: inline-block;
+  background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%);
+  color: white;
+  padding: 14px 30px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(193, 38, 36, 0.3);
+  animation: pulse 2s infinite;
+}
+
+.post-reg-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(193, 38, 36, 0.4);
+  color: white;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 4px 15px rgba(193, 38, 36, 0.3);
+  }
+  50% {
+    box-shadow: 0 4px 15px rgba(193, 38, 36, 0.3),
+                0 0 30px rgba(193, 38, 36, 0.2);
+  }
+}
+
+.post-reg-skip {
+  margin-top: 20px;
+  font-size: 0.9rem;
+}
+
+.post-reg-skip a {
+  color: #888;
+  text-decoration: none;
+}
+
+.post-reg-skip a:hover {
+  color: #C12624;
+  text-decoration: underline;
 }
 
 .form-actions {

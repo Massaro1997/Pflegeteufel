@@ -1,0 +1,487 @@
+{% comment %}
+  Section: Pflegebox Composition Page
+  Per clienti con tag pflegemittel_ok
+  Spiega come comporre la Pflegebox e mostra le categorie
+{% endcomment %}
+
+<style>
+.pflegebox-composition {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Access Denied */
+.pflegebox-access-denied {
+  text-align: center;
+  padding: 60px 20px;
+  background: #fff3cd;
+  border-radius: 12px;
+  margin: 40px auto;
+  max-width: 600px;
+}
+
+.pflegebox-access-denied-icon {
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+.pflegebox-access-denied h2 {
+  font-size: 1.5rem;
+  color: #856404;
+  margin: 0 0 15px 0;
+}
+
+.pflegebox-access-denied p {
+  color: #856404;
+  margin-bottom: 20px;
+}
+
+.pflegebox-access-denied .btn {
+  display: inline-block;
+  background: #C12624;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.pflegebox-access-denied .btn:hover {
+  background: #A01F1D;
+  transform: translateY(-2px);
+}
+
+/* Header */
+.pflegebox-comp-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 30px;
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  border-radius: 16px;
+  border: 2px solid #28a745;
+}
+
+.pflegebox-comp-badge {
+  display: inline-block;
+  background: #28a745;
+  color: white;
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.pflegebox-comp-header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #155724;
+  margin: 0 0 10px 0;
+}
+
+.pflegebox-comp-subtitle {
+  font-size: 1.1rem;
+  color: #155724;
+  margin: 0;
+}
+
+.pflegebox-comp-amount {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  margin-top: 15px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.pflegebox-comp-amount-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #28a745;
+}
+
+.pflegebox-comp-amount-text {
+  color: #155724;
+  font-size: 0.9rem;
+}
+
+/* Instructions */
+.pflegebox-comp-instructions {
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  margin-bottom: 40px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  border: 1px solid #e9ecef;
+}
+
+.pflegebox-comp-instructions h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pflegebox-comp-steps {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.pflegebox-comp-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+}
+
+.pflegebox-comp-step-number {
+  width: 30px;
+  height: 30px;
+  background: #C12624;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.pflegebox-comp-step-text {
+  font-size: 0.95rem;
+  color: #555;
+  line-height: 1.4;
+}
+
+/* Cart Info */
+.pflegebox-comp-cart-info {
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeeba 100%);
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 25px;
+  border: 1px solid #ffc107;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.pflegebox-comp-cart-info-icon {
+  font-size: 2rem;
+}
+
+.pflegebox-comp-cart-info-text {
+  flex: 1;
+  min-width: 200px;
+}
+
+.pflegebox-comp-cart-info-text strong {
+  display: block;
+  color: #856404;
+  margin-bottom: 4px;
+}
+
+.pflegebox-comp-cart-info-text span {
+  font-size: 0.9rem;
+  color: #856404;
+}
+
+/* Categories */
+.pflegebox-comp-categories {
+  margin-bottom: 40px;
+}
+
+.pflegebox-comp-categories h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 25px 0;
+  text-align: center;
+}
+
+.pflegebox-comp-category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.pflegebox-comp-category-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  border: 1px solid #e9ecef;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.pflegebox-comp-category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+  border-color: #C12624;
+}
+
+.pflegebox-comp-category-image {
+  height: 140px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.pflegebox-comp-category-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pflegebox-comp-category-placeholder {
+  font-size: 3rem;
+}
+
+.pflegebox-comp-category-content {
+  padding: 20px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.pflegebox-comp-category-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 8px 0;
+}
+
+.pflegebox-comp-category-count {
+  font-size: 0.85rem;
+  color: #888;
+  margin-bottom: 12px;
+}
+
+.pflegebox-comp-category-btn {
+  display: inline-block;
+  background: #C12624;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  text-align: center;
+  margin-top: auto;
+  transition: all 0.3s ease;
+}
+
+.pflegebox-comp-category-btn:hover {
+  background: #A01F1D;
+}
+
+/* CTA */
+.pflegebox-comp-cta {
+  text-align: center;
+  background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%);
+  padding: 30px;
+  border-radius: 12px;
+  color: white;
+}
+
+.pflegebox-comp-cta h3 {
+  font-size: 1.3rem;
+  margin: 0 0 10px 0;
+}
+
+.pflegebox-comp-cta p {
+  opacity: 0.9;
+  margin: 0 0 20px 0;
+}
+
+.pflegebox-comp-cta-btn {
+  display: inline-block;
+  background: white;
+  color: #C12624;
+  padding: 14px 30px;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.pflegebox-comp-cta-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pflegebox-comp-header h1 {
+    font-size: 1.4rem;
+  }
+
+  .pflegebox-comp-instructions {
+    padding: 20px;
+  }
+
+  .pflegebox-comp-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .pflegebox-comp-category-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+
+<div class="pflegebox-composition">
+  <!-- Access Denied (shown by default, hidden by JS if approved) -->
+  <div id="pflegebox-access-denied" class="pflegebox-access-denied">
+    <div class="pflegebox-access-denied-icon">🔒</div>
+    <h2>Zugriff nicht möglich</h2>
+    <p>Diese Seite ist nur für Kunden mit genehmigtem Pflegemittel-Antrag verfügbar.</p>
+    <a href="/pages/pflegebox-formular" class="btn">Antrag stellen</a>
+  </div>
+
+  <!-- Main Content (hidden by default, shown by JS if approved) -->
+  <div id="pflegebox-main-content" style="display: none;">
+    <!-- Header with approval badge -->
+    <div class="pflegebox-comp-header">
+      <div class="pflegebox-comp-badge">✓ Genehmigt</div>
+      <h1>{{ section.settings.title | default: 'Ihre Pflegebox zusammenstellen' }}</h1>
+      <p class="pflegebox-comp-subtitle">{{ section.settings.subtitle | default: 'Wählen Sie Ihre Pflegemittel - die Kosten übernimmt Ihre Pflegekasse' }}</p>
+      <div class="pflegebox-comp-amount">
+        <span class="pflegebox-comp-amount-value">42,00€</span>
+        <span class="pflegebox-comp-amount-text">monatliches Budget</span>
+      </div>
+    </div>
+
+    <!-- Instructions -->
+    <div class="pflegebox-comp-instructions">
+      <h2>📋 So funktioniert's:</h2>
+      <div class="pflegebox-comp-steps">
+        <div class="pflegebox-comp-step">
+          <span class="pflegebox-comp-step-number">1</span>
+          <span class="pflegebox-comp-step-text">Wählen Sie Produkte aus den Kategorien unten</span>
+        </div>
+        <div class="pflegebox-comp-step">
+          <span class="pflegebox-comp-step-number">2</span>
+          <span class="pflegebox-comp-step-text">Legen Sie sie in den Warenkorb (max. 42,00€)</span>
+        </div>
+        <div class="pflegebox-comp-step">
+          <span class="pflegebox-comp-step-number">3</span>
+          <span class="pflegebox-comp-step-text">Schließen Sie die Bestellung ab</span>
+        </div>
+        <div class="pflegebox-comp-step">
+          <span class="pflegebox-comp-step-number">4</span>
+          <span class="pflegebox-comp-step-text">Wir liefern - Ihre Kasse erstattet!</span>
+        </div>
+      </div>
+
+      <div class="pflegebox-comp-cart-info">
+        <span class="pflegebox-comp-cart-info-icon">💡</span>
+        <div class="pflegebox-comp-cart-info-text">
+          <strong>Hinweis zum Budget</strong>
+          <span>Im Warenkorb sehen Sie Ihr verbleibendes Budget. Überschreiten Sie 42,00€, wird der Differenzbetrag berechnet.</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Categories Grid -->
+    <div class="pflegebox-comp-categories">
+      <h2>🛒 Produktkategorien</h2>
+      <div class="pflegebox-comp-category-grid">
+        {% for collection in collections %}
+          {% unless collection.handle == 'all' or collection.handle == 'frontpage' %}
+            <a href="{{ collection.url }}" class="pflegebox-comp-category-card">
+              <div class="pflegebox-comp-category-image">
+                {% if collection.image %}
+                  <img src="{{ collection.image | img_url: '400x300', crop: 'center' }}" alt="{{ collection.title }}" loading="lazy">
+                {% else %}
+                  <span class="pflegebox-comp-category-placeholder">📦</span>
+                {% endif %}
+              </div>
+              <div class="pflegebox-comp-category-content">
+                <h3 class="pflegebox-comp-category-title">{{ collection.title }}</h3>
+                <span class="pflegebox-comp-category-count">{{ collection.products_count }} Produkte</span>
+                <span class="pflegebox-comp-category-btn">Produkte ansehen →</span>
+              </div>
+            </a>
+          {% endunless %}
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- All Products CTA -->
+    <div class="pflegebox-comp-cta">
+      <h3>🎁 Alle Pflegeprodukte ansehen</h3>
+      <p>Durchstöbern Sie unser komplettes Sortiment</p>
+      <a href="/collections/all" class="pflegebox-comp-cta-btn">Alle Produkte →</a>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const accessDenied = document.getElementById('pflegebox-access-denied');
+  const mainContent = document.getElementById('pflegebox-main-content');
+
+  // Check if customer is logged in and has pflegemittel_ok tag
+  const customerData = localStorage.getItem('customer');
+
+  if (customerData) {
+    try {
+      const customer = JSON.parse(customerData);
+      const tags = customer.tags || '';
+
+      if (tags.includes('pflegemittel_ok')) {
+        // Customer is approved - show main content
+        accessDenied.style.display = 'none';
+        mainContent.style.display = 'block';
+      }
+    } catch (e) {
+      console.error('Error parsing customer data:', e);
+    }
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Pflegebox Composition",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Ihre Pflegebox zusammenstellen"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Untertitel",
+      "default": "Wählen Sie Ihre Pflegemittel - die Kosten übernimmt Ihre Pflegekasse"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pflegebox Composition"
+    }
+  ]
+}
+{% endschema %}

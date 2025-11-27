@@ -1,0 +1,12 @@
+{
+  "sections": {
+    "main": {
+      "type": "pflegebox-composition",
+      "settings": {
+        "title": "Ihre Pflegebox zusammenstellen",
+        "subtitle": "Wählen Sie Ihre Pflegemittel - die Kosten übernimmt Ihre Pflegekasse"
+      }
+    }
+  },
+  "order": ["main"]
+}
