@@ -12,22 +12,22 @@
     background-color: #F8F8F8 !important;
   }
 
-  /* Cart with sidebar layout */
+  /* Cart with integrated sidebar layout - parte della pagina */
   .cart-with-sidebar-wrapper {
     display: flex;
     gap: 30px;
     max-width: 1400px;
     margin: 0 auto;
     padding: 20px;
+    align-items: flex-start;
   }
 
   .cart-sidebar-container {
     flex: 0 0 280px;
-    position: sticky;
-    top: 100px;
-    height: fit-content;
-    max-height: calc(100vh - 120px);
-    overflow-y: auto;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
   }
 
   .cart-main-container {
@@ -38,74 +38,25 @@
   @media screen and (max-width: 992px) {
     .cart-with-sidebar-wrapper {
       flex-direction: column;
+      padding: 15px;
+      gap: 20px;
     }
     .cart-sidebar-container {
       flex: none;
-      position: relative;
-      top: 0;
-      max-height: none;
+      width: 100%;
       order: 2;
-      margin-top: 30px;
+      margin-top: 20px;
     }
     .cart-main-container {
       order: 1;
+      width: 100%;
     }
   }
 
-  /* Mobile sidebar toggle button */
-  .sidebar-mobile-toggle {
-    display: none;
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 60px;
-    height: 60px;
-    background: linear-gradient(135deg, #C12624, #A01F1D);
-    border: none;
-    border-radius: 50%;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(193, 38, 36, 0.4);
-    z-index: 998;
-    transition: transform 0.3s ease;
-  }
-
-  .sidebar-mobile-toggle:hover {
-    transform: scale(1.1);
-  }
-
-  @media screen and (max-width: 768px) {
-    .sidebar-mobile-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .cart-sidebar-container {
-      display: none;
-    }
-    .cart-sidebar-container.mobile-open {
-      display: block;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 85%;
-      max-width: 320px;
-      height: 100vh;
-      max-height: 100vh;
-      background: white;
-      z-index: 1000;
-      box-shadow: 5px 0 20px rgba(0,0,0,0.2);
-      animation: slideIn 0.3s ease;
-    }
+  @media screen and (max-width: 576px) {
     .cart-with-sidebar-wrapper {
       padding: 10px;
     }
-  }
-
-  @keyframes slideIn {
-    from { transform: translateX(-100%); }
-    to { transform: translateX(0); }
   }
 
   .cart-page {
@@ -235,20 +186,6 @@
     </div><!-- .cart-with-sidebar-wrapper -->
   </div>
 </cart-items-component>
-
-<!-- Mobile toggle button -->
-<button class="sidebar-mobile-toggle" onclick="toggleCartSidebar()" aria-label="Kategorien anzeigen">
-  ☰
-</button>
-
-<script>
-function toggleCartSidebar() {
-  var sidebar = document.getElementById('cartSidebar');
-  if (sidebar) {
-    sidebar.classList.toggle('mobile-open');
-  }
-}
-</script>
 
 <script>
 // Reload cart page when products are added from recommended products section
