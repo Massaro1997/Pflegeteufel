@@ -260,10 +260,18 @@
 <header-actions
   {{- block.shopify_attributes -}}
 >
-  {% if shop.customer_accounts_enabled %}
-    {% render 'account-popover' %}
-    {% render 'account-drawer' %}
-  {% endif %}
+  {%- comment -%}
+    Custom account icon - link diretto alla pagina login invece del popover Shopify
+  {%- endcomment -%}
+  <a
+    href="/pages/login"
+    class="header-actions__action"
+    aria-label="Anmelden"
+  >
+    <span class="svg-wrapper">
+      {{- 'icon-account.svg' | inline_asset_content -}}
+    </span>
+  </a>
 
   {% if settings.cart_type == 'drawer' and template.name != 'cart' %}
     {% render 'cart-drawer' %}
