@@ -1,0 +1,687 @@
+{% comment %}
+  Section: Customer Admin
+  - Pagina admin per gestire i clienti registrati
+  - Protetta da PIN numerico
+  - Permette di attivare/disattivare il tag "pflegemittel"
+{% endcomment %}
+
+<style>
+  .admin-section {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    min-height: 80vh;
+  }
+
+  /* PIN Screen */
+  .admin-pin-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+  }
+
+  .admin-pin-screen.hidden {
+    display: none;
+  }
+
+  .admin-pin-title {
+    font-size: 1.5rem;
+    margin-bottom: 30px;
+    color: var(--color-foreground);
+  }
+
+  .admin-pin-display {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .admin-pin-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid #666;
+    background: transparent;
+    transition: all 0.2s;
+  }
+
+  .admin-pin-dot.filled {
+    background: #C12624;
+    border-color: #C12624;
+  }
+
+  .admin-pin-error {
+    color: #C12624;
+    margin-bottom: 15px;
+    min-height: 20px;
+    font-size: 0.9rem;
+  }
+
+  .admin-pin-pad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    max-width: 240px;
+  }
+
+  .admin-pin-btn {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    border: 1px solid #ddd;
+    background: #f5f5f5;
+    color: #333;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .admin-pin-btn:hover {
+    background: #e0e0e0;
+    border-color: #C12624;
+  }
+
+  .admin-pin-btn:active {
+    transform: scale(0.95);
+    background: #C12624;
+    color: #fff;
+  }
+
+  .admin-pin-btn.small-text {
+    font-size: 1rem;
+  }
+
+  /* Admin Content */
+  .admin-content {
+    display: none;
+  }
+
+  .admin-content.visible {
+    display: block;
+  }
+
+  .admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .admin-title {
+    font-size: 1.5rem;
+    color: var(--color-foreground);
+  }
+
+  .admin-logout-btn {
+    padding: 8px 16px;
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+
+  .admin-logout-btn:hover {
+    background: #e0e0e0;
+  }
+
+  /* Stats */
+  .admin-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin-bottom: 30px;
+  }
+
+  .admin-stat-card {
+    background: #f9f9f9;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+  }
+
+  .admin-stat-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #C12624;
+  }
+
+  .admin-stat-label {
+    color: #666;
+    font-size: 0.85rem;
+    margin-top: 5px;
+  }
+
+  /* Table */
+  .admin-table-container {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #eee;
+    overflow: hidden;
+  }
+
+  .admin-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .admin-table th,
+  .admin-table td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+  }
+
+  .admin-table th {
+    background: #f9f9f9;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    color: #666;
+  }
+
+  .admin-table tr:last-child td {
+    border-bottom: none;
+  }
+
+  .admin-table tr:hover {
+    background: #fafafa;
+  }
+
+  .admin-customer-name {
+    font-weight: 500;
+  }
+
+  .admin-customer-email {
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  .admin-customer-date {
+    color: #999;
+    font-size: 0.85rem;
+  }
+
+  /* Toggle Switch */
+  .admin-toggle {
+    position: relative;
+    width: 50px;
+    height: 26px;
+    display: inline-block;
+  }
+
+  .admin-toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .admin-toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.3s;
+    border-radius: 26px;
+  }
+
+  .admin-toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+  }
+
+  .admin-toggle input:checked + .admin-toggle-slider {
+    background-color: #C12624;
+  }
+
+  .admin-toggle input:checked + .admin-toggle-slider:before {
+    transform: translateX(24px);
+  }
+
+  .admin-toggle.loading {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  /* Status Badge */
+  .admin-status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .admin-status-badge.active {
+    background: rgba(193, 38, 36, 0.1);
+    color: #C12624;
+  }
+
+  .admin-status-badge.pending {
+    background: #f0f0f0;
+    color: #666;
+  }
+
+  /* Empty State */
+  .admin-empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+  }
+
+  /* Loading */
+  .admin-loading {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+  }
+
+  /* Refresh Button */
+  .admin-refresh-btn {
+    padding: 8px 16px;
+    background: #C12624;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+
+  .admin-refresh-btn:hover {
+    background: #a01f1d;
+  }
+
+  /* Toast */
+  .admin-toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    padding: 15px 25px;
+    background: #333;
+    border-radius: 8px;
+    color: #fff;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s;
+    z-index: 1000;
+  }
+
+  .admin-toast.visible {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .admin-toast.success {
+    background: #28a745;
+  }
+
+  .admin-toast.error {
+    background: #dc3545;
+  }
+
+  /* Mobile */
+  @media (max-width: 768px) {
+    .admin-stats {
+      grid-template-columns: 1fr;
+    }
+
+    .admin-table-container {
+      overflow-x: auto;
+    }
+
+    .admin-table {
+      min-width: 600px;
+    }
+
+    .admin-header {
+      flex-direction: column;
+      gap: 15px;
+    }
+  }
+</style>
+
+<div class="admin-section">
+
+  <!-- PIN Screen -->
+  <div class="admin-pin-screen" id="adminPinScreen">
+    <h2 class="admin-pin-title">🔐 Admin Zugang</h2>
+
+    <div class="admin-pin-display">
+      <div class="admin-pin-dot" id="adminDot1"></div>
+      <div class="admin-pin-dot" id="adminDot2"></div>
+      <div class="admin-pin-dot" id="adminDot3"></div>
+      <div class="admin-pin-dot" id="adminDot4"></div>
+    </div>
+
+    <div class="admin-pin-error" id="adminPinError"></div>
+
+    <div class="admin-pin-pad">
+      <button type="button" class="admin-pin-btn" onclick="adminAddDigit('1')">1</button>
+      <button type="button" class="admin-pin-btn" onclick="adminAddDigit('2')">2</button>
+      <button type="button" class="admin-pin-btn" onclick="adminAddDigit('3')">3</button>
+      <button type="button" class="admin-pin-btn" onclick="adminAddDigit('4')">4</button>
+      <button type="button" class="admin-pin-btn" onclick="adminAddDigit('5')">5</button>
+      <button type="button" class="admin-pin-btn" onclick="adminAddDigit('6')">6</button>
+      <button type="button" class="admin-pin-btn" onclick="adminAddDigit('7')">7</button>
+      <button type="button" class="admin-pin-btn" onclick="adminAddDigit('8')">8</button>
+      <button type="button" class="admin-pin-btn" onclick="adminAddDigit('9')">9</button>
+      <button type="button" class="admin-pin-btn small-text" onclick="adminClearPin()">C</button>
+      <button type="button" class="admin-pin-btn" onclick="adminAddDigit('0')">0</button>
+      <button type="button" class="admin-pin-btn small-text" onclick="adminBackspace()">⌫</button>
+    </div>
+  </div>
+
+  <!-- Admin Content -->
+  <div class="admin-content" id="adminContent">
+    <div class="admin-header">
+      <h1 class="admin-title">Kunden Verwaltung</h1>
+      <div>
+        <button type="button" class="admin-refresh-btn" onclick="adminLoadCustomers()">🔄 Aktualisieren</button>
+        <button type="button" class="admin-logout-btn" onclick="adminLogout()">Abmelden</button>
+      </div>
+    </div>
+
+    <div class="admin-stats">
+      <div class="admin-stat-card">
+        <div class="admin-stat-number" id="adminTotalCustomers">-</div>
+        <div class="admin-stat-label">Kunden gesamt</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="admin-stat-number" id="adminApprovedCustomers">-</div>
+        <div class="admin-stat-label">Mit Pflegemittel</div>
+      </div>
+      <div class="admin-stat-card">
+        <div class="admin-stat-number" id="adminPendingCustomers">-</div>
+        <div class="admin-stat-label">Ausstehend</div>
+      </div>
+    </div>
+
+    <div class="admin-table-container">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>E-Mail</th>
+            <th>Registriert</th>
+            <th>Status</th>
+            <th>Pflegemittel</th>
+          </tr>
+        </thead>
+        <tbody id="adminCustomersBody">
+          <tr>
+            <td colspan="5" class="admin-loading">Lädt...</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="admin-empty" id="adminEmpty" style="display: none;">
+      <p>Noch keine Kunden registriert</p>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="admin-toast" id="adminToast"></div>
+
+<script>
+(function() {
+  // Configuration
+  const WORKER_URL = '{{ section.settings.worker_url }}';
+  const CORRECT_PIN = '{{ section.settings.admin_pin }}';
+
+  // State
+  let currentPin = '';
+  let isAuthenticated = false;
+  let customers = [];
+
+  // Make functions global
+  window.adminAddDigit = function(digit) {
+    if (currentPin.length < 4) {
+      currentPin += digit;
+      updatePinDisplay();
+      if (currentPin.length === 4) {
+        setTimeout(verifyPin, 200);
+      }
+    }
+  };
+
+  window.adminBackspace = function() {
+    currentPin = currentPin.slice(0, -1);
+    updatePinDisplay();
+    document.getElementById('adminPinError').textContent = '';
+  };
+
+  window.adminClearPin = function() {
+    currentPin = '';
+    updatePinDisplay();
+    document.getElementById('adminPinError').textContent = '';
+  };
+
+  window.adminLogout = function() {
+    isAuthenticated = false;
+    currentPin = '';
+    updatePinDisplay();
+    document.getElementById('adminPinScreen').classList.remove('hidden');
+    document.getElementById('adminContent').classList.remove('visible');
+  };
+
+  window.adminLoadCustomers = loadCustomers;
+
+  window.adminTogglePflegemittel = async function(customerId, enabled) {
+    const toggle = document.getElementById('adminToggle-' + customerId);
+    if (toggle) toggle.classList.add('loading');
+
+    try {
+      const response = await fetch(WORKER_URL + '/admin/customer/' + customerId + '/tag', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Admin-Pin': CORRECT_PIN
+        },
+        body: JSON.stringify({
+          tag: 'pflegemittel',
+          enabled: enabled
+        })
+      });
+
+      if (!response.ok) throw new Error('Failed');
+
+      // Update local state
+      const customer = customers.find(c => c.id === customerId);
+      if (customer) {
+        if (enabled) {
+          customer.tags = customer.tags ? customer.tags + ',pflegemittel' : 'pflegemittel';
+        } else {
+          customer.tags = (customer.tags || '').replace(/,?pflegemittel/g, '').replace(/^,/, '');
+        }
+      }
+
+      renderCustomers();
+      updateStats();
+      showToast(enabled ? 'Pflegemittel aktiviert ✓' : 'Pflegemittel deaktiviert', 'success');
+
+    } catch (error) {
+      console.error('Error:', error);
+      showToast('Fehler beim Aktualisieren', 'error');
+      // Revert
+      const checkbox = toggle ? toggle.querySelector('input') : null;
+      if (checkbox) checkbox.checked = !enabled;
+    } finally {
+      if (toggle) toggle.classList.remove('loading');
+    }
+  };
+
+  function updatePinDisplay() {
+    for (let i = 1; i <= 4; i++) {
+      const dot = document.getElementById('adminDot' + i);
+      if (dot) {
+        dot.classList.toggle('filled', i <= currentPin.length);
+      }
+    }
+  }
+
+  function verifyPin() {
+    if (currentPin === CORRECT_PIN) {
+      isAuthenticated = true;
+      document.getElementById('adminPinScreen').classList.add('hidden');
+      document.getElementById('adminContent').classList.add('visible');
+      loadCustomers();
+    } else {
+      document.getElementById('adminPinError').textContent = 'Falscher PIN';
+      currentPin = '';
+      updatePinDisplay();
+    }
+  }
+
+  async function loadCustomers() {
+    const tbody = document.getElementById('adminCustomersBody');
+    tbody.innerHTML = '<tr><td colspan="5" class="admin-loading">Lädt...</td></tr>';
+
+    try {
+      const response = await fetch(WORKER_URL + '/admin/customers', {
+        headers: {
+          'X-Admin-Pin': CORRECT_PIN
+        }
+      });
+
+      if (!response.ok) throw new Error('Failed to load');
+
+      const data = await response.json();
+      customers = data.customers || [];
+
+      renderCustomers();
+      updateStats();
+
+    } catch (error) {
+      console.error('Error:', error);
+      tbody.innerHTML = '<tr><td colspan="5" class="admin-loading">Fehler beim Laden</td></tr>';
+      showToast('Fehler beim Laden der Kunden', 'error');
+    }
+  }
+
+  function renderCustomers() {
+    const tbody = document.getElementById('adminCustomersBody');
+    const emptyState = document.getElementById('adminEmpty');
+
+    if (customers.length === 0) {
+      tbody.innerHTML = '';
+      emptyState.style.display = 'block';
+      return;
+    }
+
+    emptyState.style.display = 'none';
+
+    tbody.innerHTML = customers.map(function(customer) {
+      const hasPflegemittel = customer.tags && customer.tags.includes('pflegemittel');
+      const name = (customer.first_name || '') + ' ' + (customer.last_name || '');
+
+      return '<tr>' +
+        '<td><div class="admin-customer-name">' + escapeHtml(name.trim() || '-') + '</div></td>' +
+        '<td><div class="admin-customer-email">' + escapeHtml(customer.email) + '</div></td>' +
+        '<td><div class="admin-customer-date">' + formatDate(customer.created_at) + '</div></td>' +
+        '<td><span class="admin-status-badge ' + (hasPflegemittel ? 'active' : 'pending') + '">' +
+          (hasPflegemittel ? 'Aktiv' : 'Ausstehend') + '</span></td>' +
+        '<td>' +
+          '<label class="admin-toggle" id="adminToggle-' + customer.id + '">' +
+            '<input type="checkbox" ' + (hasPflegemittel ? 'checked' : '') +
+              ' onchange="adminTogglePflegemittel(' + customer.id + ', this.checked)">' +
+            '<span class="admin-toggle-slider"></span>' +
+          '</label>' +
+        '</td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  function updateStats() {
+    const total = customers.length;
+    const approved = customers.filter(function(c) {
+      return c.tags && c.tags.includes('pflegemittel');
+    }).length;
+    const pending = total - approved;
+
+    document.getElementById('adminTotalCustomers').textContent = total;
+    document.getElementById('adminApprovedCustomers').textContent = approved;
+    document.getElementById('adminPendingCustomers').textContent = pending;
+  }
+
+  function showToast(message, type) {
+    const toast = document.getElementById('adminToast');
+    toast.textContent = message;
+    toast.className = 'admin-toast visible ' + (type || '');
+    setTimeout(function() {
+      toast.classList.remove('visible');
+    }, 3000);
+  }
+
+  function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text || '';
+    return div.innerHTML;
+  }
+
+  function formatDate(dateString) {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('de-DE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  }
+
+  // Keyboard support
+  document.addEventListener('keydown', function(e) {
+    if (!isAuthenticated && document.getElementById('adminPinScreen') && !document.getElementById('adminPinScreen').classList.contains('hidden')) {
+      if (e.key >= '0' && e.key <= '9') {
+        adminAddDigit(e.key);
+      } else if (e.key === 'Backspace') {
+        adminBackspace();
+      } else if (e.key === 'Escape') {
+        adminClearPin();
+      }
+    }
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Customer Admin",
+  "tag": "section",
+  "class": "customer-admin-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "worker_url",
+      "label": "Worker URL",
+      "default": "https://pflegeteufel-auth.massarocalogero1997.workers.dev"
+    },
+    {
+      "type": "text",
+      "id": "admin_pin",
+      "label": "Admin PIN",
+      "default": "1111"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Customer Admin"
+    }
+  ]
+}
+{% endschema %}
