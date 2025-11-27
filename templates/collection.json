@@ -9,13 +9,6 @@
  */
 {
   "sections": {
-    "categories_nav": {
-      "type": "categories-navigation",
-      "settings": {
-        "show_count": false,
-        "show_pflegebox": true
-      }
-    },
     "section_RFrkNJ": {
       "type": "section",
       "name": "t:names.custom_section",
@@ -456,7 +449,6 @@
     }
   },
   "order": [
-    "categories_nav",
     "section_RFrkNJ",
     "hero_iPQ9xc",
     "section_xjzTNV",

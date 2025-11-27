@@ -11,10 +11,7 @@
   "sections": {
     "categories_nav": {
       "type": "categories-navigation",
-      "settings": {
-        "show_count": false,
-        "show_pflegebox": true
-      }
+      "settings": {}
     },
     "cart_progress_bar_biNMDp": {
       "type": "cart-progress-bar",
