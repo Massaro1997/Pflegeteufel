@@ -12,8 +12,11 @@ INSTALLAZIONE:
 {% endcomment %}
 
 <section class="product-section" data-section="{{ section.id }}">
+  <!-- Quick Navigation -->
+  {% render 'collection-quick-nav' %}
+
   <div class="product-container">
-    
+
     <!-- Breadcrumb -->
     {% if section.settings.show_breadcrumb %}
     <nav class="breadcrumb">

@@ -1,0 +1,167 @@
+{% comment %}
+  Snippet: Collection Quick Navigation
+  Barra di navigazione rapida per le collezioni
+  Da includere in: carrello, pagine collezione, pagine prodotto
+{% endcomment %}
+
+<style>
+.cqn-wrapper {
+  background: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  padding: 12px 0;
+  margin-bottom: 20px;
+}
+
+.cqn-container {
+  max-width: var(--page-width, 1200px);
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.cqn-title {
+  display: none;
+}
+
+.cqn-scroll {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 4px 0;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.cqn-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+.cqn-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 25px;
+  color: #333;
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.cqn-btn:hover {
+  background: #C12624;
+  border-color: #C12624;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(193, 38, 36, 0.25);
+}
+
+.cqn-btn.cqn-btn--active {
+  background: #C12624;
+  border-color: #C12624;
+  color: white;
+}
+
+.cqn-btn-icon {
+  font-size: 16px;
+}
+
+.cqn-btn-count {
+  background: rgba(0,0,0,0.1);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.cqn-btn.cqn-btn--active .cqn-btn-count,
+.cqn-btn:hover .cqn-btn-count {
+  background: rgba(255,255,255,0.25);
+}
+
+/* All Products Button */
+.cqn-btn--all {
+  background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%);
+  border-color: #C12624;
+  color: white;
+}
+
+.cqn-btn--all:hover {
+  background: linear-gradient(135deg, #A01F1D 0%, #8a1a18 100%);
+  border-color: #A01F1D;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .cqn-wrapper {
+    padding: 10px 0;
+    margin-bottom: 15px;
+  }
+
+  .cqn-container {
+    padding: 0 15px;
+  }
+
+  .cqn-btn {
+    padding: 8px 14px;
+    font-size: 12px;
+  }
+
+  .cqn-btn-icon {
+    font-size: 14px;
+  }
+}
+</style>
+
+<div class="cqn-wrapper">
+  <div class="cqn-container">
+    <h3 class="cqn-title">Kategorien</h3>
+    <div class="cqn-scroll">
+      <!-- Alle Produkte -->
+      <a href="/collections/all" class="cqn-btn cqn-btn--all {% if request.path == '/collections/all' %}cqn-btn--active{% endif %}">
+        <span class="cqn-btn-icon">🛒</span>
+        <span>Alle Produkte</span>
+      </a>
+
+      <!-- Collezioni dinamiche -->
+      {% for collection in collections %}
+        {% unless collection.handle == 'all' or collection.handle == 'frontpage' %}
+          {% assign is_active = false %}
+          {% if request.path contains collection.handle %}
+            {% assign is_active = true %}
+          {% endif %}
+          {% if product.collections contains collection %}
+            {% assign is_active = true %}
+          {% endif %}
+
+          <a href="{{ collection.url }}" class="cqn-btn {% if is_active %}cqn-btn--active{% endif %}">
+            {% case collection.handle %}
+              {% when 'handschuhe' %}
+                <span class="cqn-btn-icon">🧤</span>
+              {% when 'masken' or 'mundschutz' %}
+                <span class="cqn-btn-icon">😷</span>
+              {% when 'desinfektion' or 'desinfektionsmittel' %}
+                <span class="cqn-btn-icon">🧴</span>
+              {% when 'bettschutz' or 'unterlagen' %}
+                <span class="cqn-btn-icon">🛏️</span>
+              {% when 'schuerzen' or 'schutzkleidung' %}
+                <span class="cqn-btn-icon">👔</span>
+              {% when 'wundversorgung' %}
+                <span class="cqn-btn-icon">🩹</span>
+              {% when 'hygiene' %}
+                <span class="cqn-btn-icon">🧼</span>
+              {% else %}
+                <span class="cqn-btn-icon">📦</span>
+            {% endcase %}
+            <span>{{ collection.title }}</span>
+            <span class="cqn-btn-count">{{ collection.products_count }}</span>
+          </a>
+        {% endunless %}
+      {% endfor %}
+    </div>
+  </div>
+</div>

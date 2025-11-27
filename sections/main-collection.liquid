@@ -96,6 +96,7 @@
 {% endjavascript %}
 
 {% comment %} We always render this full-width, as the child blocks have width: page/full settings {% endcomment %}
+{% render 'collection-quick-nav' %}
 <div class="section-background color-{{ section.settings.color_scheme }}"></div>
 <results-list
   class="section product-grid-container color-{{ section.settings.color_scheme }}"
