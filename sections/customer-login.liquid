@@ -133,8 +133,8 @@
           sessionStorage.setItem('auth_token', result.token);
         }
 
-        // Redirect alla pagina account o homepage
-        const redirectUrl = urlParams.get('redirect') || '/pages/mein-konto';
+        // Redirect alla homepage
+        const redirectUrl = urlParams.get('redirect') || '/';
         window.location.href = redirectUrl;
       } else {
         showError(result.error || 'Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Daten.');

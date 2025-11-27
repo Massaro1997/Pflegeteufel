@@ -228,7 +228,7 @@
 
 <script>
 (function() {
-  const WORKER_URL = '{{ section.settings.worker_url | default: "https://shopify-backend.massarocalogero1997.workers.dev" }}';
+  const WORKER_URL = '{{ section.settings.worker_url | default: "https://pflegeteufel-auth.massarocalogero1997.workers.dev" }}';
 
   let currentCustomer = null;
   let authToken = null;
@@ -779,7 +779,7 @@
       "type": "text",
       "id": "worker_url",
       "label": "Worker URL",
-      "default": "https://shopify-backend.massarocalogero1997.workers.dev",
+      "default": "https://pflegeteufel-auth.massarocalogero1997.workers.dev",
       "info": "URL des Cloudflare Workers"
     },
     {

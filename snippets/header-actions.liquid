@@ -229,6 +229,30 @@
     font-weight: var(--font-paragraph--weight);
   }
 
+  .header-actions__account {
+    display: flex;
+    align-items: center;
+  }
+
+  .header-actions__greeting {
+    text-decoration: none;
+    color: var(--color-foreground);
+    font-size: var(--font-size--sm);
+    font-weight: 500;
+    padding: 0 var(--padding-sm);
+    white-space: nowrap;
+  }
+
+  .header-actions__greeting:hover {
+    opacity: 0.8;
+  }
+
+  .greeting-text {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
   .header-actions__cart-icon.header-actions__cart-icon--has-cart svg {
     /* Create donut mask where the cart bubble sits */
     mask: radial-gradient(
@@ -261,17 +285,62 @@
   {{- block.shopify_attributes -}}
 >
   {%- comment -%}
-    Custom account icon - link diretto alla pagina login invece del popover Shopify
+    Custom account - mostra "Ciao Nome" se loggato, altrimenti icona login
   {%- endcomment -%}
-  <a
-    href="/pages/login"
-    class="header-actions__action"
-    aria-label="Anmelden"
-  >
-    <span class="svg-wrapper">
-      {{- 'icon-account.svg' | inline_asset_content -}}
-    </span>
-  </a>
+  <div class="header-actions__account" id="header-account">
+    <!-- Stato non loggato (default) -->
+    <a
+      href="/pages/login"
+      class="header-actions__action header-actions__login"
+      aria-label="Anmelden"
+      id="header-login-link"
+    >
+      <span class="svg-wrapper">
+        {{- 'icon-account.svg' | inline_asset_content -}}
+      </span>
+    </a>
+    <!-- Stato loggato (nascosto di default) -->
+    <a
+      href="/pages/mein-konto"
+      class="header-actions__action header-actions__greeting"
+      id="header-greeting"
+      style="display: none;"
+    >
+      <span class="greeting-text">Hallo <span id="header-customer-name"></span></span>
+    </a>
+  </div>
+  <script>
+    (function() {
+      function updateHeaderAccount() {
+        const customer = localStorage.getItem('customer');
+        const token = localStorage.getItem('auth_token');
+        const loginLink = document.getElementById('header-login-link');
+        const greeting = document.getElementById('header-greeting');
+        const nameSpan = document.getElementById('header-customer-name');
+
+        if (customer && token) {
+          try {
+            const data = JSON.parse(customer);
+            if (data.firstName) {
+              nameSpan.textContent = data.firstName;
+              loginLink.style.display = 'none';
+              greeting.style.display = 'flex';
+            }
+          } catch(e) {}
+        } else {
+          loginLink.style.display = 'flex';
+          greeting.style.display = 'none';
+        }
+      }
+
+      // Esegui subito e quando la pagina è caricata
+      updateHeaderAccount();
+      document.addEventListener('DOMContentLoaded', updateHeaderAccount);
+
+      // Aggiorna quando localStorage cambia (es. login/logout in altra tab)
+      window.addEventListener('storage', updateHeaderAccount);
+    })();
+  </script>
 
   {% if settings.cart_type == 'drawer' and template.name != 'cart' %}
     {% render 'cart-drawer' %}
