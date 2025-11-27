@@ -1011,6 +1011,15 @@
         "padding-block-start": 0,
         "padding-block-end": 0
       }
+    },
+    "pflegebox_home_process": {
+      "type": "pflegebox-home-process",
+      "settings": {
+        "title": "So erhalten Sie Ihre kostenlose Pflegebox:",
+        "result_text": "Nach Genehmigung erhalten Sie jeden Monat bis zu",
+        "result_amount": "42,00€ Erstattung",
+        "cta_text": "Jetzt kostenlos starten"
+      }
     }
   },
   "order": [
@@ -1020,6 +1029,7 @@
     "section_XXKyAE",
     "section_RrxRYn",
     "section_HeGkpG",
+    "pflegebox_home_process",
     "section_mGxhhk",
     "blog_slider_PYfDCm",
     "section_7hEizw",

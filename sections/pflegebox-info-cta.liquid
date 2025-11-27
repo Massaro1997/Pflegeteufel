@@ -197,6 +197,185 @@
   gap: 12px;
 }
 
+/* Process Steps */
+.pflegebox-process {
+  margin: 40px 0 30px 0;
+  padding: 30px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  border-radius: 16px;
+  border: 2px solid #e9ecef;
+}
+
+.pflegebox-process-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.pflegebox-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+
+.pflegebox-step {
+  text-align: center;
+  padding: 20px 10px;
+  position: relative;
+}
+
+.pflegebox-step:not(:last-child)::after {
+  content: '→';
+  position: absolute;
+  right: -15px;
+  top: 35px;
+  font-size: 1.5rem;
+  color: #C12624;
+  font-weight: bold;
+}
+
+.pflegebox-step-number {
+  width: 50px;
+  height: 50px;
+  background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%);
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin: 0 auto 15px;
+  box-shadow: 0 4px 12px rgba(193, 38, 36, 0.3);
+}
+
+.pflegebox-step-icon {
+  font-size: 2rem;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.pflegebox-step-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 8px;
+}
+
+.pflegebox-step-desc {
+  font-size: 0.85rem;
+  color: #666;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.pflegebox-step-cta {
+  display: inline-block;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%);
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin-top: 8px;
+}
+
+.pflegebox-step-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(193, 38, 36, 0.35);
+  color: white;
+}
+
+.pflegebox-main-cta {
+  text-align: center;
+  margin-top: 25px;
+}
+
+.pflegebox-main-cta .pflegebox-cta-btn {
+  font-size: 1.2rem;
+  padding: 18px 45px;
+}
+
+.pflegebox-result-box {
+  margin-top: 25px;
+  padding: 20px;
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+  border-radius: 12px;
+  border: 2px solid #28a745;
+  text-align: center;
+}
+
+.pflegebox-result-icon {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.pflegebox-result-text {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #155724;
+}
+
+.pflegebox-result-amount {
+  font-size: 1.5rem;
+  font-weight: 900;
+  color: #28a745;
+  margin-top: 5px;
+}
+
+@media (max-width: 768px) {
+  .pflegebox-steps {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  .pflegebox-step:not(:last-child)::after {
+    display: none;
+  }
+
+  .pflegebox-step-number {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .pflegebox-step-icon {
+    font-size: 1.5rem;
+  }
+
+  .pflegebox-step-title {
+    font-size: 0.9rem;
+  }
+
+  .pflegebox-step-desc {
+    font-size: 0.8rem;
+  }
+
+  .pflegebox-step-cta {
+    font-size: 0.75rem;
+    padding: 6px 12px;
+  }
+
+  .pflegebox-main-cta .pflegebox-cta-btn {
+    font-size: 1rem;
+    padding: 14px 30px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pflegebox-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .pflegebox-process {
+    padding: 20px 15px;
+  }
+}
+
 @media (max-width: 768px) {
   .pflegebox-info-card {
     padding: 30px 25px;
@@ -243,6 +422,57 @@
 
     <h2 class="pflegebox-info-title">{{ section.settings.title }}</h2>
     <p class="pflegebox-info-description">{{ section.settings.description }}</p>
+
+    <!-- Process Steps - So funktioniert es -->
+    <div class="pflegebox-process">
+      <h3 class="pflegebox-process-title">So erhalten Sie Ihre kostenlose Pflegebox:</h3>
+
+      <div class="pflegebox-steps">
+        <div class="pflegebox-step">
+          <div class="pflegebox-step-number">1</div>
+          <span class="pflegebox-step-icon">📝</span>
+          <div class="pflegebox-step-title">Registrieren</div>
+          <div class="pflegebox-step-desc">Erstellen Sie ein kostenloses Konto bei uns</div>
+          <a href="/pages/registrierung" class="pflegebox-step-cta">Jetzt registrieren →</a>
+        </div>
+
+        <div class="pflegebox-step">
+          <div class="pflegebox-step-number">2</div>
+          <span class="pflegebox-step-icon">📋</span>
+          <div class="pflegebox-step-title">Formular ausfüllen</div>
+          <div class="pflegebox-step-desc">Füllen Sie das Antragsformular für Ihre Pflegekasse online aus</div>
+          <a href="/pages/pflegebox-formular" class="pflegebox-step-cta">Zum Formular →</a>
+        </div>
+
+        <div class="pflegebox-step">
+          <div class="pflegebox-step-number">3</div>
+          <span class="pflegebox-step-icon">✉️</span>
+          <div class="pflegebox-step-title">Absenden</div>
+          <div class="pflegebox-step-desc">Wir senden den Antrag für Sie an Ihre Pflegekasse</div>
+        </div>
+
+        <div class="pflegebox-step">
+          <div class="pflegebox-step-number">4</div>
+          <span class="pflegebox-step-icon">🛒</span>
+          <div class="pflegebox-step-title">Bestellen</div>
+          <div class="pflegebox-step-desc">Nach Genehmigung bestellen Sie Ihre Pflegebox mit Erstattung</div>
+          <a href="/collections/pflegebox" class="pflegebox-step-cta">Pflegebox ansehen →</a>
+        </div>
+      </div>
+
+      <div class="pflegebox-result-box">
+        <div class="pflegebox-result-icon">💶</div>
+        <div class="pflegebox-result-text">Nach Genehmigung erhalten Sie jeden Monat bis zu</div>
+        <div class="pflegebox-result-amount">42,00€ Erstattung</div>
+      </div>
+
+      <!-- CTA principale -->
+      <div class="pflegebox-main-cta">
+        <a href="/pages/registrierung" class="pflegebox-cta-btn primary">
+          🚀 Jetzt kostenlos registrieren und starten
+        </a>
+      </div>
+    </div>
 
     <p class="pflegebox-question">{{ section.settings.question }}</p>
 

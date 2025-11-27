@@ -3,7 +3,8 @@
   Versione semplificata e più compatibile
 {% endcomment %}
 
-<div class="cpb-wrapper">
+<!-- Barra Krankenkasse Erstattung: visibile solo per clienti approvati con tag pflegemittel_ok -->
+<div class="cpb-wrapper" id="cpb-wrapper" style="display: none;">
   <div id="cart-progress-bar" class="cpb-section"
     data-goal="3700"
     data-shipping="500"
@@ -498,6 +499,46 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
   console.log('[CPB] Inizializzazione Cart Progress Bar...');
+
+  // Controlla se l'utente è loggato e ha il tag pflegemittel_ok
+  function checkUserAccess() {
+    const wrapper = document.getElementById('cpb-wrapper');
+    if (!wrapper) return false;
+
+    const customer = localStorage.getItem('customer');
+    const token = localStorage.getItem('auth_token');
+
+    if (!customer || !token) {
+      console.log('[CPB] Utente non loggato, barra nascosta');
+      wrapper.style.display = 'none';
+      return false;
+    }
+
+    try {
+      const data = JSON.parse(customer);
+      const tags = data.tags || '';
+
+      if (tags.includes('pflegemittel_ok')) {
+        console.log('[CPB] Utente autorizzato con tag pflegemittel_ok, barra visibile');
+        wrapper.style.display = 'block';
+        return true;
+      } else {
+        console.log('[CPB] Utente loggato ma senza tag pflegemittel_ok, barra nascosta');
+        wrapper.style.display = 'none';
+        return false;
+      }
+    } catch (e) {
+      console.log('[CPB] Errore parsing customer data:', e);
+      wrapper.style.display = 'none';
+      return false;
+    }
+  }
+
+  // Verifica accesso all'avvio
+  if (!checkUserAccess()) {
+    console.log('[CPB] Accesso negato, interruzione inizializzazione');
+    return;
+  }
   
   // Elementi DOM
   const progressBar = document.getElementById('cart-progress-bar');

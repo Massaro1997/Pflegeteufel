@@ -650,7 +650,7 @@
           'X-Admin-Pin': CORRECT_PIN
         },
         body: JSON.stringify({
-          tag: 'pflegemittel',
+          tag: 'pflegemittel_ok',
           enabled: enabled
         })
       });
@@ -661,9 +661,9 @@
       const customer = customers.find(c => c.id === customerId);
       if (customer) {
         if (enabled) {
-          customer.tags = customer.tags ? customer.tags + ',pflegemittel' : 'pflegemittel';
+          customer.tags = customer.tags ? customer.tags + ',pflegemittel_ok' : 'pflegemittel_ok';
         } else {
-          customer.tags = (customer.tags || '').replace(/,?pflegemittel/g, '').replace(/^,/, '');
+          customer.tags = (customer.tags || '').replace(/,?pflegemittel_ok/g, '').replace(/^,/, '');
         }
       }
 
@@ -743,7 +743,7 @@
     emptyState.style.display = 'none';
 
     tbody.innerHTML = customers.map(function(customer) {
-      const hasPflegemittel = customer.tags && customer.tags.includes('pflegemittel');
+      const hasPflegemittel = customer.tags && customer.tags.includes('pflegemittel_ok');
       const name = (customer.first_name || '') + ' ' + (customer.last_name || '');
 
       return '<tr>' +
@@ -771,7 +771,7 @@
   function updateStats() {
     const total = customers.length;
     const approved = customers.filter(function(c) {
-      return c.tags && c.tags.includes('pflegemittel');
+      return c.tags && c.tags.includes('pflegemittel_ok');
     }).length;
     const pending = total - approved;
 
