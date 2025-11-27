@@ -3,7 +3,7 @@
     "customer-account": {
       "type": "customer-account",
       "settings": {
-        "worker_url": "https://shopify-backend.massarocalogero1997.workers.dev",
+        "worker_url": "https://pflegeteufel-auth.massarocalogero1997.workers.dev",
         "show_pflegebox_fields": true
       }
     }

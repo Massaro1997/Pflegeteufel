@@ -5,7 +5,7 @@
       "settings": {
         "title": "Anmelden",
         "subtitle": "Melden Sie sich in Ihrem Konto an",
-        "worker_url": "https://shopify-backend.massarocalogero1997.workers.dev"
+        "worker_url": "https://pflegeteufel-auth.massarocalogero1997.workers.dev"
       }
     }
   },
