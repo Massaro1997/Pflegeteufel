@@ -1,0 +1,198 @@
+{% comment %}
+  Section: Categories Navigation Bar
+  Barra di navigazione categorie - completamente isolata
+  Da inserire sotto la navbar principale
+{% endcomment %}
+
+<style>
+  /* ========== CATEGORIES NAV - ISOLATED STYLES ========== */
+  /* Namespace: .pt-categories-nav per evitare conflitti */
+
+  .pt-categories-nav {
+    width: 100%;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e5e5;
+    padding: 0;
+    margin: 0;
+    font-family: inherit;
+  }
+
+  .pt-categories-nav__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .pt-categories-nav__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 12px 0;
+    margin: 0;
+    list-style: none;
+  }
+
+  .pt-categories-nav__item {
+    margin: 0;
+    padding: 0;
+  }
+
+  .pt-categories-nav__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    color: #333333;
+    text-decoration: none;
+    background: #f8f8f8;
+    border: 1px solid #e5e5e5;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .pt-categories-nav__link:hover {
+    background: #C12624;
+    color: #ffffff;
+    border-color: #C12624;
+    transform: translateY(-1px);
+  }
+
+  .pt-categories-nav__link--active {
+    background: #C12624;
+    color: #ffffff;
+    border-color: #C12624;
+  }
+
+  .pt-categories-nav__icon {
+    font-size: 16px;
+    line-height: 1;
+  }
+
+  .pt-categories-nav__count {
+    font-size: 11px;
+    background: rgba(0,0,0,0.1);
+    padding: 2px 6px;
+    border-radius: 10px;
+    margin-left: 4px;
+  }
+
+  .pt-categories-nav__link:hover .pt-categories-nav__count,
+  .pt-categories-nav__link--active .pt-categories-nav__count {
+    background: rgba(255,255,255,0.2);
+  }
+
+  /* Mobile responsive */
+  @media screen and (max-width: 768px) {
+    .pt-categories-nav__list {
+      justify-content: flex-start;
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      padding: 10px 0;
+      gap: 8px;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+
+    .pt-categories-nav__list::-webkit-scrollbar {
+      display: none;
+    }
+
+    .pt-categories-nav__link {
+      padding: 6px 12px;
+      font-size: 13px;
+    }
+
+    .pt-categories-nav__container {
+      padding: 0 15px;
+    }
+  }
+</style>
+
+<nav class="pt-categories-nav" aria-label="Produktkategorien">
+  <div class="pt-categories-nav__container">
+    <ul class="pt-categories-nav__list">
+      <!-- Alle Produkte -->
+      <li class="pt-categories-nav__item">
+        <a href="/collections/all" class="pt-categories-nav__link {% if request.path == '/collections/all' %}pt-categories-nav__link--active{% endif %}">
+          <span class="pt-categories-nav__icon">📦</span>
+          <span>Alle Produkte</span>
+        </a>
+      </li>
+
+      <!-- Categorie dinamiche -->
+      {% for collection in collections %}
+        {% unless collection.handle == 'all' or collection.handle == 'frontpage' %}
+          {% assign icon = '🛒' %}
+          {% case collection.handle %}
+            {% when 'cbd-produkte' %}
+              {% assign icon = '🌿' %}
+            {% when 'desinfektionmittel' %}
+              {% assign icon = '🧴' %}
+            {% when 'elektronik-gerate' %}
+              {% assign icon = '⚡' %}
+            {% when 'hausgemacht-spezialitaten' %}
+              {% assign icon = '🍯' %}
+            {% when 'hygiene' %}
+              {% assign icon = '🧼' %}
+            {% when 'primavera' %}
+              {% assign icon = '🌸' %}
+            {% when 'rotbackchen' %}
+              {% assign icon = '🍎' %}
+          {% endcase %}
+
+          <li class="pt-categories-nav__item">
+            <a href="{{ collection.url }}" class="pt-categories-nav__link {% if request.path contains collection.handle %}pt-categories-nav__link--active{% endif %}">
+              <span class="pt-categories-nav__icon">{{ icon }}</span>
+              <span>{{ collection.title }}</span>
+              {% if section.settings.show_count %}
+                <span class="pt-categories-nav__count">{{ collection.products_count }}</span>
+              {% endif %}
+            </a>
+          </li>
+        {% endunless %}
+      {% endfor %}
+
+      <!-- Pflegebox Link -->
+      {% if section.settings.show_pflegebox %}
+      <li class="pt-categories-nav__item">
+        <a href="/pages/pflegebox-formular" class="pt-categories-nav__link" style="background: linear-gradient(135deg, #C12624, #A01F1D); color: white; border-color: #C12624;">
+          <span class="pt-categories-nav__icon">💶</span>
+          <span>Pflegebox</span>
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+
+{% schema %}
+{
+  "name": "Kategorien Navigation",
+  "tag": "section",
+  "class": "pt-categories-section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_count",
+      "label": "Produktanzahl anzeigen",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pflegebox",
+      "label": "Pflegebox Link anzeigen",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kategorien Navigation"
+    }
+  ]
+}
+{% endschema %}

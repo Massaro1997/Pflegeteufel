@@ -12,53 +12,6 @@
     background-color: #F8F8F8 !important;
   }
 
-  /* Cart with integrated sidebar layout - parte della pagina */
-  .cart-with-sidebar-wrapper {
-    display: flex;
-    gap: 30px;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 20px;
-    align-items: flex-start;
-  }
-
-  .cart-sidebar-container {
-    flex: 0 0 280px;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-  }
-
-  .cart-main-container {
-    flex: 1;
-    min-width: 0;
-  }
-
-  @media screen and (max-width: 992px) {
-    .cart-with-sidebar-wrapper {
-      flex-direction: column;
-      padding: 15px;
-      gap: 20px;
-    }
-    .cart-sidebar-container {
-      flex: none;
-      width: 100%;
-      order: 2;
-      margin-top: 20px;
-    }
-    .cart-main-container {
-      order: 1;
-      width: 100%;
-    }
-  }
-
-  @media screen and (max-width: 576px) {
-    .cart-with-sidebar-wrapper {
-      padding: 10px;
-    }
-  }
-
   .cart-page {
     background-color: #F8F8F8;
     --cart-font-size--2xs: var(--font-size--2xs);
@@ -142,8 +95,6 @@
   }
 {% endstylesheet %}
 
-{{ 'category-sidebar.css' | asset_url | stylesheet_tag }}
-
 <cart-items-component
   class="cart-items-component"
   data-section-id="{{ section.id }}"
@@ -152,18 +103,10 @@
   <div
     class="section color-{{ section.settings.color_scheme }} section--{{ section.settings.section_width }}"
   >
-    <div class="cart-with-sidebar-wrapper">
-      <!-- Sidebar Categorie -->
-      <div class="cart-sidebar-container" id="cartSidebar">
-        {% render 'category-sidebar' %}
-      </div>
-
-      <!-- Contenuto Carrello -->
-      <div class="cart-main-container">
-        <div
-          class="cart-page spacing-style{% if cart.empty? %} cart-page--empty{% endif %}"
-          style="{% render 'spacing-style', settings: section.settings %}"
-        >
+    <div
+      class="cart-page spacing-style{% if cart.empty? %} cart-page--empty{% endif %}"
+      style="{% render 'spacing-style', settings: section.settings %}"
+    >
       <div class="cart-page__title">
         {%- content_for 'block', id: 'cart-page-title', type: '_cart-title' %}
       </div>
@@ -181,9 +124,7 @@
       <div class="cart-page__more-blocks">
         {%- content_for 'blocks' -%}
       </div>
-        </div>
-      </div><!-- .cart-main-container -->
-    </div><!-- .cart-with-sidebar-wrapper -->
+    </div>
   </div>
 </cart-items-component>
 

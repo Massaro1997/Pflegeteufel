@@ -11,76 +11,21 @@ INSTALLAZIONE:
 6. Theme editor > Aggiungi sezione "Produkt Sektion"
 {% endcomment %}
 
-{{ 'category-sidebar.css' | asset_url | stylesheet_tag }}
+<section class="product-section" data-section="{{ section.id }}">
+  <div class="product-container">
+    
+    <!-- Breadcrumb -->
+    {% if section.settings.show_breadcrumb %}
+    <nav class="breadcrumb">
+      <a href="{{ routes.root_url }}">Startseite</a>
+      <span>›</span>
+      <a href="https://pflegeteufel.de/collections">Alle Produkte</a>
+      <span>›</span>
+      <span>{{ product.title }}</span>
+    </nav>
+    {% endif %}
 
-<style>
-  /* Product page with integrated sidebar - parte della pagina */
-  .product-with-sidebar-wrapper {
-    display: flex;
-    gap: 30px;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 20px;
-    align-items: flex-start;
-  }
-  .product-sidebar-container {
-    flex: 0 0 280px;
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-  }
-  .product-main-container {
-    flex: 1;
-    min-width: 0;
-  }
-  @media screen and (max-width: 992px) {
-    .product-with-sidebar-wrapper {
-      flex-direction: column;
-      padding: 15px;
-      gap: 20px;
-    }
-    .product-sidebar-container {
-      flex: none;
-      width: 100%;
-      order: 2;
-      margin-top: 20px;
-    }
-    .product-main-container {
-      order: 1;
-      width: 100%;
-    }
-  }
-  @media screen and (max-width: 576px) {
-    .product-with-sidebar-wrapper {
-      padding: 10px;
-    }
-  }
-</style>
-
-<div class="product-with-sidebar-wrapper">
-  <!-- Sidebar Categorie -->
-  <div class="product-sidebar-container" id="productSidebar">
-    {% render 'category-sidebar', current_collection: product.collections.first.handle %}
-  </div>
-
-  <!-- Contenuto Prodotto -->
-  <div class="product-main-container">
-    <section class="product-section" data-section="{{ section.id }}">
-      <div class="product-container">
-
-        <!-- Breadcrumb -->
-        {% if section.settings.show_breadcrumb %}
-        <nav class="breadcrumb">
-          <a href="{{ routes.root_url }}">Startseite</a>
-          <span>›</span>
-          <a href="https://pflegeteufel.de/collections">Alle Produkte</a>
-          <span>›</span>
-          <span>{{ product.title }}</span>
-        </nav>
-        {% endif %}
-
-        <div class="product-grid">
+    <div class="product-grid">
       
       <!-- SEZIONE IMMAGINI -->
       <div class="product-images">
@@ -221,10 +166,8 @@ INSTALLAZIONE:
     </div>
     {% endif %}
 
-      </div>
-    </section>
-  </div><!-- .product-main-container -->
-</div><!-- .product-with-sidebar-wrapper -->
+  </div>
+</section>
 
 <style>
 .product-section {

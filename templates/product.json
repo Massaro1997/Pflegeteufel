@@ -9,6 +9,13 @@
  */
 {
   "sections": {
+    "categories_nav": {
+      "type": "categories-navigation",
+      "settings": {
+        "show_count": false,
+        "show_pflegebox": true
+      }
+    },
     "section_AMcAyj": {
       "type": "section",
       "name": "t:names.custom_section",
@@ -283,6 +290,7 @@
     }
   },
   "order": [
+    "categories_nav",
     "section_AMcAyj",
     "product_section_yBfhQB",
     "main",
