@@ -12,6 +12,102 @@
     background-color: #F8F8F8 !important;
   }
 
+  /* Cart with sidebar layout */
+  .cart-with-sidebar-wrapper {
+    display: flex;
+    gap: 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+
+  .cart-sidebar-container {
+    flex: 0 0 280px;
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+  }
+
+  .cart-main-container {
+    flex: 1;
+    min-width: 0;
+  }
+
+  @media screen and (max-width: 992px) {
+    .cart-with-sidebar-wrapper {
+      flex-direction: column;
+    }
+    .cart-sidebar-container {
+      flex: none;
+      position: relative;
+      top: 0;
+      max-height: none;
+      order: 2;
+      margin-top: 30px;
+    }
+    .cart-main-container {
+      order: 1;
+    }
+  }
+
+  /* Mobile sidebar toggle button */
+  .sidebar-mobile-toggle {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #C12624, #A01F1D);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(193, 38, 36, 0.4);
+    z-index: 998;
+    transition: transform 0.3s ease;
+  }
+
+  .sidebar-mobile-toggle:hover {
+    transform: scale(1.1);
+  }
+
+  @media screen and (max-width: 768px) {
+    .sidebar-mobile-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cart-sidebar-container {
+      display: none;
+    }
+    .cart-sidebar-container.mobile-open {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 85%;
+      max-width: 320px;
+      height: 100vh;
+      max-height: 100vh;
+      background: white;
+      z-index: 1000;
+      box-shadow: 5px 0 20px rgba(0,0,0,0.2);
+      animation: slideIn 0.3s ease;
+    }
+    .cart-with-sidebar-wrapper {
+      padding: 10px;
+    }
+  }
+
+  @keyframes slideIn {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+  }
+
   .cart-page {
     background-color: #F8F8F8;
     --cart-font-size--2xs: var(--font-size--2xs);
@@ -95,6 +191,8 @@
   }
 {% endstylesheet %}
 
+{{ 'category-sidebar.css' | asset_url | stylesheet_tag }}
+
 <cart-items-component
   class="cart-items-component"
   data-section-id="{{ section.id }}"
@@ -103,10 +201,18 @@
   <div
     class="section color-{{ section.settings.color_scheme }} section--{{ section.settings.section_width }}"
   >
-    <div
-      class="cart-page spacing-style{% if cart.empty? %} cart-page--empty{% endif %}"
-      style="{% render 'spacing-style', settings: section.settings %}"
-    >
+    <div class="cart-with-sidebar-wrapper">
+      <!-- Sidebar Categorie -->
+      <div class="cart-sidebar-container" id="cartSidebar">
+        {% render 'category-sidebar' %}
+      </div>
+
+      <!-- Contenuto Carrello -->
+      <div class="cart-main-container">
+        <div
+          class="cart-page spacing-style{% if cart.empty? %} cart-page--empty{% endif %}"
+          style="{% render 'spacing-style', settings: section.settings %}"
+        >
       <div class="cart-page__title">
         {%- content_for 'block', id: 'cart-page-title', type: '_cart-title' %}
       </div>
@@ -124,9 +230,25 @@
       <div class="cart-page__more-blocks">
         {%- content_for 'blocks' -%}
       </div>
-    </div>
+        </div>
+      </div><!-- .cart-main-container -->
+    </div><!-- .cart-with-sidebar-wrapper -->
   </div>
 </cart-items-component>
+
+<!-- Mobile toggle button -->
+<button class="sidebar-mobile-toggle" onclick="toggleCartSidebar()" aria-label="Kategorien anzeigen">
+  ☰
+</button>
+
+<script>
+function toggleCartSidebar() {
+  var sidebar = document.getElementById('cartSidebar');
+  if (sidebar) {
+    sidebar.classList.toggle('mobile-open');
+  }
+}
+</script>
 
 <script>
 // Reload cart page when products are added from recommended products section

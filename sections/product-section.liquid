@@ -11,21 +11,96 @@ INSTALLAZIONE:
 6. Theme editor > Aggiungi sezione "Produkt Sektion"
 {% endcomment %}
 
-<section class="product-section" data-section="{{ section.id }}">
-  <div class="product-container">
-    
-    <!-- Breadcrumb -->
-    {% if section.settings.show_breadcrumb %}
-    <nav class="breadcrumb">
-      <a href="{{ routes.root_url }}">Startseite</a>
-      <span>›</span>
-      <a href="https://pflegeteufel.de/collections">Alle Produkte</a>
-      <span>›</span>
-      <span>{{ product.title }}</span>
-    </nav>
-    {% endif %}
+{{ 'category-sidebar.css' | asset_url | stylesheet_tag }}
 
-    <div class="product-grid">
+<style>
+  .product-with-sidebar-wrapper {
+    display: flex;
+    gap: 30px;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  .product-sidebar-container {
+    flex: 0 0 280px;
+    position: sticky;
+    top: 100px;
+    height: fit-content;
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+  }
+  .product-main-container {
+    flex: 1;
+    min-width: 0;
+  }
+  @media screen and (max-width: 992px) {
+    .product-with-sidebar-wrapper {
+      flex-direction: column;
+    }
+    .product-sidebar-container {
+      display: none;
+    }
+  }
+  .product-sidebar-mobile-toggle {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #C12624, #A01F1D);
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(193, 38, 36, 0.4);
+    z-index: 998;
+  }
+  @media screen and (max-width: 992px) {
+    .product-sidebar-mobile-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .product-sidebar-container.mobile-open {
+      display: block;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 85%;
+      max-width: 320px;
+      height: 100vh;
+      background: white;
+      z-index: 1000;
+      box-shadow: 5px 0 20px rgba(0,0,0,0.2);
+    }
+  }
+</style>
+
+<div class="product-with-sidebar-wrapper">
+  <!-- Sidebar Categorie -->
+  <div class="product-sidebar-container" id="productSidebar">
+    {% render 'category-sidebar', current_collection: product.collections.first.handle %}
+  </div>
+
+  <!-- Contenuto Prodotto -->
+  <div class="product-main-container">
+    <section class="product-section" data-section="{{ section.id }}">
+      <div class="product-container">
+
+        <!-- Breadcrumb -->
+        {% if section.settings.show_breadcrumb %}
+        <nav class="breadcrumb">
+          <a href="{{ routes.root_url }}">Startseite</a>
+          <span>›</span>
+          <a href="https://pflegeteufel.de/collections">Alle Produkte</a>
+          <span>›</span>
+          <span>{{ product.title }}</span>
+        </nav>
+        {% endif %}
+
+        <div class="product-grid">
       
       <!-- SEZIONE IMMAGINI -->
       <div class="product-images">
@@ -166,8 +241,24 @@ INSTALLAZIONE:
     </div>
     {% endif %}
 
-  </div>
-</section>
+      </div>
+    </section>
+  </div><!-- .product-main-container -->
+</div><!-- .product-with-sidebar-wrapper -->
+
+<!-- Mobile toggle button -->
+<button class="product-sidebar-mobile-toggle" onclick="toggleProductSidebar()" aria-label="Kategorien anzeigen">
+  ☰
+</button>
+
+<script>
+function toggleProductSidebar() {
+  var sidebar = document.getElementById('productSidebar');
+  if (sidebar) {
+    sidebar.classList.toggle('mobile-open');
+  }
+}
+</script>
 
 <style>
 .product-section {
