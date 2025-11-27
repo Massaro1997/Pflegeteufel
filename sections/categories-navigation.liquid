@@ -86,56 +86,6 @@
     border-bottom-color: #C12624;
   }
 
-  .pt-nav-icon {
-    font-size: 14px;
-  }
-
-  .pt-nav-text {
-    white-space: nowrap;
-  }
-
-  .pt-nav-count {
-    font-size: 9px;
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
-    padding: 2px 6px;
-    border-radius: 10px;
-    margin-left: 4px;
-  }
-
-  .pt-nav-link:hover .pt-nav-count,
-  .pt-nav-link--active .pt-nav-count {
-    background: #C12624;
-  }
-
-  .pt-nav-divider {
-    display: none;
-  }
-
-  .pt-nav-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 10px 20px;
-    margin: 4px 10px;
-    background: #C12624;
-    color: white !important;
-    text-decoration: none;
-    border-radius: 4px;
-    font-size: 12px;
-    font-weight: 600;
-    white-space: nowrap;
-    border: none;
-    transition: all 0.2s ease;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-  }
-
-  .pt-nav-cta:hover {
-    background: #A01F1D;
-    transform: translateY(-1px);
-  }
-
   /* Mobile: scroll orizzontale, link più compatti */
   @media screen and (max-width: 749px) {
     .pt-nav-list {
@@ -146,12 +96,6 @@
     .pt-nav-link {
       padding: 12px 14px;
       font-size: 11px;
-    }
-
-    .pt-nav-cta {
-      padding: 8px 14px;
-      font-size: 11px;
-      margin: 4px 5px;
     }
   }
 
@@ -172,48 +116,20 @@
       <!-- Alle Produkte -->
       <li class="pt-nav-item">
         <a href="/collections/all" class="pt-nav-link {% if request.path == '/collections/all' or request.path == '/collections' %}pt-nav-link--active{% endif %}">
-          <span class="pt-nav-icon">📦</span>
-          <span class="pt-nav-text">Alle Produkte</span>
+          Alle Produkte
         </a>
       </li>
 
       <!-- Categorie dinamiche -->
       {% for collection in collections %}
         {% unless collection.handle == 'all' or collection.handle == 'frontpage' %}
-          {% assign icon = '🛒' %}
-          {% case collection.handle %}
-            {% when 'cbd-produkte' %}{% assign icon = '🌿' %}
-            {% when 'desinfektionmittel' %}{% assign icon = '🧴' %}
-            {% when 'elektronik-gerate' %}{% assign icon = '⚡' %}
-            {% when 'hausgemacht-spezialitaten' %}{% assign icon = '🍯' %}
-            {% when 'hygiene' %}{% assign icon = '🧼' %}
-            {% when 'primavera' %}{% assign icon = '🌸' %}
-            {% when 'rotbackchen' %}{% assign icon = '🍎' %}
-          {% endcase %}
-
           <li class="pt-nav-item">
             <a href="{{ collection.url }}" class="pt-nav-link {% if request.path contains collection.handle %}pt-nav-link--active{% endif %}">
-              <span class="pt-nav-icon">{{ icon }}</span>
-              <span class="pt-nav-text">{{ collection.title }}</span>
-              {% if section.settings.show_count %}
-                <span class="pt-nav-count">{{ collection.products_count }}</span>
-              {% endif %}
+              {{ collection.title }}
             </a>
           </li>
         {% endunless %}
       {% endfor %}
-
-      <!-- Divider e Pflegebox CTA -->
-      <li class="pt-nav-divider" aria-hidden="true"></li>
-
-      {% if section.settings.show_pflegebox %}
-        <li class="pt-nav-item">
-          <a href="/pages/pflegebox-formular" class="pt-nav-cta">
-            <span class="pt-nav-icon">💶</span>
-            <span>Kostenlose Pflegebox</span>
-          </a>
-        </li>
-      {% endif %}
     </ul>
   </div>
 </nav>
@@ -223,20 +139,7 @@
   "name": "Kategorien Navigation",
   "tag": "section",
   "class": "pt-categories-section-wrapper",
-  "settings": [
-    {
-      "type": "checkbox",
-      "id": "show_count",
-      "label": "Produktanzahl anzeigen",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "show_pflegebox",
-      "label": "Pflegebox CTA anzeigen",
-      "default": true
-    }
-  ],
+  "settings": [],
   "presets": [
     {
       "name": "Kategorien Navigation"
