@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "customer-registration": {
+      "type": "customer-registration",
+      "settings": {
+        "title": "Kunden-Registrierung",
+        "subtitle": "Erstellen Sie Ihr Konto für ein besseres Einkaufserlebnis",
+        "worker_url": "https://shopify-backend.massarocalogero1997.workers.dev",
+        "show_pflegebox_fields": true
+      }
+    }
+  },
+  "order": [
+    "customer-registration"
+  ]
+}

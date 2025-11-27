@@ -1,0 +1,399 @@
+{% comment %}
+  Section: Login Cliente Pflegeteufel
+  Autore: Sistema di autenticazione clienti
+  Data: 2025
+{% endcomment %}
+
+<div class="customer-login-section">
+  <div class="container">
+    <div class="login-wrapper">
+      <div class="login-header">
+        <h1>{{ section.settings.title | default: 'Anmelden' }}</h1>
+        <p class="subtitle">{{ section.settings.subtitle | default: 'Melden Sie sich in Ihrem Konto an' }}</p>
+      </div>
+
+      <!-- Messaggio registrazione completata -->
+      <div id="registered-message" class="form-success" style="display: none;">
+        Registrierung erfolgreich! Sie können sich jetzt anmelden.
+      </div>
+
+      <form id="login-form" class="login-form">
+        <div class="form-group">
+          <label for="email" class="form-label required">E-Mail</label>
+          <input type="email" id="email" name="email" class="form-input" required autofocus>
+        </div>
+
+        <div class="form-group">
+          <label for="password" class="form-label required">Passwort</label>
+          <div class="password-input-wrapper">
+            <input type="password" id="password" name="password" class="form-input" required>
+            <button type="button" class="password-toggle" aria-label="Passwort anzeigen">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M10 4C4.5 4 1 10 1 10s3.5 6 9 6 9-6 9-6-3.5-6-9-6z" stroke="currentColor" stroke-width="2"/>
+                <circle cx="10" cy="10" r="3" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="form-group form-group-checkbox">
+          <label class="checkbox-option">
+            <input type="checkbox" name="remember" id="remember">
+            <span>Angemeldet bleiben</span>
+          </label>
+        </div>
+
+        <!-- Messaggio di errore -->
+        <div id="login-error" class="form-error" style="display: none;"></div>
+
+        <!-- Submit -->
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-submit" id="submit-btn">
+            <span class="btn-text">Anmelden</span>
+            <span class="btn-loader" style="display: none;">
+              <svg class="spinner" width="20" height="20" viewBox="0 0 20 20">
+                <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2" fill="none" opacity="0.3"/>
+                <path d="M10 2 A8 8 0 0 1 18 10" stroke="currentColor" stroke-width="2" fill="none"/>
+              </svg>
+            </span>
+          </button>
+        </div>
+
+        <div class="form-footer">
+          <p><a href="/pages/password-reset">Passwort vergessen?</a></p>
+          <p>Noch kein Konto? <a href="/pages/registrierung">Jetzt registrieren</a></p>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const form = document.getElementById('login-form');
+  const submitBtn = document.getElementById('submit-btn');
+  const errorDiv = document.getElementById('login-error');
+  const registeredMessage = document.getElementById('registered-message');
+
+  // Mostra messaggio se arriva dalla registrazione
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('registered') === '1') {
+    registeredMessage.style.display = 'block';
+  }
+
+  // Password visibility toggle
+  const passwordToggle = document.querySelector('.password-toggle');
+  if (passwordToggle) {
+    passwordToggle.addEventListener('click', function() {
+      const input = this.previousElementSibling;
+      if (input.type === 'password') {
+        input.type = 'text';
+        this.setAttribute('aria-label', 'Passwort verbergen');
+      } else {
+        input.type = 'password';
+        this.setAttribute('aria-label', 'Passwort anzeigen');
+      }
+    });
+  }
+
+  // Form submit
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    // Reset messages
+    errorDiv.style.display = 'none';
+
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const remember = document.getElementById('remember').checked;
+
+    // Show loading
+    setLoading(true);
+
+    try {
+      const response = await fetch('{{ section.settings.worker_url | default: "https://shopify-backend.massarocalogero1997.workers.dev" }}/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email, password })
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        // Salva token e dati cliente in localStorage
+        localStorage.setItem('auth_token', result.token);
+        localStorage.setItem('session_token', result.sessionToken);
+        localStorage.setItem('refresh_token', result.refreshToken);
+        localStorage.setItem('customer', JSON.stringify(result.customer));
+
+        // Se "remember me" è checked, salva anche in sessionStorage
+        if (remember) {
+          sessionStorage.setItem('auth_token', result.token);
+        }
+
+        // Redirect alla pagina account o homepage
+        const redirectUrl = urlParams.get('redirect') || '/pages/mein-konto';
+        window.location.href = redirectUrl;
+      } else {
+        showError(result.error || 'Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Daten.');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      showError('Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.');
+    } finally {
+      setLoading(false);
+    }
+  });
+
+  function showError(message) {
+    errorDiv.textContent = message;
+    errorDiv.style.display = 'block';
+    errorDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  function setLoading(loading) {
+    const btnText = submitBtn.querySelector('.btn-text');
+    const btnLoader = submitBtn.querySelector('.btn-loader');
+
+    submitBtn.disabled = loading;
+    btnText.style.display = loading ? 'none' : 'inline';
+    btnLoader.style.display = loading ? 'inline-block' : 'none';
+  }
+})();
+</script>
+
+<style>
+.customer-login-section {
+  padding: 60px 20px;
+  background: #f9f9f9;
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+}
+
+.container {
+  max-width: 500px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.login-wrapper {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.login-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 10px 0;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+}
+
+.login-form {
+  max-width: 100%;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.form-label.required::after {
+  content: ' *';
+  color: #e74c3c;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 15px;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 3px rgba(76,175,80,0.1);
+}
+
+.password-input-wrapper {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.password-toggle:hover {
+  color: #333;
+}
+
+.checkbox-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 14px;
+  color: #555;
+}
+
+.checkbox-option input[type="checkbox"] {
+  margin-right: 10px;
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.form-error {
+  background: #fee;
+  color: #c33;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  border-left: 4px solid #e74c3c;
+}
+
+.form-success {
+  background: #efe;
+  color: #3c3;
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  border-left: 4px solid #4CAF50;
+}
+
+.form-actions {
+  margin-top: 30px;
+}
+
+.btn {
+  padding: 14px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: #4CAF50;
+  color: white;
+  width: 100%;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76,175,80,0.3);
+}
+
+.btn-primary:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+.form-footer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.form-footer p {
+  margin: 10px 0;
+  color: #666;
+}
+
+.form-footer a {
+  color: #4CAF50;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.form-footer a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 768px) {
+  .login-wrapper {
+    padding: 30px 20px;
+  }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Kunden-Login",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Anmelden"
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Untertitel",
+      "default": "Melden Sie sich in Ihrem Konto an"
+    },
+    {
+      "type": "text",
+      "id": "worker_url",
+      "label": "Worker URL",
+      "default": "https://shopify-backend.massarocalogero1997.workers.dev",
+      "info": "URL des Cloudflare Workers für die Authentifizierung"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kunden-Login"
+    }
+  ]
+}
+{% endschema %}

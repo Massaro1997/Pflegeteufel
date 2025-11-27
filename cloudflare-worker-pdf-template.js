@@ -1223,6 +1223,131 @@ export default {
       }
     }
 
+    // ========== ADMIN: INCREASE ALL PRODUCT PRICES ==========
+    if (path === "/api/admin/increase-prices" && request.method === "POST") {
+      try {
+        // Verifica chiave admin
+        const workerKey = request.headers.get('X-Worker-Key');
+        if (workerKey !== env.WORKER_SHARED_KEY) {
+          return new Response(JSON.stringify({
+            success: false,
+            error: 'Non autorizzato'
+          }), {
+            status: 403,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+          });
+        }
+
+        const { SHOPIFY_SHOP, SHOPIFY_ADMIN_TOKEN, SHOPIFY_API_VERSION } = env;
+        const priceIncrease = body?.increase || 1.00;
+
+        console.log(`💰 Avvio aumento prezzi di ${priceIncrease}€`);
+
+        // Recupera tutti i prodotti
+        let allProducts = [];
+        let nextPageUrl = `https://${SHOPIFY_SHOP}/admin/api/${SHOPIFY_API_VERSION}/products.json?limit=250`;
+
+        while (nextPageUrl) {
+          const response = await fetch(nextPageUrl, {
+            headers: {
+              'X-Shopify-Access-Token': SHOPIFY_ADMIN_TOKEN,
+              'Content-Type': 'application/json'
+            }
+          });
+
+          if (!response.ok) {
+            throw new Error(`Failed to fetch products: ${response.status}`);
+          }
+
+          const data = await response.json();
+          allProducts.push(...data.products);
+
+          // Check pagination
+          const linkHeader = response.headers.get('Link');
+          nextPageUrl = null;
+          if (linkHeader) {
+            const nextMatch = linkHeader.match(/<([^>]+)>;\s*rel="next"/);
+            if (nextMatch) nextPageUrl = nextMatch[1];
+          }
+        }
+
+        console.log(`📦 Trovati ${allProducts.length} prodotti`);
+
+        // Aggiorna ogni variante
+        let totalVariants = 0;
+        let updatedVariants = 0;
+        const updates = [];
+
+        for (const product of allProducts) {
+          for (const variant of product.variants) {
+            totalVariants++;
+            const oldPrice = parseFloat(variant.price);
+            const newPrice = (oldPrice + priceIncrease).toFixed(2);
+
+            updates.push({
+              product: product.title,
+              variant: variant.title || 'Default',
+              oldPrice: oldPrice.toFixed(2),
+              newPrice
+            });
+
+            // Aggiorna prezzo
+            const updateResponse = await fetch(
+              `https://${SHOPIFY_SHOP}/admin/api/${SHOPIFY_API_VERSION}/variants/${variant.id}.json`,
+              {
+                method: 'PUT',
+                headers: {
+                  'X-Shopify-Access-Token': SHOPIFY_ADMIN_TOKEN,
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  variant: {
+                    id: variant.id,
+                    price: newPrice
+                  }
+                })
+              }
+            );
+
+            if (updateResponse.ok) {
+              updatedVariants++;
+              console.log(`✅ ${product.title} - ${variant.title}: ${oldPrice}€ → ${newPrice}€`);
+            } else {
+              console.error(`❌ Errore aggiornamento variante ${variant.id}`);
+            }
+
+            // Rate limiting
+            await new Promise(resolve => setTimeout(resolve, 500));
+          }
+        }
+
+        console.log(`✅ Completato: ${updatedVariants}/${totalVariants} varianti aggiornate`);
+
+        return new Response(JSON.stringify({
+          success: true,
+          message: 'Prezzi aggiornati con successo',
+          totalProducts: allProducts.length,
+          totalVariants,
+          updatedVariants,
+          priceIncrease,
+          updates
+        }), {
+          status: 200,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+
+      } catch (error) {
+        console.error('❌ Errore aumento prezzi:', error);
+        return new Response(JSON.stringify({
+          success: false,
+          error: error.message
+        }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+        });
+      }
+    }
+
     // Default 404
     return new Response(JSON.stringify({
       error: "Not found",
@@ -1233,6 +1358,7 @@ export default {
         "/api/pflegebox/pdf/{id} (GET)",
         "/api/pflegebox/submission/{id} (DELETE)",
         "/api/shopify/webhooks/orders/create (POST)",
+        "/api/admin/increase-prices (POST)",
         "/orders (GET)",
         "/customers (GET)",
         "/products (GET)",

@@ -1,0 +1,798 @@
+{% comment %}
+  Section: Account Cliente - Mein Konto
+  Autore: Sistema gestione account clienti
+  Data: 2025
+{% endcomment %}
+
+<div class="customer-account-section">
+  <div class="container">
+    <div class="account-wrapper">
+      <div class="account-header">
+        <div>
+          <h1 id="welcome-title">Mein Konto</h1>
+          <p class="subtitle" id="customer-email"></p>
+        </div>
+        <button id="logout-btn" class="btn btn-secondary">Abmelden</button>
+      </div>
+
+      <!-- Loading state -->
+      <div id="loading-state" class="loading-state">
+        <svg class="spinner" width="40" height="40" viewBox="0 0 40 40">
+          <circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="3" fill="none" opacity="0.3"/>
+          <path d="M20 4 A16 16 0 0 1 36 20" stroke="currentColor" stroke-width="3" fill="none"/>
+        </svg>
+        <p>Daten werden geladen...</p>
+      </div>
+
+      <!-- Error state -->
+      <div id="error-state" class="error-state" style="display: none;">
+        <p>Sie müssen angemeldet sein, um diese Seite zu sehen.</p>
+        <a href="/pages/login" class="btn btn-primary">Jetzt anmelden</a>
+      </div>
+
+      <!-- Account content -->
+      <div id="account-content" class="account-content" style="display: none;">
+        <div class="account-tabs">
+          <button class="tab-btn active" data-tab="profile">Profil</button>
+          <button class="tab-btn" data-tab="orders">Bestellungen</button>
+          <button class="tab-btn" data-tab="settings">Einstellungen</button>
+        </div>
+
+        <!-- Tab: Profil -->
+        <div class="tab-content active" id="tab-profile">
+          <div class="profile-info">
+            <h2>Persönliche Informationen</h2>
+            <form id="profile-form">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Anrede</label>
+                  <div class="radio-group">
+                    <label class="radio-option">
+                      <input type="radio" name="anrede" value="Herr">
+                      <span>Herr</span>
+                    </label>
+                    <label class="radio-option">
+                      <input type="radio" name="anrede" value="Frau">
+                      <span>Frau</span>
+                    </label>
+                    <label class="radio-option">
+                      <input type="radio" name="anrede" value="Divers">
+                      <span>Divers</span>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="vorname" class="form-label">Vorname</label>
+                  <input type="text" id="vorname" name="vorname" class="form-input">
+                </div>
+                <div class="form-group">
+                  <label for="nachname" class="form-label">Nachname</label>
+                  <input type="text" id="nachname" name="nachname" class="form-input">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="email-display" class="form-label">E-Mail</label>
+                  <input type="email" id="email-display" class="form-input" disabled>
+                  <small class="form-help">Die E-Mail kann nicht geändert werden</small>
+                </div>
+                <div class="form-group">
+                  <label for="telefon" class="form-label">Telefon</label>
+                  <input type="tel" id="telefon" name="telefon" class="form-input">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="geburtsdatum" class="form-label">Geburtsdatum</label>
+                <input type="date" id="geburtsdatum" name="geburtsdatum" class="form-input">
+              </div>
+
+              <h3 class="section-title">Adresse</h3>
+
+              <div class="form-row">
+                <div class="form-group" style="flex: 3;">
+                  <label for="strasse" class="form-label">Straße</label>
+                  <input type="text" id="strasse" name="strasse" class="form-input">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                  <label for="hausnummer" class="form-label">Hausnr.</label>
+                  <input type="text" id="hausnummer" name="hausnummer" class="form-input">
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group" style="flex: 1;">
+                  <label for="plz" class="form-label">PLZ</label>
+                  <input type="text" id="plz" name="plz" class="form-input">
+                </div>
+                <div class="form-group" style="flex: 2;">
+                  <label for="ort" class="form-label">Ort</label>
+                  <input type="text" id="ort" name="ort" class="form-input">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="land" class="form-label">Land</label>
+                <select id="land" name="land" class="form-select">
+                  <option value="Germany">Deutschland</option>
+                  <option value="Austria">Österreich</option>
+                  <option value="Switzerland">Schweiz</option>
+                </select>
+              </div>
+
+              {% if section.settings.show_pflegebox_fields %}
+              <h3 class="section-title">Pflegebox-Informationen</h3>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="pflegegrad" class="form-label">Pflegegrad</label>
+                  <select id="pflegegrad" name="pflegegrad" class="form-select">
+                    <option value="">Bitte wählen</option>
+                    <option value="1">Pflegegrad 1</option>
+                    <option value="2">Pflegegrad 2</option>
+                    <option value="3">Pflegegrad 3</option>
+                    <option value="4">Pflegegrad 4</option>
+                    <option value="5">Pflegegrad 5</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label for="pflegekasse" class="form-label">Pflegekasse</label>
+                  <select id="pflegekasse" name="pflegekasse" class="form-select">
+                    <option value="">Bitte wählen</option>
+                    <option value="AOK">AOK</option>
+                    <option value="Barmer">Barmer</option>
+                    <option value="TK">TK</option>
+                    <option value="DAK">DAK</option>
+                    <option value="KKH">KKH</option>
+                    <option value="IKK">IKK</option>
+                    <option value="BKK">BKK</option>
+                    <option value="Andere">Andere</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="versichertennummer" class="form-label">Versichertennummer</label>
+                <input type="text" id="versichertennummer" name="versichertennummer" class="form-input">
+              </div>
+              {% endif %}
+
+              <div id="profile-message" class="form-message" style="display: none;"></div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary" id="save-profile-btn">
+                  <span class="btn-text">Änderungen speichern</span>
+                  <span class="btn-loader" style="display: none;">
+                    <svg class="spinner" width="20" height="20" viewBox="0 0 20 20">
+                      <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="2" fill="none" opacity="0.3"/>
+                      <path d="M10 2 A8 8 0 0 1 18 10" stroke="currentColor" stroke-width="2" fill="none"/>
+                    </svg>
+                  </span>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Tab: Orders -->
+        <div class="tab-content" id="tab-orders">
+          <h2>Meine Bestellungen</h2>
+          <div id="orders-list">
+            <p class="text-muted">Lade Bestellungen...</p>
+          </div>
+        </div>
+
+        <!-- Tab: Settings -->
+        <div class="tab-content" id="tab-settings">
+          <h2>Einstellungen</h2>
+
+          <div class="settings-section">
+            <h3>Newsletter & Marketing</h3>
+            <div class="form-group form-group-checkbox">
+              <label class="checkbox-option">
+                <input type="checkbox" id="newsletter" name="newsletter">
+                <span>Ich möchte den Newsletter erhalten</span>
+              </label>
+            </div>
+
+            <h3 class="section-title">Passwort ändern</h3>
+            <form id="password-form">
+              <div class="form-group">
+                <label for="current-password" class="form-label">Aktuelles Passwort</label>
+                <input type="password" id="current-password" class="form-input">
+              </div>
+              <div class="form-group">
+                <label for="new-password" class="form-label">Neues Passwort</label>
+                <input type="password" id="new-password" class="form-input">
+              </div>
+              <div class="form-group">
+                <label for="confirm-password" class="form-label">Passwort bestätigen</label>
+                <input type="password" id="confirm-password" class="form-input">
+              </div>
+              <button type="submit" class="btn btn-secondary">Passwort ändern</button>
+            </form>
+
+            <h3 class="section-title">Konto löschen</h3>
+            <p class="text-danger">Diese Aktion kann nicht rückgängig gemacht werden.</p>
+            <button id="delete-account-btn" class="btn btn-danger">Konto löschen</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  const WORKER_URL = '{{ section.settings.worker_url | default: "https://shopify-backend.massarocalogero1997.workers.dev" }}';
+
+  let currentCustomer = null;
+  let authToken = null;
+
+  // Initialize
+  document.addEventListener('DOMContentLoaded', function() {
+    checkAuth();
+    setupTabs();
+    setupLogout();
+    setupProfileForm();
+    setupDeleteAccount();
+  });
+
+  async function checkAuth() {
+    authToken = localStorage.getItem('auth_token');
+
+    if (!authToken) {
+      showError();
+      return;
+    }
+
+    try {
+      const response = await fetch(`${WORKER_URL}/api/auth/me`, {
+        headers: {
+          'Authorization': `Bearer ${authToken}`
+        }
+      });
+
+      if (!response.ok) {
+        showError();
+        return;
+      }
+
+      const result = await response.json();
+      if (result.success && result.customer) {
+        currentCustomer = result.customer;
+        displayCustomer();
+        hideLoading();
+      } else {
+        showError();
+      }
+    } catch (error) {
+      console.error('Auth error:', error);
+      showError();
+    }
+  }
+
+  function displayCustomer() {
+    document.getElementById('welcome-title').textContent = `Willkommen, ${currentCustomer.vorname}!`;
+    document.getElementById('customer-email').textContent = currentCustomer.email;
+
+    // Popola form
+    if (currentCustomer.anrede) {
+      document.querySelector(`input[name="anrede"][value="${currentCustomer.anrede}"]`).checked = true;
+    }
+    document.getElementById('vorname').value = currentCustomer.vorname || '';
+    document.getElementById('nachname').value = currentCustomer.nachname || '';
+    document.getElementById('email-display').value = currentCustomer.email || '';
+    document.getElementById('telefon').value = currentCustomer.telefon || '';
+    document.getElementById('geburtsdatum').value = currentCustomer.geburtsdatum || '';
+    document.getElementById('strasse').value = currentCustomer.strasse || '';
+    document.getElementById('hausnummer').value = currentCustomer.hausnummer || '';
+    document.getElementById('plz').value = currentCustomer.plz || '';
+    document.getElementById('ort').value = currentCustomer.ort || '';
+    document.getElementById('land').value = currentCustomer.land || 'Germany';
+
+    const pflegegradSelect = document.getElementById('pflegegrad');
+    const pflegekasseSelect = document.getElementById('pflegekasse');
+    const versichertennummerInput = document.getElementById('versichertennummer');
+
+    if (pflegegradSelect) pflegegradSelect.value = currentCustomer.pflegegrad || '';
+    if (pflegekasseSelect) pflegekasseSelect.value = currentCustomer.pflegekasse || '';
+    if (versichertennummerInput) versichertennummerInput.value = currentCustomer.versichertennummer || '';
+
+    const newsletterCheckbox = document.getElementById('newsletter');
+    if (newsletterCheckbox) newsletterCheckbox.checked = currentCustomer.newsletter == 1;
+  }
+
+  function hideLoading() {
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('account-content').style.display = 'block';
+  }
+
+  function showError() {
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('error-state').style.display = 'block';
+  }
+
+  function setupTabs() {
+    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const tabName = this.dataset.tab;
+
+        tabButtons.forEach(b => b.classList.remove('active'));
+        tabContents.forEach(c => c.classList.remove('active'));
+
+        this.classList.add('active');
+        document.getElementById(`tab-${tabName}`).classList.add('active');
+      });
+    });
+  }
+
+  function setupLogout() {
+    document.getElementById('logout-btn').addEventListener('click', async function() {
+      const sessionToken = localStorage.getItem('session_token');
+
+      try {
+        await fetch(`${WORKER_URL}/api/auth/logout`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
+          },
+          body: JSON.stringify({ sessionToken })
+        });
+      } catch (e) {
+        console.error('Logout error:', e);
+      }
+
+      localStorage.removeItem('auth_token');
+      localStorage.removeItem('session_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('customer');
+
+      window.location.href = '/pages/login';
+    });
+  }
+
+  function setupProfileForm() {
+    const form = document.getElementById('profile-form');
+    const submitBtn = document.getElementById('save-profile-btn');
+    const messageDiv = document.getElementById('profile-message');
+
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+
+      const formData = {
+        anrede: document.querySelector('input[name="anrede"]:checked')?.value,
+        vorname: document.getElementById('vorname').value,
+        nachname: document.getElementById('nachname').value,
+        telefon: document.getElementById('telefon').value,
+        geburtsdatum: document.getElementById('geburtsdatum').value,
+        strasse: document.getElementById('strasse').value,
+        hausnummer: document.getElementById('hausnummer').value,
+        plz: document.getElementById('plz').value,
+        ort: document.getElementById('ort').value,
+        land: document.getElementById('land').value,
+        pflegegrad: document.getElementById('pflegegrad')?.value || null,
+        pflegekasse: document.getElementById('pflegekasse')?.value || null,
+        versichertennummer: document.getElementById('versichertennummer')?.value || null,
+        newsletter: document.getElementById('newsletter')?.checked || false
+      };
+
+      setLoading(submitBtn, true);
+      messageDiv.style.display = 'none';
+
+      try {
+        const response = await fetch(`${WORKER_URL}/api/customers/${currentCustomer.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${authToken}`
+          },
+          body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          showMessage(messageDiv, 'success', 'Profil erfolgreich aktualisiert!');
+        } else {
+          showMessage(messageDiv, 'error', result.error || 'Fehler beim Aktualisieren');
+        }
+      } catch (error) {
+        console.error('Update error:', error);
+        showMessage(messageDiv, 'error', 'Es ist ein Fehler aufgetreten');
+      } finally {
+        setLoading(submitBtn, false);
+      }
+    });
+  }
+
+  function setupDeleteAccount() {
+    document.getElementById('delete-account-btn').addEventListener('click', async function() {
+      if (!confirm('Sind Sie sicher, dass Sie Ihr Konto löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.')) {
+        return;
+      }
+
+      try {
+        const response = await fetch(`${WORKER_URL}/api/customers/${currentCustomer.id}/delete`, {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${authToken}`
+          }
+        });
+
+        if (response.ok) {
+          alert('Ihr Konto wurde gelöscht.');
+          localStorage.clear();
+          window.location.href = '/';
+        } else {
+          alert('Fehler beim Löschen des Kontos.');
+        }
+      } catch (error) {
+        console.error('Delete error:', error);
+        alert('Es ist ein Fehler aufgetreten.');
+      }
+    });
+  }
+
+  function showMessage(element, type, message) {
+    element.className = `form-message ${type === 'success' ? 'form-success' : 'form-error'}`;
+    element.textContent = message;
+    element.style.display = 'block';
+  }
+
+  function setLoading(button, loading) {
+    const btnText = button.querySelector('.btn-text');
+    const btnLoader = button.querySelector('.btn-loader');
+
+    button.disabled = loading;
+    if (btnText) btnText.style.display = loading ? 'none' : 'inline';
+    if (btnLoader) btnLoader.style.display = loading ? 'inline-block' : 'none';
+  }
+})();
+</script>
+
+<style>
+.customer-account-section {
+  padding: 60px 20px;
+  background: #f9f9f9;
+  min-height: 80vh;
+}
+
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.account-wrapper {
+  background: white;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+}
+
+.account-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e5e5e5;
+}
+
+.account-header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 5px 0;
+}
+
+.subtitle {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+}
+
+.loading-state,
+.error-state {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.loading-state .spinner {
+  color: #4CAF50;
+  margin: 0 auto 20px;
+}
+
+.account-tabs {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 30px;
+  border-bottom: 2px solid #e5e5e5;
+}
+
+.tab-btn {
+  padding: 12px 24px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  color: #666;
+  transition: all 0.3s;
+}
+
+.tab-btn:hover {
+  color: #4CAF50;
+}
+
+.tab-btn.active {
+  color: #4CAF50;
+  border-bottom-color: #4CAF50;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 30px 0 15px 0;
+  padding-top: 20px;
+  border-top: 1px solid #e5e5e5;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}
+
+.form-row .form-group {
+  flex: 1;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.form-input,
+.form-select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 15px;
+  transition: border-color 0.3s;
+  box-sizing: border-box;
+}
+
+.form-input:focus,
+.form-select:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 3px rgba(76,175,80,0.1);
+}
+
+.form-input:disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.form-help {
+  display: block;
+  font-size: 13px;
+  color: #888;
+  margin-top: 6px;
+}
+
+.radio-group {
+  display: flex;
+  gap: 15px;
+}
+
+.radio-option {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 10px 16px;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  transition: all 0.3s;
+}
+
+.radio-option input[type="radio"] {
+  margin-right: 8px;
+}
+
+.radio-option:has(input:checked) {
+  border-color: #4CAF50;
+  background: #f0f9f0;
+}
+
+.checkbox-option {
+  display: flex;
+  align-items: flex-start;
+  cursor: pointer;
+  font-size: 14px;
+  color: #555;
+}
+
+.checkbox-option input[type="checkbox"] {
+  margin-right: 10px;
+  margin-top: 3px;
+  width: 18px;
+  height: 18px;
+}
+
+.form-message {
+  padding: 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+}
+
+.form-success {
+  background: #efe;
+  color: #3c3;
+  border-left: 4px solid #4CAF50;
+}
+
+.form-error {
+  background: #fee;
+  color: #c33;
+  border-left: 4px solid #e74c3c;
+}
+
+.form-actions {
+  margin-top: 30px;
+}
+
+.btn {
+  padding: 14px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-primary {
+  background: #4CAF50;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76,175,80,0.3);
+}
+
+.btn-secondary {
+  background: #666;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background: #555;
+}
+
+.btn-danger {
+  background: #e74c3c;
+  color: white;
+}
+
+.btn-danger:hover {
+  background: #c0392b;
+}
+
+.btn:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  100% { transform: rotate(360deg); }
+}
+
+.text-muted {
+  color: #888;
+  font-style: italic;
+}
+
+.text-danger {
+  color: #e74c3c;
+}
+
+.settings-section h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333;
+  margin: 30px 0 15px 0;
+}
+
+@media (max-width: 768px) {
+  .account-wrapper {
+    padding: 30px 20px;
+  }
+
+  .account-header {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .radio-group {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .account-tabs {
+    overflow-x: auto;
+  }
+
+  .tab-btn {
+    white-space: nowrap;
+  }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Kunden-Account",
+  "settings": [
+    {
+      "type": "text",
+      "id": "worker_url",
+      "label": "Worker URL",
+      "default": "https://shopify-backend.massarocalogero1997.workers.dev",
+      "info": "URL des Cloudflare Workers"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_pflegebox_fields",
+      "label": "Pflegebox-Felder anzeigen",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Kunden-Account"
+    }
+  ]
+}
+{% endschema %}

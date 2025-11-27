@@ -1,0 +1,453 @@
+<!-- SEZIONE VIDEO YOUTUBE PFLEGETEUFEL - PRONTA ALL'USO -->
+
+<style>
+  .youtube-section {
+    width: 100%;
+    padding: 60px 20px;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+  }
+
+  .youtube-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .youtube-header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+
+  .youtube-title {
+    font-size: 42px;
+    font-weight: 900;
+    color: #000;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+  }
+
+  .youtube-subtitle {
+    font-size: 18px;
+    color: #666;
+    margin-bottom: 25px;
+  }
+
+  .youtube-channel-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: linear-gradient(135deg, #C12624, #A01F1D);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(193, 38, 36, 0.4);
+  }
+
+  .youtube-channel-link:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(193, 38, 36, 0.6);
+    color: white;
+  }
+
+  .youtube-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .youtube-videos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    margin-top: 40px;
+  }
+
+  .youtube-video-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .youtube-video-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  }
+
+  .youtube-video-thumbnail {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    overflow: hidden;
+    background: #000;
+  }
+
+  .youtube-video-thumbnail img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .youtube-video-card:hover .youtube-video-thumbnail img {
+    transform: scale(1.05);
+  }
+
+  .youtube-play-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 70px;
+    height: 70px;
+    background: rgba(193, 38, 36, 0.95);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 2;
+  }
+
+  .youtube-video-card:hover .youtube-play-overlay {
+    background: rgba(193, 38, 36, 1);
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+
+  .youtube-play-overlay svg {
+    width: 30px;
+    height: 30px;
+    fill: white;
+    margin-left: 4px;
+  }
+
+  .youtube-video-info {
+    padding: 20px;
+  }
+
+  .youtube-video-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #000;
+    margin-bottom: 10px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .youtube-video-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: #888;
+  }
+
+  .youtube-loading {
+    text-align: center;
+    padding: 60px 20px;
+    font-size: 18px;
+    color: #666;
+  }
+
+  .youtube-loading::after {
+    content: '...';
+    animation: dots 1.5s steps(4, end) infinite;
+  }
+
+  @keyframes dots {
+    0%, 20% { content: '.'; }
+    40% { content: '..'; }
+    60%, 100% { content: '...'; }
+  }
+
+  .youtube-error {
+    text-align: center;
+    padding: 40px 20px;
+    background: #ffe6e6;
+    border-radius: 10px;
+    color: #c12624;
+    font-size: 16px;
+  }
+
+  /* Modal/Lightbox per video */
+  .youtube-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .youtube-modal.active {
+    display: flex;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .youtube-modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 1200px;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    border-radius: 10px;
+    overflow: hidden;
+    animation: slideUp 0.4s ease;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(50px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .youtube-modal-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  .youtube-modal-close {
+    position: absolute;
+    top: -50px;
+    right: 0;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 40px;
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10000;
+  }
+
+  .youtube-modal-close:hover {
+    transform: rotate(90deg);
+    color: #C12624;
+  }
+
+  @media (max-width: 768px) {
+    .youtube-section {
+      padding: 40px 15px;
+    }
+
+    .youtube-title {
+      font-size: 32px;
+    }
+
+    .youtube-subtitle {
+      font-size: 16px;
+    }
+
+    .youtube-videos-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .youtube-modal-content {
+      width: 95%;
+      aspect-ratio: 16 / 9;
+    }
+
+    .youtube-modal-close {
+      top: -40px;
+      font-size: 30px;
+    }
+  }
+</style>
+
+<div class="youtube-section">
+  <div class="youtube-container">
+    <div class="youtube-header">
+      <h2 class="youtube-title">Unsere Videos</h2>
+      <p class="youtube-subtitle">Entdecke die neuesten Nachrichten von unserem YouTube-Kanal</p>
+      <a href="https://www.youtube.com/@PflegeTeufel-Koeln" target="_blank" rel="noopener" class="youtube-channel-link">
+        <svg class="youtube-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+        </svg>
+        Besuche unseren Kanal
+      </a>
+    </div>
+
+    <div id="youtube-videos-container" class="youtube-videos-grid">
+      <div class="youtube-loading">Videos werden geladen</div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal per riprodurre video -->
+<div class="youtube-modal" id="youtubeModal">
+  <div class="youtube-modal-content">
+    <button class="youtube-modal-close" id="closeModal" aria-label="Chiudi video">&times;</button>
+    <iframe
+      class="youtube-modal-iframe"
+      id="youtubeIframe"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen>
+    </iframe>
+  </div>
+</div>
+
+<script>
+(function() {
+  // CONFIGURAZIONE
+  const CHANNEL_ID = 'UCpfAr_rQA0UVtwr5hJn1cpw'; // Canale Pflege Teufel
+  const API_KEY = 'AIzaSyBn5qOR044wjeA9d7DN-mFGbiDY9Q2Ks7Q';
+  const MAX_RESULTS = 4; // Numero di video da mostrare
+
+  const container = document.getElementById('youtube-videos-container');
+
+  // Funktion zur Datumsformatierung
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffTime = Math.abs(now - date);
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return 'Heute';
+    if (diffDays === 1) return 'Gestern';
+    if (diffDays < 7) return 'vor ' + diffDays + ' Tagen';
+    if (diffDays < 30) return 'vor ' + Math.floor(diffDays / 7) + ' Wochen';
+    if (diffDays < 365) return 'vor ' + Math.floor(diffDays / 30) + ' Monaten';
+    return 'vor ' + Math.floor(diffDays / 365) + ' Jahren';
+  }
+
+  // Funzione per formattare le visualizzazioni
+  function formatViews(views) {
+    if (views >= 1000000) return (views / 1000000).toFixed(1) + 'M';
+    if (views >= 1000) return (views / 1000).toFixed(1) + 'K';
+    return views;
+  }
+
+  // Carica i video
+  async function loadVideos() {
+    try {
+      // Cerca i video del canale
+      const response = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?key=${API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&maxResults=${MAX_RESULTS}&type=video`
+      );
+
+      if (!response.ok) {
+        throw new Error('Errore API: ' + response.status);
+      }
+
+      const data = await response.json();
+
+      if (!data.items || data.items.length === 0) {
+        container.innerHTML = '<div class="youtube-error">Keine Videos auf dem Kanal gefunden</div>';
+        return;
+      }
+
+      // Ottieni le statistiche dei video
+      const videoIds = data.items.map(item => item.id.videoId).join(',');
+      const statsResponse = await fetch(
+        `https://www.googleapis.com/youtube/v3/videos?key=${API_KEY}&id=${videoIds}&part=statistics`
+      );
+      const statsData = await statsResponse.json();
+
+      // Crea le card dei video
+      container.innerHTML = data.items.map((item, index) => {
+        const videoId = item.id.videoId;
+        const title = item.snippet.title;
+        const thumbnail = item.snippet.thumbnails.high.url;
+        const publishedAt = item.snippet.publishedAt;
+        const views = statsData.items[index]?.statistics?.viewCount || '0';
+
+        return `
+          <div class="youtube-video-card" onclick="openVideoModal('${videoId}')">
+            <div class="youtube-video-thumbnail">
+              <img src="${thumbnail}" alt="${title}" loading="lazy">
+              <div class="youtube-play-overlay">
+                <svg viewBox="0 0 24 24">
+                  <path d="M8 5v14l11-7z"/>
+                </svg>
+              </div>
+            </div>
+            <div class="youtube-video-info">
+              <h3 class="youtube-video-title">${title}</h3>
+              <div class="youtube-video-meta">
+                <span>${formatViews(views)} Aufrufe</span>
+                <span>${formatDate(publishedAt)}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+    } catch (error) {
+      console.error('Fehler beim Laden der YouTube-Videos:', error);
+      container.innerHTML = '<div class="youtube-error">Fehler beim Laden der Videos. Bitte versuche es später erneut.</div>';
+    }
+  }
+
+  // Carica i video quando la pagina è pronta
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', loadVideos);
+  } else {
+    loadVideos();
+  }
+
+  // Gestione Modal
+  const modal = document.getElementById('youtubeModal');
+  const iframe = document.getElementById('youtubeIframe');
+  const closeBtn = document.getElementById('closeModal');
+
+  // Funzione per aprire il modal con il video
+  window.openVideoModal = function(videoId) {
+    iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden'; // Blocca lo scroll della pagina
+  };
+
+  // Funzione per chiudere il modal
+  function closeModal() {
+    modal.classList.remove('active');
+    iframe.src = ''; // Ferma il video
+    document.body.style.overflow = ''; // Riabilita lo scroll
+  }
+
+  // Chiudi cliccando sulla X
+  closeBtn.addEventListener('click', closeModal);
+
+  // Chiudi cliccando fuori dal video
+  modal.addEventListener('click', function(e) {
+    if (e.target === modal) {
+      closeModal();
+    }
+  });
+
+  // Chiudi con il tasto ESC
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && modal.classList.contains('active')) {
+      closeModal();
+    }
+  });
+})();
+</script>

@@ -1,0 +1,242 @@
+{% comment %}
+===================================================================
+CATEGORY SIDEBAR - Navbar laterale con categorie prodotto
+File: snippets/category-sidebar.liquid
+
+Mostra tutte le collezioni/categorie disponibili in una sidebar
+laterale elegante e professionale.
+
+Utilizzo:
+  {% render 'category-sidebar' %}
+
+Parametri opzionali:
+  - current_collection: la collezione corrente (per evidenziarla)
+
+Esempio con parametro:
+  {% render 'category-sidebar', current_collection: collection.handle %}
+===================================================================
+{% endcomment %}
+
+{% comment %} Recupera tutte le collezioni {% endcomment %}
+{% assign all_collections = collections %}
+
+<div class="category-sidebar-wrapper">
+  <aside class="category-sidebar" id="categorySidebar">
+
+    {% comment %} Header della sidebar {% endcomment %}
+    <div class="sidebar-header">
+      <div class="sidebar-icon">🏪</div>
+      <h3 class="sidebar-title">Produktkategorien</h3>
+      <button class="sidebar-toggle-mobile" onclick="toggleSidebar()" aria-label="Toggle Sidebar">
+        <span class="toggle-icon">☰</span>
+      </button>
+    </div>
+
+    {% comment %} Contenuto della sidebar {% endcomment %}
+    <div class="sidebar-content">
+
+      {% comment %} Sezione "Alle Produkte" {% endcomment %}
+      <div class="sidebar-section">
+        <a href="/collections/all" class="sidebar-item sidebar-item-all {% if current_collection == 'all' %}active{% endif %}">
+          <span class="item-icon">📦</span>
+          <span class="item-text">
+            <strong>Alle Produkte</strong>
+            <small>Gesamtes Sortiment</small>
+          </span>
+          <span class="item-arrow">›</span>
+        </a>
+      </div>
+
+      {% comment %} Divisore {% endcomment %}
+      <div class="sidebar-divider"></div>
+
+      {% comment %} Sezione Categorie principali {% endcomment %}
+      <div class="sidebar-section">
+        <h4 class="section-title">Kategorien</h4>
+
+        {% comment %} Lista collezioni con icone specifiche {% endcomment %}
+        <div class="categories-list">
+
+          {% comment %} CBD Produkte {% endcomment %}
+          {% for collection in all_collections %}
+            {% if collection.handle == 'cbd-produkte' %}
+              <a href="{{ collection.url }}" class="sidebar-item {% if current_collection == collection.handle %}active{% endif %}">
+                <span class="item-icon">🌿</span>
+                <span class="item-text">
+                  <strong>{{ collection.title }}</strong>
+                  <small>{{ collection.products_count }} Produkte</small>
+                </span>
+                <span class="item-arrow">›</span>
+              </a>
+            {% endif %}
+          {% endfor %}
+
+          {% comment %} Desinfektionsmittel {% endcomment %}
+          {% for collection in all_collections %}
+            {% if collection.handle == 'desinfektionmittel' %}
+              <a href="{{ collection.url }}" class="sidebar-item {% if current_collection == collection.handle %}active{% endif %}">
+                <span class="item-icon">🧴</span>
+                <span class="item-text">
+                  <strong>{{ collection.title }}</strong>
+                  <small>{{ collection.products_count }} Produkte</small>
+                </span>
+                <span class="item-arrow">›</span>
+              </a>
+            {% endif %}
+          {% endfor %}
+
+          {% comment %} Elektronik Geräte {% endcomment %}
+          {% for collection in all_collections %}
+            {% if collection.handle == 'elektronik-gerate' %}
+              <a href="{{ collection.url }}" class="sidebar-item {% if current_collection == collection.handle %}active{% endif %}">
+                <span class="item-icon">⚡</span>
+                <span class="item-text">
+                  <strong>{{ collection.title }}</strong>
+                  <small>{{ collection.products_count }} Produkte</small>
+                </span>
+                <span class="item-arrow">›</span>
+              </a>
+            {% endif %}
+          {% endfor %}
+
+          {% comment %} Hausgemacht Spezialitäten {% endcomment %}
+          {% for collection in all_collections %}
+            {% if collection.handle == 'hausgemacht-spezialitaten' %}
+              <a href="{{ collection.url }}" class="sidebar-item {% if current_collection == collection.handle %}active{% endif %}">
+                <span class="item-icon">🍯</span>
+                <span class="item-text">
+                  <strong>{{ collection.title }}</strong>
+                  <small>{{ collection.products_count }} Produkte</small>
+                </span>
+                <span class="item-arrow">›</span>
+              </a>
+            {% endif %}
+          {% endfor %}
+
+          {% comment %} Hygiene {% endcomment %}
+          {% for collection in all_collections %}
+            {% if collection.handle == 'hygiene' %}
+              <a href="{{ collection.url }}" class="sidebar-item {% if current_collection == collection.handle %}active{% endif %}">
+                <span class="item-icon">🧼</span>
+                <span class="item-text">
+                  <strong>{{ collection.title }}</strong>
+                  <small>{{ collection.products_count }} Produkte</small>
+                </span>
+                <span class="item-arrow">›</span>
+              </a>
+            {% endif %}
+          {% endfor %}
+
+          {% comment %} Primavera {% endcomment %}
+          {% for collection in all_collections %}
+            {% if collection.handle == 'primavera' %}
+              <a href="{{ collection.url }}" class="sidebar-item {% if current_collection == collection.handle %}active{% endif %}">
+                <span class="item-icon">🌸</span>
+                <span class="item-text">
+                  <strong>{{ collection.title }}</strong>
+                  <small>{{ collection.products_count }} Produkte</small>
+                </span>
+                <span class="item-arrow">›</span>
+              </a>
+            {% endif %}
+          {% endfor %}
+
+          {% comment %} Rotbäckchen {% endcomment %}
+          {% for collection in all_collections %}
+            {% if collection.handle == 'rotbackchen' %}
+              <a href="{{ collection.url }}" class="sidebar-item {% if current_collection == collection.handle %}active{% endif %}">
+                <span class="item-icon">🍎</span>
+                <span class="item-text">
+                  <strong>{{ collection.title }}</strong>
+                  <small>{{ collection.products_count }} Produkte</small>
+                </span>
+                <span class="item-arrow">›</span>
+              </a>
+            {% endif %}
+          {% endfor %}
+
+        </div>
+      </div>
+
+      {% comment %} Divisore {% endcomment %}
+      <div class="sidebar-divider"></div>
+
+      {% comment %} Sezione Info Pflegebox {% endcomment %}
+      <div class="sidebar-section sidebar-promo">
+        <div class="promo-card">
+          <div class="promo-icon">💶</div>
+          <h4 class="promo-title">Pflegebox Service</h4>
+          <p class="promo-text">Bis zu 42€ monatlich von Ihrer Pflegekasse zurückerhalten!</p>
+          <a href="/pages/pflegebox-formular" class="promo-button">
+            Mehr erfahren
+          </a>
+        </div>
+      </div>
+
+      {% comment %} Sezione Info spedizione {% endcomment %}
+      <div class="sidebar-section sidebar-info">
+        <div class="info-item">
+          <span class="info-icon">🚚</span>
+          <div class="info-content">
+            <strong>Kostenloser Versand</strong>
+            <small>Ab 37€ Bestellwert</small>
+          </div>
+        </div>
+        <div class="info-item">
+          <span class="info-icon">📦</span>
+          <div class="info-content">
+            <strong>Schnelle Lieferung</strong>
+            <small>2-3 Werktage</small>
+          </div>
+        </div>
+        <div class="info-item">
+          <span class="info-icon">💳</span>
+          <div class="info-content">
+            <strong>Kauf auf Rechnung</strong>
+            <small>Sichere Bezahlung</small>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    {% comment %} Footer della sidebar {% endcomment %}
+    <div class="sidebar-footer">
+      <a href="/collections" class="footer-link">
+        Alle Kategorien anzeigen →
+      </a>
+    </div>
+
+  </aside>
+
+  {% comment %} Overlay per mobile {% endcomment %}
+  <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+</div>
+
+{% comment %} JavaScript per toggle mobile {% endcomment %}
+<script>
+function toggleSidebar() {
+  var sidebar = document.getElementById('categorySidebar');
+  var overlay = document.querySelector('.sidebar-overlay');
+  var body = document.body;
+
+  if (sidebar && overlay) {
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+    body.classList.toggle('sidebar-open');
+  }
+}
+
+// Chiudi sidebar quando si clicca su un link
+document.addEventListener('DOMContentLoaded', function() {
+  var sidebarLinks = document.querySelectorAll('.category-sidebar a');
+
+  sidebarLinks.forEach(function(link) {
+    link.addEventListener('click', function() {
+      if (window.innerWidth <= 992) {
+        toggleSidebar();
+      }
+    });
+  });
+});
+</script>

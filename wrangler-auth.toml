@@ -1,0 +1,22 @@
+name = "pflegeteufel-auth"
+main = "cloudflare-worker-auth.js"
+compatibility_date = "2024-01-01"
+node_compat = true
+
+# Environment variables
+[vars]
+SHOPIFY_API_VERSION = "2024-10"
+ALLOWED_ORIGIN = "*"
+
+# D1 Database Bindings
+[[d1_databases]]
+binding = "CUSTOMERS_DB"
+database_name = "pflegeteufel-customers"
+database_id = "baaad9c0-081f-4377-a313-0ce75d5e5bc1"
+
+# Secrets (da configurare con: wrangler secret put NOME_VARIABILE -c wrangler-auth.toml)
+# - WORKER_SHARED_KEY (già configurato: felix_backend_2025)
+# - JWT_SECRET (da configurare: stringa casuale sicura per firmare i JWT)
+# - RESEND_API_KEY (opzionale, per invio email di verifica)
+# - SHOPIFY_ADMIN_TOKEN (opzionale, per sincronizzare con Shopify)
+# - SHOPIFY_SHOP (opzionale, es: pflegeteufel.myshopify.com)

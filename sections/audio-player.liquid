@@ -1,0 +1,414 @@
+{{ 'component.css' | asset_url | stylesheet_tag }}
+
+{% style %}
+  .audio-player-section {
+    width: 100%;
+    padding: {{ section.settings.padding_top }}px 0 {{ section.settings.padding_bottom }}px;
+    background-color: {{ section.settings.background_color }};
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .audio-player-container {
+    max-width: {{ section.settings.container_width }}px;
+    width: 100%;
+    padding: 30px;
+    background: {{ section.settings.player_background }};
+    border-radius: {{ section.settings.border_radius }}px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  .audio-player-title {
+    font-size: {{ section.settings.title_size }}px;
+    font-weight: 700;
+    color: {{ section.settings.title_color }};
+    margin-bottom: 10px;
+  }
+
+  .audio-player-subtitle {
+    font-size: {{ section.settings.subtitle_size }}px;
+    color: {{ section.settings.subtitle_color }};
+    margin-bottom: 25px;
+  }
+
+  .audio-controls-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .audio-play-button {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, {{ section.settings.button_color_1 }}, {{ section.settings.button_color_2 }});
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .audio-play-button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  .audio-play-button:active {
+    transform: scale(0.95);
+  }
+
+  .audio-play-button svg {
+    width: 35px;
+    height: 35px;
+    fill: white;
+  }
+
+  .audio-player-element {
+    width: 100%;
+    max-width: 500px;
+    height: 50px;
+    border-radius: 25px;
+    outline: none;
+  }
+
+  .audio-player-element::-webkit-media-controls-panel {
+    background-color: {{ section.settings.controls_background }};
+    border-radius: 25px;
+  }
+
+  .audio-visualizer {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 4px;
+    height: 40px;
+    margin-bottom: 15px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .audio-visualizer.playing {
+    opacity: 1;
+  }
+
+  .audio-visualizer span {
+    width: 4px;
+    height: 20%;
+    background: linear-gradient(to top, {{ section.settings.button_color_1 }}, {{ section.settings.button_color_2 }});
+    border-radius: 2px;
+    animation: wave 1s ease-in-out infinite;
+  }
+
+  .audio-visualizer span:nth-child(2) { animation-delay: 0.1s; }
+  .audio-visualizer span:nth-child(3) { animation-delay: 0.2s; }
+  .audio-visualizer span:nth-child(4) { animation-delay: 0.3s; }
+  .audio-visualizer span:nth-child(5) { animation-delay: 0.4s; }
+  .audio-visualizer span:nth-child(6) { animation-delay: 0.5s; }
+  .audio-visualizer span:nth-child(7) { animation-delay: 0.6s; }
+
+  @keyframes wave {
+    0%, 100% { height: 20%; }
+    50% { height: 80%; }
+  }
+
+  @media (max-width: 768px) {
+    .audio-player-container {
+      padding: 20px;
+    }
+
+    .audio-play-button {
+      width: 60px;
+      height: 60px;
+    }
+
+    .audio-play-button svg {
+      width: 25px;
+      height: 25px;
+    }
+
+    .audio-player-title {
+      font-size: {{ section.settings.title_size | minus: 8 }}px;
+    }
+
+    .audio-player-subtitle {
+      font-size: {{ section.settings.subtitle_size | minus: 4 }}px;
+    }
+  }
+{% endstyle %}
+
+<div class="audio-player-section">
+  <div class="audio-player-container">
+    {% if section.settings.show_title %}
+      <h2 class="audio-player-title">{{ section.settings.title }}</h2>
+    {% endif %}
+
+    {% if section.settings.show_subtitle %}
+      <p class="audio-player-subtitle">{{ section.settings.subtitle }}</p>
+    {% endif %}
+
+    <div class="audio-visualizer" id="audioVisualizer-{{ section.id }}">
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <div class="audio-controls-wrapper">
+      <button class="audio-play-button" id="playButton-{{ section.id }}" aria-label="Play audio">
+        <svg id="playIcon-{{ section.id }}" viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+        <svg id="pauseIcon-{{ section.id }}" viewBox="0 0 24 24" style="display: none;">
+          <path d="M6 4h4v16H6zm8 0h4v16h-4z"/>
+        </svg>
+      </button>
+
+      {% if section.settings.show_audio_controls %}
+        <audio
+          class="audio-player-element"
+          id="audioPlayer-{{ section.id }}"
+          controls
+          {% if section.settings.audio_file %}
+            src="{{ section.settings.audio_file }}"
+          {% endif %}
+        >
+          Il tuo browser non supporta l'elemento audio.
+        </audio>
+      {% else %}
+        <audio
+          id="audioPlayer-{{ section.id }}"
+          {% if section.settings.audio_file %}
+            src="{{ section.settings.audio_file }}"
+          {% endif %}
+        >
+          Il tuo browser non supporta l'elemento audio.
+        </audio>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+  (function() {
+    const sectionId = '{{ section.id }}';
+    const audioPlayer = document.getElementById('audioPlayer-' + sectionId);
+    const playButton = document.getElementById('playButton-' + sectionId);
+    const playIcon = document.getElementById('playIcon-' + sectionId);
+    const pauseIcon = document.getElementById('pauseIcon-' + sectionId);
+    const visualizer = document.getElementById('audioVisualizer-' + sectionId);
+
+    if (!audioPlayer || !playButton) return;
+
+    playButton.addEventListener('click', function() {
+      if (audioPlayer.paused) {
+        audioPlayer.play();
+        playIcon.style.display = 'none';
+        pauseIcon.style.display = 'block';
+        visualizer.classList.add('playing');
+      } else {
+        audioPlayer.pause();
+        playIcon.style.display = 'block';
+        pauseIcon.style.display = 'none';
+        visualizer.classList.remove('playing');
+      }
+    });
+
+    audioPlayer.addEventListener('ended', function() {
+      playIcon.style.display = 'block';
+      pauseIcon.style.display = 'none';
+      visualizer.classList.remove('playing');
+    });
+
+    // Sync with native audio controls
+    audioPlayer.addEventListener('play', function() {
+      playIcon.style.display = 'none';
+      pauseIcon.style.display = 'block';
+      visualizer.classList.add('playing');
+    });
+
+    audioPlayer.addEventListener('pause', function() {
+      playIcon.style.display = 'block';
+      pauseIcon.style.display = 'none';
+      visualizer.classList.remove('playing');
+    });
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Audio Player",
+  "tag": "section",
+  "class": "section-audio-player",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Audio Settings"
+    },
+    {
+      "type": "text",
+      "id": "audio_file",
+      "label": "Audio File URL",
+      "info": "Upload your audio file to Files in Shopify admin, then paste the URL here"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_audio_controls",
+      "label": "Show audio controls",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Text Content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show title",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Ascolta la nostra canzone"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 32
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title color",
+      "default": "#000000"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_subtitle",
+      "label": "Show subtitle",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Clicca play per iniziare"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle size",
+      "default": 16
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle color",
+      "default": "#666666"
+    },
+    {
+      "type": "header",
+      "content": "Design"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Section background color",
+      "default": "#f5f5f5"
+    },
+    {
+      "type": "color",
+      "id": "player_background",
+      "label": "Player background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "controls_background",
+      "label": "Controls background",
+      "default": "#f0f0f0"
+    },
+    {
+      "type": "color",
+      "id": "button_color_1",
+      "label": "Button gradient color 1",
+      "default": "#C12624"
+    },
+    {
+      "type": "color",
+      "id": "button_color_2",
+      "label": "Button gradient color 2",
+      "default": "#A01F1D"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "label": "Border radius",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "container_width",
+      "min": 400,
+      "max": 1200,
+      "step": 50,
+      "unit": "px",
+      "label": "Container max width",
+      "default": 800
+    },
+    {
+      "type": "header",
+      "content": "Spacing"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding top",
+      "default": 50
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "label": "Padding bottom",
+      "default": 50
+    }
+  ],
+  "presets": [
+    {
+      "name": "Audio Player"
+    }
+  ]
+}
+{% endschema %}

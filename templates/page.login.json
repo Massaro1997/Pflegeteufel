@@ -1,0 +1,15 @@
+{
+  "sections": {
+    "customer-login": {
+      "type": "customer-login",
+      "settings": {
+        "title": "Anmelden",
+        "subtitle": "Melden Sie sich in Ihrem Konto an",
+        "worker_url": "https://shopify-backend.massarocalogero1997.workers.dev"
+      }
+    }
+  },
+  "order": [
+    "customer-login"
+  ]
+}
