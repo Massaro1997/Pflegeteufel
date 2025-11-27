@@ -9,6 +9,10 @@
  */
 {
   "sections": {
+    "collection_quick_nav": {
+      "type": "collection-quick-nav-section",
+      "settings": {}
+    },
     "section_RFrkNJ": {
       "type": "section",
       "name": "t:names.custom_section",
@@ -449,6 +453,7 @@
     }
   },
   "order": [
+    "collection_quick_nav",
     "section_RFrkNJ",
     "hero_iPQ9xc",
     "section_xjzTNV",
