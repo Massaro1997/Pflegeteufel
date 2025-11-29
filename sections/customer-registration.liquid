@@ -321,18 +321,16 @@
             if (loginResult.customer) {
               localStorage.setItem('customer', JSON.stringify(loginResult.customer));
             }
+            // Redirect alla home page
+            window.location.href = '/';
+            return;
           }
         } catch (loginError) {
           console.error('Auto-login error:', loginError);
         }
 
-        // Nascondi il form e mostra la CTA
-        form.style.display = 'none';
-        document.querySelector('.registration-header').style.display = 'none';
-        document.getElementById('post-registration-cta').style.display = 'block';
-
-        // Scroll to top
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        // Fallback: redirect alla home anche se auto-login fallisce
+        window.location.href = '/';
       } else {
         showError(result.error || 'Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.');
       }
