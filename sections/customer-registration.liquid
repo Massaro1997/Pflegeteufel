@@ -298,6 +298,14 @@
       const result = await response.json();
 
       if (response.ok && result.success) {
+        // AUTO-LOGIN: Salva token e dati cliente in localStorage
+        if (result.sessionToken) {
+          localStorage.setItem('session_token', result.sessionToken);
+        }
+        if (result.customer) {
+          localStorage.setItem('customer', JSON.stringify(result.customer));
+        }
+
         // Nascondi il form e mostra la CTA
         form.style.display = 'none';
         document.querySelector('.registration-header').style.display = 'none';
