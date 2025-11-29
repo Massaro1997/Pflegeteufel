@@ -298,11 +298,7 @@
       const result = await response.json();
 
       if (response.ok && result.success) {
-        // Redirect immediato alla pagina di successo
-        window.location.href = '/pages/registrierung-erfolg';
-        return;
-
-        // AUTO-LOGIN: Fai login automatico dopo la registrazione (skip per ora)
+        // AUTO-LOGIN dopo la registrazione
         try {
           const loginResponse = await fetch('{{ section.settings.worker_url | default: "https://pflegeteufel-auth.massarocalogero1997.workers.dev" }}/api/auth/login', {
             method: 'POST',
@@ -325,15 +321,12 @@
             if (loginResult.customer) {
               localStorage.setItem('customer', JSON.stringify(loginResult.customer));
             }
-            // Redirect alla pagina di successo
-            window.location.href = '/pages/registrierung-erfolg';
-            return;
           }
         } catch (loginError) {
           console.error('Auto-login error:', loginError);
         }
 
-        // Fallback: redirect alla pagina di successo anche se auto-login fallisce
+        // Redirect alla pagina di successo
         window.location.href = '/pages/registrierung-erfolg';
       } else {
         showError(result.error || 'Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.');
