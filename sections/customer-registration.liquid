@@ -287,7 +287,7 @@
     setLoading(true);
 
     try {
-      const response = await fetch('{{ section.settings.worker_url | default: "https://shopify-backend.massarocalogero1997.workers.dev" }}/api/auth/register', {
+      const response = await fetch('{{ section.settings.worker_url | default: "https://shopify-backend.massarocalogero1997.workers.dev" }}/api/customers/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
