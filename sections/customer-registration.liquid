@@ -194,11 +194,11 @@
             <span class="post-reg-amount">Bis zu 42,00€</span>
             <span class="post-reg-text">monatlich von Ihrer Pflegekasse</span>
           </div>
-          <a href="/pages/pflegebox-formular" class="post-reg-button">
-            📋 Jetzt Pflegebox-Antrag ausfüllen
+          <a href="/account" class="post-reg-button">
+            📋 Zum Kundenbereich
           </a>
           <p class="post-reg-skip">
-            <a href="/pages/login?registered=1">Später fortfahren &rarr;</a>
+            <a href="/">Zur Startseite &rarr;</a>
           </p>
         </div>
 
@@ -310,7 +310,11 @@
       }
     } catch (error) {
       console.error('Registration error:', error);
-      showError('Es ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.');
+      // In caso di errore, reindirizza alla home dopo un messaggio
+      showError('Es ist ein Fehler aufgetreten. Sie werden zur Startseite weitergeleitet...');
+      setTimeout(function() {
+        window.location.href = '/';
+      }, 3000);
     } finally {
       setLoading(false);
     }
