@@ -1,0 +1,317 @@
+{% comment %}
+  Section: Registrierung Erfolgreich
+  Pagina di ringraziamento dopo la registrazione
+{% endcomment %}
+
+<div class="registration-success-section">
+  <div class="container">
+    <div class="success-wrapper">
+      <div class="success-icon">
+        <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+          <circle cx="40" cy="40" r="38" stroke="#28a745" stroke-width="4" fill="#d4edda"/>
+          <path d="M24 40L35 51L56 30" stroke="#28a745" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </div>
+
+      <h1 class="success-title">{{ section.settings.title | default: 'Herzlichen Glückwunsch!' }}</h1>
+
+      <p class="success-message">{{ section.settings.message | default: 'Ihre Registrierung war erfolgreich. Sie sind jetzt angemeldet und können alle Vorteile nutzen.' }}</p>
+
+      <div class="pflegebox-cta">
+        <div class="cta-badge">
+          <span class="badge-icon">💶</span>
+          <span class="badge-text">Bis zu <strong>42,00€</strong> monatlich</span>
+        </div>
+
+        <h2 class="cta-title">{{ section.settings.cta_title | default: 'Jetzt Pflegebox beantragen!' }}</h2>
+
+        <p class="cta-description">{{ section.settings.cta_description | default: 'Als registrierter Kunde können Sie jetzt Ihren Antrag für die kostenlose Pflegebox stellen. Die Kosten werden direkt von Ihrer Pflegekasse übernommen.' }}</p>
+
+        <ul class="cta-benefits">
+          <li><span class="check">✓</span> Kostenlos für Pflegebedürftige ab Pflegegrad 1</li>
+          <li><span class="check">✓</span> Monatliche Lieferung direkt zu Ihnen nach Hause</li>
+          <li><span class="check">✓</span> Hochwertige Pflegehilfsmittel</li>
+          <li><span class="check">✓</span> Keine versteckten Kosten</li>
+        </ul>
+
+        <a href="/pages/pflegebox-formular" class="cta-button">
+          📋 Jetzt Antrag ausfüllen
+        </a>
+
+        <p class="cta-note">Der Antrag dauert nur 2-3 Minuten</p>
+      </div>
+
+      <div class="alternative-links">
+        <p>Oder erkunden Sie unsere anderen Angebote:</p>
+        <div class="links-row">
+          <a href="/collections/all" class="alt-link">
+            <span class="link-icon">🛒</span>
+            <span>Produkte entdecken</span>
+          </a>
+          <a href="/pages/kunden-area" class="alt-link">
+            <span class="link-icon">👤</span>
+            <span>Mein Kundenbereich</span>
+          </a>
+          <a href="/" class="alt-link">
+            <span class="link-icon">🏠</span>
+            <span>Zur Startseite</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.registration-success-section {
+  padding: 60px 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  min-height: 80vh;
+}
+
+.registration-success-section .container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.success-wrapper {
+  background: white;
+  padding: 50px 40px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.success-icon {
+  margin-bottom: 25px;
+  animation: scaleIn 0.5s ease;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.success-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #28a745;
+  margin: 0 0 15px 0;
+}
+
+.success-message {
+  font-size: 1.1rem;
+  color: #555;
+  margin: 0 0 40px 0;
+  line-height: 1.6;
+}
+
+.pflegebox-cta {
+  background: linear-gradient(135deg, #fff5f5 0%, #ffe8e8 100%);
+  border: 2px solid #C12624;
+  border-radius: 12px;
+  padding: 30px;
+  margin-bottom: 30px;
+}
+
+.cta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: #28a745;
+  color: white;
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+
+.badge-icon {
+  font-size: 1.3rem;
+}
+
+.cta-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #C12624;
+  margin: 0 0 15px 0;
+}
+
+.cta-description {
+  font-size: 1rem;
+  color: #555;
+  margin: 0 0 20px 0;
+  line-height: 1.5;
+}
+
+.cta-benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 25px 0;
+  text-align: left;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.cta-benefits li {
+  padding: 8px 0;
+  font-size: 0.95rem;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cta-benefits .check {
+  color: #28a745;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+.cta-button {
+  display: inline-block;
+  background: linear-gradient(135deg, #C12624 0%, #A01F1D 100%);
+  color: white;
+  padding: 16px 40px;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(193, 38, 36, 0.3);
+  animation: pulse 2s infinite;
+}
+
+.cta-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 25px rgba(193, 38, 36, 0.4);
+  color: white;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    box-shadow: 0 4px 15px rgba(193, 38, 36, 0.3);
+  }
+  50% {
+    box-shadow: 0 4px 15px rgba(193, 38, 36, 0.3),
+                0 0 30px rgba(193, 38, 36, 0.2);
+  }
+}
+
+.cta-note {
+  margin-top: 15px;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.alternative-links {
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.alternative-links > p {
+  font-size: 0.95rem;
+  color: #666;
+  margin-bottom: 15px;
+}
+
+.links-row {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.alt-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  text-decoration: none;
+  color: #333;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+}
+
+.alt-link:hover {
+  background: #e9ecef;
+  transform: translateY(-2px);
+}
+
+.link-icon {
+  font-size: 1.2rem;
+}
+
+@media (max-width: 768px) {
+  .success-wrapper {
+    padding: 30px 20px;
+  }
+
+  .success-title {
+    font-size: 1.6rem;
+  }
+
+  .pflegebox-cta {
+    padding: 20px;
+  }
+
+  .cta-button {
+    padding: 14px 30px;
+    font-size: 1rem;
+  }
+
+  .links-row {
+    flex-direction: column;
+  }
+
+  .alt-link {
+    justify-content: center;
+  }
+}
+</style>
+
+{% schema %}
+{
+  "name": "Registrierung Erfolg",
+  "settings": [
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Titel",
+      "default": "Herzlichen Glückwunsch!"
+    },
+    {
+      "type": "textarea",
+      "id": "message",
+      "label": "Nachricht",
+      "default": "Ihre Registrierung war erfolgreich. Sie sind jetzt angemeldet und können alle Vorteile nutzen."
+    },
+    {
+      "type": "text",
+      "id": "cta_title",
+      "label": "CTA Titel",
+      "default": "Jetzt Pflegebox beantragen!"
+    },
+    {
+      "type": "textarea",
+      "id": "cta_description",
+      "label": "CTA Beschreibung",
+      "default": "Als registrierter Kunde können Sie jetzt Ihren Antrag für die kostenlose Pflegebox stellen. Die Kosten werden direkt von Ihrer Pflegekasse übernommen."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Registrierung Erfolg"
+    }
+  ]
+}
+{% endschema %}

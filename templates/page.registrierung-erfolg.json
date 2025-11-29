@@ -1,0 +1,16 @@
+{
+  "sections": {
+    "registration-success": {
+      "type": "registration-success",
+      "settings": {
+        "title": "Herzlichen Glückwunsch!",
+        "message": "Ihre Registrierung war erfolgreich. Sie sind jetzt angemeldet und können alle Vorteile nutzen.",
+        "cta_title": "Jetzt Pflegebox beantragen!",
+        "cta_description": "Als registrierter Kunde können Sie jetzt Ihren Antrag für die kostenlose Pflegebox stellen. Die Kosten werden direkt von Ihrer Pflegekasse übernommen."
+      }
+    }
+  },
+  "order": [
+    "registration-success"
+  ]
+}

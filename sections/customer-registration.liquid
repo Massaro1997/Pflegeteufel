@@ -321,16 +321,16 @@
             if (loginResult.customer) {
               localStorage.setItem('customer', JSON.stringify(loginResult.customer));
             }
-            // Redirect alla home page
-            window.location.href = '/';
+            // Redirect alla pagina di successo
+            window.location.href = '/pages/registrierung-erfolg';
             return;
           }
         } catch (loginError) {
           console.error('Auto-login error:', loginError);
         }
 
-        // Fallback: redirect alla home anche se auto-login fallisce
-        window.location.href = '/';
+        // Fallback: redirect alla pagina di successo anche se auto-login fallisce
+        window.location.href = '/pages/registrierung-erfolg';
       } else {
         showError(result.error || 'Registrierung fehlgeschlagen. Bitte versuchen Sie es erneut.');
       }
