@@ -314,9 +314,15 @@
           const loginResult = await loginResponse.json();
 
           if (loginResponse.ok && loginResult.success) {
-            // Salva token e dati cliente
+            // Salva token e dati cliente (stesso formato del login normale)
             if (loginResult.token) {
-              localStorage.setItem('session_token', loginResult.token);
+              localStorage.setItem('auth_token', loginResult.token);
+            }
+            if (loginResult.sessionToken) {
+              localStorage.setItem('session_token', loginResult.sessionToken);
+            }
+            if (loginResult.refreshToken) {
+              localStorage.setItem('refresh_token', loginResult.refreshToken);
             }
             if (loginResult.customer) {
               localStorage.setItem('customer', JSON.stringify(loginResult.customer));
