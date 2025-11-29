@@ -287,7 +287,7 @@
     setLoading(true);
 
     try {
-      const response = await fetch('{{ section.settings.worker_url | default: "https://shopify-backend.massarocalogero1997.workers.dev" }}/api/customers/register', {
+      const response = await fetch('{{ section.settings.worker_url | default: "https://pflegeteufel-auth.massarocalogero1997.workers.dev" }}/api/auth/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -298,12 +298,32 @@
       const result = await response.json();
 
       if (response.ok && result.success) {
-        // AUTO-LOGIN: Salva token e dati cliente in localStorage
-        if (result.sessionToken) {
-          localStorage.setItem('session_token', result.sessionToken);
-        }
-        if (result.customer) {
-          localStorage.setItem('customer', JSON.stringify(result.customer));
+        // AUTO-LOGIN: Fai login automatico dopo la registrazione
+        try {
+          const loginResponse = await fetch('{{ section.settings.worker_url | default: "https://pflegeteufel-auth.massarocalogero1997.workers.dev" }}/api/auth/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              email: formData.email,
+              password: formData.password
+            })
+          });
+
+          const loginResult = await loginResponse.json();
+
+          if (loginResponse.ok && loginResult.success) {
+            // Salva token e dati cliente
+            if (loginResult.token) {
+              localStorage.setItem('session_token', loginResult.token);
+            }
+            if (loginResult.customer) {
+              localStorage.setItem('customer', JSON.stringify(loginResult.customer));
+            }
+          }
+        } catch (loginError) {
+          console.error('Auto-login error:', loginError);
         }
 
         // Nascondi il form e mostra la CTA
